@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@600;700&display=swap');
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+
+:root {
+    --bg-canvas: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-subtle: #F1F5F9;
+    --border-hairline: #E2E8F0;
+    --text-primary: #0F172A;
+    --text-muted: #64748B;
+    --accent-primary: #059669;
+    --accent-hover: #047857;
+    --accent-tint: #ECFDF5;
+    --gold: #D97706;
+    --danger: #E11D48;
+    --danger-tint: #FFF1F2;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+}
+
+.dark {
+    --bg-canvas: #09090B;
+    --bg-surface: #18181B;
+    --bg-subtle: #27272A;
+    --border-hairline: #27272A;
+    --text-primary: #FAFAFA;
+    --text-muted: #A1A1AA;
+    --accent-primary: #10B981;
+    --accent-hover: #34D399;
+    --accent-tint: #064E3B;
+    --gold: #F59E0B;
+    --danger: #F43F5E;
+    --danger-tint: #2A1215;
+}
+
+body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography tokens */
+.font-heading {
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.font-mono, .tabular-nums {
+    font-family: 'JetBrains Mono', monospace;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+/* Base Component Utilities */
+.hairline-border {
+    border: 1px solid var(--border-hairline);
+}
+
+.card-campus {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.input-campus {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 14px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.input-campus:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 1px var(--accent-primary);
+}
+
+.btn-primary {
+    background-color: var(--accent-primary);
+    color: #FFFFFF;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-hairline);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    filter: brightness(0.97);
+}
+
+.badge-campus {
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}

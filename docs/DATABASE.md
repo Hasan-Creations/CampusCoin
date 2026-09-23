@@ -1,0 +1,98 @@
+# Campus Coin — Database Design & Schema Specification
+
+## 1. Engine & Character Set
+- **Database Engine:** MySQL / MariaDB (InnoDB)
+- **Character Set:** `utf8mb4`
+- **Collation:** `utf8mb4_unicode_ci`
+
+---
+
+## 2. Table Specifications
+
+### 2.1 `users`
+Primary identity and profile table for students and administrators.
+
+| Column | Type | Nullable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `BIGINT UNSIGNED` | No | AUTO_INCREMENT | Primary Key |
+| `name` | `VARCHAR(255)` | No | — | Full legal or display name |
+| `email` | `VARCHAR(255)` | No | — | Unique login email (campus `.edu` encouraged) |
+| `password` | `VARCHAR(255)` | No | — | Bcrypt hashed secret |
+| `role` | `ENUM('student','admin')` | No | `'student'` | System authorization role |
+| `status` | `ENUM('active','disabled')` | No | `'active'` | Account operational status |
+| `academic_year` | `ENUM('Freshman','Sophomore','Junior','Senior','Graduate')` | Yes | `NULL` | Student cohort status |
+| `monthly_allowance` | `DECIMAL(10,2)` | No | `0.00` | Baseline monthly inflow/stipend |
+| `savings_goal` | `DECIMAL(10,2)` | No | `0.00` | Monthly target savings target |
+| `email_verified_at` | `TIMESTAMP` | Yes | `NULL` | Verification timestamp |
+| `remember_token` | `VARCHAR(100)` | Yes | `NULL` | Persistent session token |
+| `created_at` | `TIMESTAMP` | Yes | `NULL` | Record creation timestamp |
+| `updated_at` | `TIMESTAMP` | Yes | `NULL` | Record modification timestamp |
+
+**Indexes:**
+- `PRIMARY KEY (id)`
+- `UNIQUE KEY users_email_unique (email)`
+- `INDEX users_role_index (role)`
+- `INDEX users_status_index (status)`
+
+---
+
+### 2.2 `categories` *(Phase 1)*
+Classification tags for transactions and budgets.
+
+| Column | Type | Nullable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `BIGINT UNSIGNED` | No | AUTO_INCREMENT | Primary Key |
+| `user_id` | `BIGINT UNSIGNED` | Yes | `NULL` | Foreign key to `users.id` (`NULL` = system default category) |
+| `name` | `VARCHAR(100)` | No | — | Category title (e.g., Food, Allowance) |
+| `type` | `ENUM('income','expense')` | No | `'expense'` | Cash flow classification |
+| `icon` | `VARCHAR(50)` | No | `'tag'` | Lucide icon identifier |
+| `color` | `VARCHAR(7)` | No | `'#059669'` | Hex color code |
+| `is_default` | `BOOLEAN` | No | `FALSE` | Flag for global default categories |
+| `created_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+| `updated_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+
+**Foreign Keys & Constraints:**
+- `FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE`
+- `INDEX categories_user_id_index (user_id)`
+
+---
+
+### 2.3 `transactions` *(Phase 1)*
+Financial cash-flow ledger.
+
+| Column | Type | Nullable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `BIGINT UNSIGNED` | No | AUTO_INCREMENT | Primary Key |
+| `user_id` | `BIGINT UNSIGNED` | No | — | Foreign key to `users.id` |
+| `category_id` | `BIGINT UNSIGNED` | No | — | Foreign key to `categories.id` |
+| `type` | `ENUM('income','expense')` | No | — | Transaction type |
+| `amount` | `DECIMAL(10,2)` | No | — | Exact currency value |
+| `description` | `VARCHAR(255)` | No | — | Merchant or title description |
+| `transaction_date` | `DATE` | No | — | Occurrence date |
+| `payment_method` | `ENUM('cash','card','bank_transfer','upi','digital_wallet','other')` | No | `'card'` | Payment channel |
+| `is_recurring` | `BOOLEAN` | No | `FALSE` | Recurring transaction flag |
+| `ai_suggested` | `BOOLEAN` | No | `FALSE` | Categorization was suggested by AI |
+| `ai_confidence` | `DECIMAL(3,2)` | Yes | `NULL` | Advisory confidence score (0.00-1.00) |
+| `created_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+| `updated_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+
+---
+
+### 2.4 `budgets` *(Phase 3)*
+Monthly limits by student and category.
+
+| Column | Type | Nullable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `BIGINT UNSIGNED` | No | AUTO_INCREMENT | Primary Key |
+| `user_id` | `BIGINT UNSIGNED` | No | — | Foreign key to `users.id` |
+| `category_id` | `BIGINT UNSIGNED` | No | — | Foreign key to `categories.id` |
+| `amount` | `DECIMAL(10,2)` | No | — | Maximum planned monthly limit |
+| `month_year` | `VARCHAR(7)` | No | — | Format `YYYY-MM` |
+| `created_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+| `updated_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+
+---
+
+## 3. Data Isolation Rules
+1. **Never Trust Client Identifiers:** Query builders and Eloquent scopes must explicitly enforce `user_id = Auth::id()`.
+2. **Deterministic Calculations:** All arithmetic aggregation runs through `SUM(amount)` with `DECIMAL(10,2)` preservation.
