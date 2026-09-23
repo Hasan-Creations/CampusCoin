@@ -16,8 +16,8 @@ class LoginController extends Controller
     public function showLoginForm(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return Auth::user()->isAdmin() 
-                ? redirect()->route('admin.dashboard') 
+            return Auth::user()->isAdmin()
+                ? redirect()->route('admin.dashboard')
                 : redirect()->route('dashboard');
         }
 
@@ -30,8 +30,8 @@ class LoginController extends Controller
     public function showAdminLoginForm(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return Auth::user()->isAdmin() 
-                ? redirect()->route('admin.dashboard') 
+            return Auth::user()->isAdmin()
+                ? redirect()->route('admin.dashboard')
                 : redirect()->route('dashboard');
         }
 

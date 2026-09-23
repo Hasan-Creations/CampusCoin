@@ -2,8 +2,14 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ReportExportController;
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Livewire\Student\BudgetManager;
+use App\Livewire\Student\CategoryManager;
+use App\Livewire\Student\Dashboard;
+use App\Livewire\Student\MonthlyReports;
+use App\Livewire\Student\TransactionList;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,9 +48,14 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', EnsureUserIsActive::class])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+
+    Route::get('/categories', CategoryManager::class)->name('categories');
+    Route::get('/transactions', TransactionList::class)->name('transactions');
+    Route::get('/budgets', BudgetManager::class)->name('budgets');
+    Route::get('/reports', MonthlyReports::class)->name('reports');
+    Route::get('/reports/export/pdf', [ReportExportController::class, 'exportPdf'])->name('reports.export.pdf');
+    Route::get('/reports/export/csv', [ReportExportController::class, 'exportCsv'])->name('reports.export.csv');
 });
 
 /*

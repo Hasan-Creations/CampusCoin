@@ -36,7 +36,8 @@ app/
 │   │   │   ├── RegisterController.php
 │   │   │   └── PasswordResetController.php
 │   │   ├── Admin/
-│   │   └── ExportController.php
+│   │   ├── ExportController.php
+│   │   └── ReportExportController.php
 │   └── Middleware/
 │       ├── EnsureUserIsAdmin.php
 │       └── EnsureUserIsActive.php
@@ -46,7 +47,8 @@ app/
 │   │   ├── TransactionList.php
 │   │   ├── TransactionModal.php
 │   │   ├── BudgetManager.php
-│   │   └── CategoryManager.php
+│   │   ├── CategoryManager.php
+│   │   └── MonthlyReports.php
 │   └── Admin/
 ├── Models/
 │   ├── User.php

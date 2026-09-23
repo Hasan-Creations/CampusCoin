@@ -51,7 +51,8 @@ body {
     font-family: 'Space Grotesk', sans-serif;
 }
 
-.font-mono, .tabular-nums {
+.font-mono,
+.tabular-nums {
     font-family: 'JetBrains Mono', monospace;
     font-feature-settings: "tnum";
     font-variant-numeric: tabular-nums;

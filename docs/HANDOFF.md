@@ -8,6 +8,7 @@
 - **Styling:** Custom CSS design system + Tailwind CSS (configured strictly to Campus Coin tokens)
 - **Database:** MySQL / MariaDB (Database: `campus_coin`)
 - **Asset Bundler:** Vite
+- **Developer Acceleration:** Laravel Boost
 
 ---
 
@@ -40,25 +41,34 @@ php artisan serve
   - Email: `admin@campuscoin.edu`
   - Password: `AdminSecure123!`
   - Role: `admin`
-- **Default Student User:**
+- **Default Student 1:**
   - Email: `alex.rivera@campus.edu`
   - Password: `StudentSecure123!`
   - Role: `student`
   - Cohort: `Junior`
   - Monthly Allowance: `$1,200.00`
   - Target Savings Goal: `$300.00`
+- **Default Student 2 (Multi-Tenant Isolation Testing):**
+  - Email: `maria.santos@campus.edu`
+  - Password: `StudentSecure123!`
+  - Role: `student`
+  - Cohort: `Sophomore`
+  - Monthly Allowance: `$950.00`
+  - Target Savings Goal: `$200.00`
 
 ---
 
 ## 4. Crucial Business & Architectural Rules
 1. **Never use floats for money:** All monetary numbers must be `DECIMAL(10,2)` in database and string/BCMath in business logic.
 2. **Strict Data Isolation:** Never query transactions, budgets, or categories without scoping to `where('user_id', Auth::id())`. A student must never see another student's data.
-3. **No Design Anti-Patterns:**
+3. **Ledger-Calculated Budget Consumption:** Do not duplicate or cache transaction spending inside the `budgets` table; compute it dynamically from actual expense transactions.
+4. **Expense-Only Budgets:** Budget goals are strictly restricted to `expense` categories.
+5. **No Design Anti-Patterns:**
    - No pill buttons (no `rounded-full` or 9999px radius).
    - No glassmorphism, blur, or purple/pink gradients.
    - Use clean 1px hairline borders (`#E2E8F0` light, `#27272A` dark).
    - Fonts: Headings (`Space Grotesk`), UI/Body (`Inter`), Figures/Dates (`JetBrains Mono`).
-4. **AI is strictly advisory:** Never force or automatically apply AI suggestions without student confirmation. Core expense tracking must work even if AI is disabled.
+6. **AI is strictly advisory:** Never force or automatically apply AI suggestions without student confirmation. Core expense tracking must work even if AI is disabled.
 
 ---
 
@@ -66,17 +76,50 @@ php artisan serve
 - **Phase 0 (Foundation):** COMPLETED & VERIFIED.
   - Laravel 12 + Livewire 3 + MySQL operational.
   - User model, schema, and seeders active.
-  - Campus Coin design tokens and hairline border components active.
   - Authentication flow (Student login, Register with cohort/.edu, direct Admin access, logout) active.
-  - 11 automated feature tests passing with 45 assertions.
-  - Homepage with SRS §5.3 sitemap active.
-- **Immediate Next Action (Phase 1 — Core Student Data):**
-  - Implement `Category` model, migration, default categories seeder, and user personal categories interface.
-  - Implement `Transaction` model, migration (`DECIMAL(10,2)`), payment methods, recurring transaction flag, and CRUD modal/list.
+- **Phase 1 (Core Student Data & Initial Dashboard):** COMPLETED & VERIFIED.
+  - Category model, migration, default seeder, and Livewire `CategoryManager` CRUD.
+  - Transaction model, migration, and Livewire `TransactionList` CRUD with CSV export.
+  - Initial Dashboard Livewire component with real-time financial KPIs.
+- **Phase 2 (Budget Goals & Alerts):** COMPLETED & VERIFIED.
+  - `budgets` table with foreign keys and unique constraint on `(user_id, category_id, month_year)`.
+  - `Budget` model with BCMath calculations, threshold detection, and status helpers.
+  - `BudgetManager` Livewire component (`/budgets`) with monthly filtering, 4 KPI summary cards, progress bars, and alert banners.
+  - Dashboard integration: "Budget Goals & Spending Caps" widget and real-time alert banners.
+  - 53 automated feature tests passing with 208 assertions.
+  - End-to-end browser verified with Playwright across all lifecycle scenarios.
+- **Phase 3 (Cash Flow Trends & Advanced Analytics):** COMPLETED & VERIFIED.
+  - `FinancialCalculationService` single source of truth for 6-month cash flow and multi-period category comparisons.
+  - Responsive native SVG 6-month dual-bar chart showing monthly Income and Expenses with hairline grid lines, baseline, and current month highlight.
+  - Interactive multi-period switcher (`This Month`, `3 Months`, `6 Months`, `This Year`) updating Livewire state without full-page reloads.
+  - Comparative category spending breakdown with absolute dollar deltas, safe percentage changes, "New" badges, and period share visual progress bars.
+  - 63 automated feature tests passing with 311 assertions (100% pass rate).
+- **Phase 4 (Monthly Reports & Financial Reporting):** COMPLETED & VERIFIED.
+  - Full-page Reports Livewire component at `/reports` with reactive period presets (`this_month`, `last_month`, `last_3_months`, `last_6_months`, `year`, `custom`).
+  - Executive financial summary with Total Inflow, Total Outflow, Net Movement, Savings Rate (%), and prior equal-duration period comparison.
+  - Category-wise spending breakdown with expense shares, count, average amount, and percentage changes vs. prior period.
+  - 6-month comparative income vs. expense table and current month daily/weekly velocity analysis.
+  - Multi-view tabbed navigation (`monthly`, `six_month`, `daily`, `weekly`, `ledger`) and reactive category/type filtering.
+  - Server-side PDF export with Dompdf (`/reports/export/pdf`), print-ready layout preview (`?preview=1`), and streaming CSV export (`/reports/export/csv`).
+  - Strict student tenant isolation across all report queries and export endpoints.
+  - 77 automated feature tests passing with 389 assertions (100% pass rate).
+- **Immediate Next Action (Phase 5 — Saving Tips Engine & Intelligent Rule Evaluator):**
+  - Implement heuristic rule engine evaluating budget adherence, discretionary spending patterns, dining-out ratios, and recurring subscription burdens.
+  - Build interactive Saving Tips widget for the student dashboard and dedicated tips feed.
 
 ---
 
 ## 6. Tests to Run
 ```powershell
+# Run full automated test suite (77 tests / 389 assertions)
 php artisan test
+
+# Run monthly reports test suite (14 tests / 78 assertions)
+php artisan test tests/Feature/MonthlyReportsTest.php
+
+# Run code styling check
+vendor/bin/pint --dirty --format agent
+
+# Build frontend assets
+npm run build
 ```

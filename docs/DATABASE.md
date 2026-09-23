@@ -78,7 +78,7 @@ Financial cash-flow ledger.
 
 ---
 
-### 2.4 `budgets` *(Phase 3)*
+### 2.4 `budgets` *(Phase 2 — Implemented & Verified)*
 Monthly limits by student and category.
 
 | Column | Type | Nullable | Default | Description |
@@ -87,9 +87,15 @@ Monthly limits by student and category.
 | `user_id` | `BIGINT UNSIGNED` | No | — | Foreign key to `users.id` |
 | `category_id` | `BIGINT UNSIGNED` | No | — | Foreign key to `categories.id` |
 | `amount` | `DECIMAL(10,2)` | No | — | Maximum planned monthly limit |
-| `month_year` | `VARCHAR(7)` | No | — | Format `YYYY-MM` |
+| `month_year` | `VARCHAR(7)` | No | — | Format `YYYY-MM` (e.g. `2026-09`) |
 | `created_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
 | `updated_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+
+**Foreign Keys & Constraints:**
+- `FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE`
+- `FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE`
+- `UNIQUE KEY unique_user_category_month (user_id, category_id, month_year)`
+- `INDEX budgets_user_id_month_year_index (user_id, month_year)`
 
 ---
 
