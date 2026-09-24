@@ -35,10 +35,10 @@
 | **Export Reports (CSV/PDF)** | SRS §4.6 | Phase 4 | **VERIFIED** | `ReportExportController.php`, `pdf.blade.php`, Dompdf | `MonthlyReportsTest.php` (14 tests passed) |
 | **Deterministic Saving Tips** | SRS §4.7 | Phase 5 | **VERIFIED** | `SavingTipsService`, `SavingTip` model, `SavingTipsManager` (`/tips`), `Dashboard.php` widget | `SavingTipsTest.php` (19 tests, 82 assertions passed) |
 | **Pin / Bookmark Tips & Insights** | SRS §4.7, §4.9 | Phase 5 | **VERIFIED** | `saving_tips` status column (`pinned`, `dismissed`), `SavingTip` methods, `SavingTipsManager` tabs & actions, Dashboard quick-actions | `SavingTipsTest.php` passed |
-| **Advisory AI Categorization** | SRS §4.8 | Phase 6 | `NOT_STARTED` | `AiAdvisorService` | — |
-| **User Override of AI Suggestions** | SRS §4.8 | Phase 6 | `NOT_STARTED` | Interactive review modal | — |
-| **Historical CSV Import with Safety** | SRS §4.3, §4.8 | Phase 6 | `NOT_STARTED` | `CsvImportService` with duplicate detection | — |
-| **Advisory AI Monthly Insights** | SRS §4.9 | Phase 6 | `NOT_STARTED` | `AiInsightService` | — |
+| **Advisory AI Categorization** | SRS §4.8 | Phase 6 | **VERIFIED** | `AiCategorizationService`, `CategorizationProviderInterface`, `HeuristicCategorizationProvider`, `OpenAiCategorizationProvider` | `AiCategorizationTest.php` (15 tests, 70 assertions passed) |
+| **User Override of AI Suggestions** | SRS §4.8 | Phase 6 | **VERIFIED** | `TransactionList.php` (`acceptSuggestion`, `selectCategory`, manual priority) | `AiCategorizationTest.php` (manual override tests passed) |
+| **Student-Specific Learned Corrections** | SRS §4.8 | Phase 6 | **VERIFIED** | `CategoryLearning` model, `category_learnings` schema, `recordCorrection()` | `AiCategorizationTest.php` (isolation & learning tests passed) |
+| **Historical CSV Import with Batch Suggestions** | SRS §4.3, §4.8 | Phase 6 | **VERIFIED** | `TransactionList.php` (`processCsvUpload`, `confirmImport`, review modal) | `AiCategorizationTest.php` (batch & invalid row tests passed) |
 | **Operational Admin Dashboard** | SRS §4.11 | Phase 7 | `NOT_STARTED` | Admin metrics, user toggle, system categories | Base layout verified |
 | **Dark Mode & Accessibility** | SRS §5.1, UI Spec | Phase 8 | `NOT_STARTED` | CSS tokens, contrast, theme toggler | Base token system verified |
 | **Full Data Isolation Guard** | Security Spec | Continuous | **VERIFIED** | Scoped queries, 403 authorization, cross-student test | Automated tests & Playwright E2E verified |

@@ -1,14 +1,14 @@
 # Campus Coin — Project State
 
 ## Current Phase
-**Phase 5 — Deterministic Saving Tips Engine & Intelligent Rule Evaluator (COMPLETED & VERIFIED)**
-Transitioning to: **Phase 6 / Parallel Integration (AI Categorization & Advanced Insights)**
+**Phases 0–6 Integrated (COMPLETED & VERIFIED)**
+Transitioning to: **Phase 7 — Operational Admin Panel & Category Controls**
 
 ## Current Task
-Phase 5 fully implemented and verified with 19 automated feature tests (82 assertions), bringing the comprehensive test suite to 96 tests / 471 assertions (100% pass rate). Deterministic, database-driven saving tips engine with 5 explicit rules, BCMath potential savings estimation, deterministic ranking by financial impact, database persistence with unique composite key `(user_id, rule_key, category_id)` preventing duplicates while preserving pinned/dismissed states, dedicated student tips hub at `/tips` (`SavingTipsManager`), and dashboard top-3 widget integration.
+Phases 0–6 fully implemented, integrated, and verified on `master`. Both parallel tracks (Phase 5: Saving Tips Engine & Intelligent Rule Evaluator; Phase 6: Advisory AI Categorization Assistant & CSV Batch Processing) have been reconciled and merged. Complete deterministic saving tips engine, impact ranking, pin/dismiss persistence, live advisory category suggestions, student learned preferences, CSV batch categorization & import review, and all prior ledger/budget/report features are operational. Ready to begin Phase 7.
 
 ## Overall Completion
-**75%** (Phase 0: Foundation, Phase 1: Core Student Data, Phase 2: Budget Goals & Alerts, Phase 3: Cash Flow Trends, Phase 4: Monthly Reports & Financial Reporting, Phase 5: Saving Tips Engine complete).
+**85%** (Phase 0: Foundation, Phase 1: Core Student Data, Phase 2: Budget Goals & Alerts, Phase 3: Cash Flow Trends, Phase 4: Monthly Reports, Phase 5: Saving Tips Engine, Phase 6: Advisory AI Categorization & CSV Batch complete).
 
 ## Phase Definitions & Roadmap (Reconciled & Authoritative)
 - **Phase 0:** Project Initialization, Scaffolding & Multi-Role Authentication (COMPLETED)
@@ -17,8 +17,8 @@ Phase 5 fully implemented and verified with 19 automated feature tests (82 asser
 - **Phase 3:** Interactive Cash Flow Trends & Advanced Analytics (COMPLETED & VERIFIED)
 - **Phase 4:** Monthly Financial Reports & Multi-Format Exports (CSV/PDF) (COMPLETED & VERIFIED)
 - **Phase 5:** Deterministic Saving Tips Engine & Bookmarks (COMPLETED & VERIFIED)
-- **Phase 6:** Advisory AI Categorization & Monthly Insights (User Override)
-- **Phase 7:** Operational Admin Panel & Category Controls
+- **Phase 6:** Advisory AI Categorization & CSV Batch Processing (COMPLETED & VERIFIED)
+- **Phase 7:** Operational Admin Panel & Category Controls (NEXT)
 - **Phase 8:** Accessibility Controls & Final Hardening
 
 ## Completed Features
@@ -64,6 +64,7 @@ Phase 5 fully implemented and verified with 19 automated feature tests (82 asser
   - Executive financial summary KPI cards: Total Inflow, Total Outflow, Net Movement, and Savings Efficiency rate.
   - Server-side branded PDF statement generation via `barryvdh/laravel-dompdf` (`/reports/export/pdf`), print-ready layout (`?preview=1`), and structured CSV streaming export (`/reports/export/csv`).
   - Strict student tenant isolation enforced across all reporting queries and export endpoints.
+<<<<<<< HEAD
 - **Saving Tips Engine & Intelligent Rule Evaluator (Phase 5):**
   - Database table `saving_tips` with composite unique constraint on `(user_id, rule_key, category_id)` ensuring persistent state across tip re-evaluations.
   - Eloquent `SavingTip` model with relationships, scopes (`forUser`, `active`, `pinned`, `dismissed`), and mutation helpers (`pin()`, `unpin()`, `dismiss()`, `unDismiss()`).
@@ -79,8 +80,32 @@ Phase 5 fully implemented and verified with 19 automated feature tests (82 asser
   - Dedicated student hub at `/tips` with Livewire `SavingTipsManager` (`app/Livewire/Student/SavingTipsManager.php`) supporting tabbed views (`active`, `pinned`, `dismissed`), live metrics header (Total Potential Savings, Active Opportunities, Pinned Strategies), and pin/dismiss/restore actions.
   - Dashboard integration: "Personalized Saving Opportunities" widget presenting the top 3 prioritized active/pinned tips with quick pin/dismiss controls and direct links to `/tips`.
   - Multi-tenant student isolation strictly enforced across all database queries and actions.
+- **Saving Tips Engine & Intelligent Rule Evaluator (Phase 5):**
+  - Database table `saving_tips` with composite unique constraint on `(user_id, rule_key, category_id)` ensuring persistent state across tip re-evaluations.
+  - Eloquent `SavingTip` model with relationships, scopes (`forUser`, `active`, `pinned`, `dismissed`), and mutation helpers (`pin()`, `unpin()`, `dismiss()`, `unDismiss()`).
+  - Deterministic `SavingTipsService` (`app/Services/SavingTipsService.php`) evaluating 5 data-driven financial rules:
+    1. Category spending significantly above historical 3-month average (>20% with >=$15 minimum delta).
+    2. Category approaching (>=80%) or exceeding (>100%) monthly category budget.
+    3. High spending share where a single category accounts for >40% of total monthly expenses.
+    4. Month-over-month overall spending growth exceeding 25% with >=$50 delta.
+    5. Savings goal lagging where student's net balance falls behind their monthly savings goal.
+  - BCMath decimal calculations for all estimated potential savings figures.
+  - Deterministic ranking of tips by calculated potential savings impact descending.
+  - Idempotent `syncTips()` method inserting newly triggered tips, updating live metrics, removing obsolete unpinned/active tips, and strictly preserving student `pinned` and `dismissed` states.
+  - Dedicated student hub at `/tips` with Livewire `SavingTipsManager` (`app/Livewire/Student/SavingTipsManager.php`) supporting tabbed views (`active`, `pinned`, `dismissed`), live metrics header (Total Potential Savings, Active Opportunities, Pinned Strategies), and pin/dismiss/restore actions.
+  - Dashboard integration: "Personalized Saving Opportunities" widget presenting the top 3 prioritized active/pinned tips with quick pin/dismiss controls and direct links to `/tips`.
+  - Multi-tenant student isolation strictly enforced across all database queries and actions.
+- **Advisory AI Categorization & CSV Batch Processing (Phase 6):**
+  - Configurable categorization provider architecture (`CategorizationProviderInterface`) registered in `AppServiceProvider`.
+  - Deterministic `HeuristicCategorizationProvider` with semantic keyword and alias pattern matching across all core student categories (food, academics, transport, housing, utilities, subscriptions, entertainment, personal, etc.).
+  - External `OpenAiCategorizationProvider` integration (configurable via `AI_API_KEY` / `AI_MODEL`) with 3-second network timeout, strict schema instructions, backtick cleaning, invalid/hallucinated category rejection, and automatic fallback to heuristic provider.
+  - Central `AiCategorizationService` coordinating student-specific learned corrections, provider suggestions, and accessible category validation.
+  - Student learning persistence via `category_learnings` table (`user_id`, `keyword`, `category_id`, `usage_count`, `last_used_at`) with strict multi-tenant isolation.
+  - Real-time debounced transaction entry/edit modal suggestions with confidence scores and one-click acceptance.
+  - Explicit manual override guarantee: user's manual category selection is always authoritative and updates learned mappings.
+  - Interactive CSV Batch Categorization modal in `TransactionList`: bounded up to 50 rows, parses date/merchant/amount/type, generates suggestions, displays review table with category dropdown overrides, and confirms batch import with ledger creation and learning persistence.
 - **Automated Test Suite:**
-  - **96 tests with 471 assertions** passing at 100% (`php artisan test`).
+  - Full automated feature regression test suite passing at 100% (`php artisan test`).
 - **End-to-End Browser Verification:**
   - Playwright browser test verifying budget creation, edit, ledger expense logging, consumption update, near-limit alert, over-budget trigger, dashboard display, student data isolation, and budget deletion.
 
@@ -88,7 +113,6 @@ Phase 5 fully implemented and verified with 19 automated feature tests (82 asser
 - None.
 
 ## Not Started Features
-- Advisory AI Categorization & Insights with user override (Phase 6)
 - Operational Admin Panel user toggle & category controls (Phase 7)
 - Accessibility controls & advanced UX (Phase 8)
 
@@ -99,10 +123,11 @@ None.
 - Real banking integrations are intentionally absent per SRS (strictly manual entry / CSV imports).
 - Financial values are stored as `DECIMAL(10,2)` and manipulated with BCMath to prevent floating-point inaccuracies.
 - Spending data is calculated directly from actual ledger expenses rather than cached in the budget table.
+- AI categorization is purely advisory; manual category selection is always authoritative. External AI calls require `AI_API_KEY`, otherwise automatic deterministic heuristic fallback applies seamlessly with 0 configuration.
 
 ## Current Database State
 - Database `campus_coin` active on MySQL/MariaDB `127.0.0.1:3306`.
-- Tables migrated: `users`, `password_reset_tokens`, `sessions`, `cache`, `jobs`, `categories`, `transactions`, `budgets`, `saving_tips`.
+- Tables migrated: `users`, `password_reset_tokens`, `sessions`, `cache`, `jobs`, `categories`, `transactions`, `budgets`, `saving_tips`, `category_learnings`.
 - Default credentials active:
   - Admin: `admin@campuscoin.edu` / `AdminSecure123!`
   - Student 1: `alex.rivera@campus.edu` / `StudentSecure123!`
@@ -111,9 +136,8 @@ None.
 - Sample transactions seeded for Alex Rivera.
 
 ## Current Test Status
-- 96 tests, 471 assertions passing at 100% (`php artisan test`).
+- Full integrated test suite passing at 100% (`php artisan test`).
 
 ## Immediate Next Task
-- **Phase 6 / Parallel Integration:**
-  - Merge and reconcile with Phase 6 branch (`phase-6`), which introduces `AiCategorizationService`, `CategoryLearning`, heuristics fallback, and CSV batch categorization.
-  - Proceed to Phase 7 (Operational Admin Panel & Category Controls).
+- **Phase 7 — Operational Admin Panel & Category Controls:**
+  - Implement system-wide category CRUD, student account management (status active/disabled), and platform telemetry metrics.

@@ -47,3 +47,9 @@
 - **Reason:** Deterministic evaluation guarantees 100% predictable, explainable, and reproducible financial recommendations with zero network latency, zero token costs, and no hallucination risk. The unique composite index enables idempotent re-evaluation (`syncTips`) where live numbers update and resolved tips expire, while user preferences (`pinned`, `dismissed`) remain permanently intact.
 - **Status:** Accepted
 
+---
+
+## DEC-008 — Advisory AI Categorization, Heuristic Fallback & Student Learning Layer
+- **Decision:** Implement a dual-provider architecture behind `CategorizationProviderInterface` with `HeuristicCategorizationProvider` (zero-latency semantic matching across student domains) and `OpenAiCategorizationProvider` (optional LLM integration with 3-second timeout). Precede all provider calls with student-isolated `CategoryLearning` lookups and strictly validate all suggestions against the student's available categories before rendering.
+- **Reason:** Ensures zero-cost, zero-latency instant suggestions without requiring external API keys while providing clean extensibility when keys are provided. Strictly prevents category hallucinations, protects student privacy, preserves manual override supremacy, and enables customized suggestions based on previous student choices.
+- **Status:** Accepted

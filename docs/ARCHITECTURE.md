@@ -29,6 +29,10 @@ The application avoids unnecessary SPA/API complexity. All views are server-rend
 ## 3. Directory Structure
 ```text
 app/
+├── Contracts/
+│   └── CategorizationProviderInterface.php
+├── DTO/
+│   └── CategorySuggestion.php
 ├── Http/
 │   ├── Controllers/
 │   │   ├── Auth/
@@ -56,12 +60,16 @@ app/
 │   ├── Category.php
 │   ├── Transaction.php
 │   ├── Budget.php
+│   ├── CategoryLearning.php
 │   ├── SavingTip.php
 │   └── MonthlyInsight.php
 ├── Services/
 │   ├── FinancialCalculationService.php
 │   ├── SavingTipsService.php
-│   ├── AiAdvisorService.php
+│   ├── AiCategorizationService.php
+│   ├── Categorization/
+│   │   ├── HeuristicCategorizationProvider.php
+│   │   └── OpenAiCategorizationProvider.php
 │   └── CsvImportService.php
 ```
 
@@ -77,7 +85,7 @@ app/
 ## 5. Security & Isolation Strategy
 - **Authentication:** Bcrypt password hashing (minimum 12 rounds), session invalidation on logout.
 - **Role Isolation:** Two roles (`student`, `admin`). Students can never access `/admin/*` routes.
-- **Tenant Isolation:** Every financial query is scoped to `where('user_id', Auth::id())`. No student may inspect or modify another student's categories, budgets, transactions, or saving tips.
+- **Tenant Isolation:** Every financial, category, and personal data query is scoped to `where('user_id', Auth::id())`. Student corrections in `category_learnings` and saving tips in `saving_tips` are strictly tenant-isolated (`where('user_id', $userId)`) so one student's learning or tips never leak to another.
 
 ---
 
@@ -97,7 +105,9 @@ app/
 
 ---
 
-## 7. AI Integration Boundary
-- AI functionalities (transaction categorization and monthly advisory tips) reside behind an isolated service interface (`AiAdvisorService`).
-- If an external AI provider fails or is unreachable, fallback deterministic rules apply seamlessly without interrupting student workflow.
-- All AI recommendations are advisory and require explicit user consent/override.
+## 7. AI Categorization & Advisory Integration Boundary
+- **Advisory Architecture:** The expense categorization assistant is an advisory utility behind `CategorizationProviderInterface`. It never silently overrides student category selections.
+- **Student Learned Feedback Layer:** `AiCategorizationService` checks student-specific learned corrections from `CategoryLearning` first. User choices take precedence over external AI.
+- **Deterministic Fallback:** If `OpenAiCategorizationProvider` fails, times out (3-second strict network limit), is unconfigured, or returns an invalid/hallucinated category, it seamlessly falls back to `HeuristicCategorizationProvider`.
+- **Validation Shield:** All suggestions are checked against the student's available categories (`Category::forUser($userId)`). External models can never invent or assign non-existent categories.
+- **Zero Secret Leakage:** AI API keys are stored server-side via `config/services.php` and `.env`; no secrets are ever exposed to the client browser.

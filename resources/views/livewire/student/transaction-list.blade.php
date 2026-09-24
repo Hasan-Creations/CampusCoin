@@ -20,6 +20,12 @@
             </div>
 
             <div class="flex items-center gap-3">
+                <button wire:click="openImportModal" 
+                        title="Upload CSV spreadsheet for AI batch categorization"
+                        class="btn-secondary py-2 px-3 text-xs">
+                    <x-icon name="upload" class="w-4 h-4" />
+                    <span class="hidden sm:inline">Import CSV</span>
+                </button>
                 <button wire:click="exportCsv" 
                         title="Download transactions as CSV spreadsheet"
                         class="btn-secondary py-2 px-3 text-xs">
@@ -217,6 +223,12 @@
                                                 <x-icon :name="$t->category->icon" class="w-3.5 h-3.5" />
                                                 <span>{{ $t->category->name }}</span>
                                             </span>
+                                            @if ($t->ai_suggested)
+                                                <span title="Categorized with AI Assistant ({{ $t->ai_confidence ? round($t->ai_confidence * 100).'%' : 'Advisory' }})"
+                                                      class="inline-flex items-center gap-0.5 ml-1.5 px-1.5 py-0.5 rounded-[4px] bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-[10px] font-mono text-indigo-700 dark:text-indigo-300">
+                                                    ✨ AI
+                                                </span>
+                                            @endif
                                         @else
                                             <span class="text-[var(--text-muted)] italic">Uncategorized</span>
                                         @endif
@@ -431,7 +443,7 @@
                                 @forelse ($formCategories as $cat)
                                     <button type="button"
                                             wire:key="cat-chip-{{ $cat->id }}"
-                                            wire:click="$set('category_id', {{ $cat->id }})"
+                                            wire:click="selectCategory({{ $cat->id }})"
                                             tabindex="2"
                                             class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-medium border transition-all duration-150 select-none focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[var(--accent-primary)] {{ $category_id == $cat->id ? 'shadow-xs font-semibold' : 'hover:border-slate-300 dark:hover:border-zinc-700 hover:bg-[var(--bg-surface)]' }}"
                                             style="{{ $category_id == $cat->id 
@@ -446,6 +458,26 @@
                                     </div>
                                 @endforelse
                             </div>
+
+                            @if ($activeSuggestion && (! $category_id || ! $manualCategorySelected))
+                                <div class="mt-2.5 p-3 rounded-[6px] bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs flex items-center justify-between gap-3 shadow-2xs">
+                                    <div class="flex items-center gap-2 text-indigo-950 dark:text-indigo-200 min-w-0">
+                                        <x-icon name="sparkles" class="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                                        <div class="truncate">
+                                            <span class="font-medium">Suggested category: <strong class="text-indigo-700 dark:text-indigo-300">{{ $activeSuggestion['categoryName'] }}</strong></span>
+                                            <span class="text-[11px] font-mono text-indigo-600 dark:text-indigo-400 ml-1">({{ round($activeSuggestion['confidence'] * 100) }}% confidence)</span>
+                                            <div class="text-[10px] text-indigo-600/80 dark:text-indigo-400/80 truncate">{{ $activeSuggestion['explanation'] }}</div>
+                                        </div>
+                                    </div>
+                                    <button type="button" 
+                                            wire:click="acceptSuggestion" 
+                                            class="px-2.5 py-1 text-xs font-semibold rounded-[4px] bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-colors shrink-0 flex items-center gap-1">
+                                        <span>Accept</span>
+                                        <x-icon name="check" class="w-3 h-3" />
+                                    </button>
+                                </div>
+                            @endif
+
                             @error('category_id') <span class="text-rose-600 dark:text-rose-400 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
                         </div>
 
@@ -454,7 +486,7 @@
                             <label for="merchant" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
                                 {{ $type === 'income' ? 'Where is this from?' : 'Where did you spend it?' }} <span class="text-rose-500">*</span>
                             </label>
-                            <input wire:model="merchant" 
+                            <input wire:model.live.debounce.300ms="merchant" 
                                    id="merchant" 
                                    tabindex="3"
                                    type="text" 
@@ -496,7 +528,7 @@
                                     <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
                                         Notes / Description <span class="text-[10px] font-normal lowercase text-[var(--text-muted)]">(optional)</span>
                                     </label>
-                                    <textarea wire:model="description" 
+                                    <textarea wire:model.live.debounce.300ms="description" 
                                               id="description" 
                                               rows="2" 
                                               placeholder="Add context or notes for this transaction..." 
@@ -533,6 +565,212 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        @endif
+
+        <!-- CSV Batch Categorization & Import Modal -->
+        @if ($showImportModal)
+            <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 dark:bg-black/70 backdrop-blur-xs transition-opacity duration-150"
+                 x-data
+                 @keydown.escape.window="$wire.closeImportModal()">
+                <div class="card-campus border hairline-border w-full {{ $importStepReview ? 'sm:max-w-4xl' : 'sm:max-w-xl' }} p-5 sm:p-6 bg-[var(--bg-surface)] shadow-2xl relative rounded-t-[16px] sm:rounded-[10px] rounded-b-none sm:rounded-b-[10px] max-h-[92vh] flex flex-col space-y-4"
+                     @click.away="$wire.closeImportModal()">
+                    
+                    <!-- Header -->
+                    <div class="flex items-start justify-between border-b hairline-border pb-3 shrink-0">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="p-1 rounded-[6px] bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400">
+                                    <x-icon name="sparkles" class="w-4 h-4" />
+                                </span>
+                                <h2 class="font-heading font-bold text-lg text-[var(--text-primary)] tracking-tight">
+                                    {{ $importStepReview ? 'Review AI Batch Categorization' : 'Import Transactions via CSV' }}
+                                </h2>
+                            </div>
+                            <p class="text-xs text-[var(--text-muted)] mt-1">
+                                {{ $importStepReview 
+                                    ? 'AI suggestions have been generated. Review and adjust categories before importing.' 
+                                    : 'Upload a bank or ledger CSV file to automatically categorize transactions using AI.' }}
+                            </p>
+                        </div>
+                        <button type="button" 
+                                wire:click="closeImportModal" 
+                                class="p-1.5 rounded-[6px] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors focus:outline-none"
+                                aria-label="Close modal">
+                            <x-icon name="x" class="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    <!-- Error Alert -->
+                    @if ($importError)
+                        <div class="p-3 rounded-[6px] bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2 shrink-0">
+                            <x-icon name="alert-triangle" class="w-4 h-4 shrink-0" />
+                            <span>{{ $importError }}</span>
+                        </div>
+                    @endif
+
+                    @if (! $importStepReview)
+                        <!-- STEP 1: UPLOAD FILE -->
+                        <div class="space-y-4 py-2 overflow-y-auto">
+                            <div class="border-2 border-dashed hairline-border rounded-[8px] p-6 text-center hover:bg-[var(--bg-subtle)]/50 transition-colors">
+                                <div class="w-12 h-12 rounded-[8px] bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center mx-auto mb-3 text-indigo-600 dark:text-indigo-400">
+                                    <x-icon name="upload" class="w-6 h-6" />
+                                </div>
+                                <label for="csv-file-upload" class="cursor-pointer">
+                                    <span class="text-xs font-semibold text-[var(--accent-primary)] hover:underline">Choose CSV File</span>
+                                    <span class="text-xs text-[var(--text-muted)]"> or drag and drop</span>
+                                    <input id="csv-file-upload" 
+                                           wire:model="csvFile" 
+                                           type="file" 
+                                           accept=".csv,text/csv" 
+                                           class="sr-only">
+                                </label>
+                                <p class="text-[11px] text-[var(--text-muted)] mt-1">UTF-8 CSV format, up to 2MB (max 50 rows per batch)</p>
+
+                                @if ($csvFile)
+                                    <div class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-[6px] bg-[var(--bg-surface)] border hairline-border text-xs font-mono text-[var(--text-primary)]">
+                                        <x-icon name="file-text" class="w-4 h-4 text-emerald-500" />
+                                        <span>{{ $csvFile->getClientOriginalName() }}</span>
+                                    </div>
+                                @endif
+
+                                <div wire:loading wire:target="csvFile" class="mt-2 text-xs text-indigo-600 dark:text-indigo-400 font-mono">
+                                    Uploading file...
+                                </div>
+                            </div>
+
+                            @error('csvFile') 
+                                <span class="text-rose-600 dark:text-rose-400 text-xs block font-medium">{{ $message }}</span> 
+                            @enderror
+
+                            <!-- Expected Columns Hint -->
+                            <div class="p-3.5 rounded-[8px] bg-[var(--bg-subtle)]/70 border hairline-border space-y-1.5 text-xs text-[var(--text-muted)]">
+                                <div class="font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
+                                    <x-icon name="info" class="w-3.5 h-3.5 text-indigo-500" />
+                                    <span>Supported CSV Columns</span>
+                                </div>
+                                <p class="text-[11px] leading-relaxed">
+                                    Header matching is flexible. We look for: 
+                                    <code class="font-mono text-[10px] px-1 py-0.5 rounded bg-[var(--bg-surface)] border hairline-border">Date</code>, 
+                                    <code class="font-mono text-[10px] px-1 py-0.5 rounded bg-[var(--bg-surface)] border hairline-border">Description / Merchant</code>, 
+                                    <code class="font-mono text-[10px] px-1 py-0.5 rounded bg-[var(--bg-surface)] border hairline-border">Amount</code>, and optionally 
+                                    <code class="font-mono text-[10px] px-1 py-0.5 rounded bg-[var(--bg-surface)] border hairline-border">Type</code>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 1 Actions -->
+                        <div class="flex items-center justify-end gap-2 pt-2 border-t hairline-border shrink-0">
+                            <button type="button" 
+                                    wire:click="closeImportModal" 
+                                    class="btn-secondary py-2 px-3 text-xs">
+                                Cancel
+                            </button>
+                            <button type="button" 
+                                    wire:click="processCsvUpload"
+                                    wire:loading.attr="disabled"
+                                    class="btn-primary py-2 px-4 text-xs font-semibold shadow-xs flex items-center gap-1.5 {{ ! $csvFile ? 'opacity-50 cursor-not-allowed' : '' }}">
+                                <x-icon name="sparkles" class="w-4 h-4" />
+                                <span wire:loading.remove wire:target="processCsvUpload">Categorize with AI</span>
+                                <span wire:loading wire:target="processCsvUpload">Analyzing Batch...</span>
+                            </button>
+                        </div>
+                    @else
+                        <!-- STEP 2: REVIEW BATCH SUGGESTIONS -->
+                        <div class="space-y-3 overflow-y-auto flex-1 max-h-[60vh] pr-1">
+                            <div class="flex items-center justify-between text-xs text-[var(--text-muted)]">
+                                <span>Parsed <strong>{{ count($importRows) }}</strong> transactions. AI suggestions are pre-filled below:</span>
+                                <span class="font-mono text-[11px]">Valid rows: <strong class="text-emerald-600 dark:text-emerald-400">{{ count(array_filter($importRows, fn($r) => !empty($r['is_valid']))) }}</strong></span>
+                            </div>
+
+                            <div class="border hairline-border rounded-[8px] overflow-hidden bg-[var(--bg-surface)]">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse text-xs">
+                                        <thead>
+                                            <tr class="border-b hairline-border bg-[var(--bg-subtle)] text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+                                                <th class="py-2.5 px-3">Date</th>
+                                                <th class="py-2.5 px-3">Merchant / Description</th>
+                                                <th class="py-2.5 px-3">Type</th>
+                                                <th class="py-2.5 px-3 text-right">Amount</th>
+                                                <th class="py-2.5 px-3">AI Suggestion</th>
+                                                <th class="py-2.5 px-3 min-w-[180px]">Assigned Category</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y hairline-border">
+                                            @foreach ($importRows as $idx => $row)
+                                                <tr class="hover:bg-[var(--bg-subtle)]/40 transition-colors {{ ! $row['is_valid'] ? 'bg-rose-50/30 dark:bg-rose-950/20' : '' }}">
+                                                    <td class="py-2.5 px-3 font-mono text-[11px] whitespace-nowrap text-[var(--text-muted)]">
+                                                        {{ $row['date'] }}
+                                                    </td>
+                                                    <td class="py-2.5 px-3 font-medium text-[var(--text-primary)] max-w-[200px] truncate" title="{{ $row['description'] }}">
+                                                        {{ $row['description'] }}
+                                                        @if (! $row['is_valid'])
+                                                            <div class="text-[10px] text-rose-500 font-sans mt-0.5">{{ $row['error'] }}</div>
+                                                        @endif
+                                                    </td>
+                                                    <td class="py-2.5 px-3 whitespace-nowrap">
+                                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono font-semibold {{ $row['type'] === 'income' ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800' }}">
+                                                            {{ strtoupper($row['type']) }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="py-2.5 px-3 text-right font-mono font-semibold whitespace-nowrap text-[var(--text-primary)]">
+                                                        ${{ $row['amount'] }}
+                                                    </td>
+                                                    <td class="py-2.5 px-3 whitespace-nowrap">
+                                                        @if ($row['suggested_category_id'])
+                                                            <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-[11px]">
+                                                                <x-icon name="sparkles" class="w-3 h-3 text-indigo-500 shrink-0" />
+                                                                <span class="font-medium truncate max-w-[100px]">{{ $row['suggested_category_name'] }}</span>
+                                                                <span class="text-[10px] font-mono text-indigo-500 ml-0.5">({{ round(($row['confidence'] ?? 0) * 100) }}%)</span>
+                                                            </div>
+                                                        @else
+                                                            <span class="text-[var(--text-muted)] text-[11px] italic">No match</span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="py-2.5 px-3">
+                                                        <select wire:model="importRows.{{ $idx }}.selected_category_id"
+                                                                class="input-campus w-full py-1 px-2 text-xs bg-[var(--bg-surface)]">
+                                                            <option value="">-- Choose Category --</option>
+                                                            @foreach ($categories->where('type', $row['type']) as $c)
+                                                                <option value="{{ $c->id }}">
+                                                                    {{ $c->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 Actions -->
+                        <div class="flex items-center justify-between gap-2 pt-2 border-t hairline-border shrink-0">
+                            <button type="button" 
+                                    wire:click="$set('importStepReview', false)" 
+                                    class="btn-secondary py-2 px-3 text-xs">
+                                Back to Upload
+                            </button>
+                            <div class="flex items-center gap-2">
+                                <button type="button" 
+                                        wire:click="closeImportModal" 
+                                        class="btn-secondary py-2 px-3 text-xs">
+                                    Cancel
+                                </button>
+                                <button type="button" 
+                                        wire:click="confirmImport"
+                                        wire:loading.attr="disabled"
+                                        class="btn-primary py-2 px-4 text-xs font-semibold shadow-xs flex items-center gap-1.5">
+                                    <x-icon name="check-circle-2" class="w-4 h-4" />
+                                    <span wire:loading.remove wire:target="confirmImport">Confirm & Import Transactions</span>
+                                    <span wire:loading wire:target="confirmImport">Importing...</span>
+                                </button>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         @endif

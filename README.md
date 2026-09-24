@@ -8,7 +8,9 @@ Campus Coin is a full-stack student budgeting and expense-tracking web applicati
 - **Student Profile & Cohorts:** Tailored to academic years (Freshman, Sophomore, Junior, Senior, Graduate) with customizable monthly allowances and savings targets.
 - **Precision Ledger:** Accurate tracking of income and expenses without floating-point errors.
 - **Interactive Budgeting:** Category caps with clear threshold alerts (Safe, Warning, Danger).
-- **Advisory AI Categorization:** Machine-assisted expense tagging that stays strictly advisory.
+- **Deterministic Saving Tips:** Intelligent data-driven financial opportunity detection based on historical patterns, budget limits, and allowance utilization.
+- **Advisory AI Categorization:** Machine-assisted expense tagging with zero-latency heuristics fallback and student learning persistence.
+- **CSV Batch Import & Categorization:** Bounded batch processing (up to 50 rows) with inline AI suggestions and review/override modal.
 - **Executive Admin Controls:** Global category management and student account administration.
 - **Fintech Precision Design:** Strict adherence to data-dense, flat, hairline-border aesthetics inspired by Linear and Stripe.
 

@@ -71,6 +71,14 @@ class Category extends Model
     }
 
     /**
+     * Learned mappings targeting this category.
+     */
+    public function categoryLearnings(): HasMany
+    {
+        return $this->hasMany(CategoryLearning::class);
+    }
+
+    /**
      * Scope to categories accessible by a specific user (their personal categories + system defaults).
      */
     public function scopeForUser(Builder $query, int $userId): Builder

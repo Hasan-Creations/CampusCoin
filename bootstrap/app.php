@@ -34,7 +34,7 @@ spl_autoload_register(function (string $class): bool {
     }
 
     return false;
-}, true, true);
+}, prepend: true);
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
