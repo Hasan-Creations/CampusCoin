@@ -1,44 +1,143 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../views/**/*.blade.php';
 
+/* ==========================================================================
+   Campus Coin — Authoritative Visual Identity & Tactile Design Tokens
+   Core Palette:
+   • Warm Ivory:  #F5EFE3
+   • Deep Olive:  #4F5B2A
+   • Muted Brass: #B8892D
+   • Warm Beige:  #D8C9A8
+   ========================================================================== */
+
 :root {
-    --bg-canvas: #F8FAFC;
-    --bg-surface: #FFFFFF;
-    --bg-subtle: #F1F5F9;
-    --border-hairline: #E2E8F0;
-    --text-primary: #0F172A;
-    --text-muted: #64748B;
-    --accent-primary: #059669;
-    --accent-hover: #047857;
-    --accent-tint: #ECFDF5;
-    --gold: #D97706;
-    --danger: #E11D48;
-    --danger-tint: #FFF1F2;
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 8px;
+    /* Base Surfaces & Canvas (Warm Ivory Foundation) */
+    --bg-canvas: #F5EFE3;
+    --bg-surface: #FCFAF6;
+    --bg-surface-elevated: #FFFFFF;
+    --bg-subtle: #EFE8DA;
+    --bg-subtle-hover: #E8DFCDB8;
+
+    /* Hairline Structural Borders (Warm Beige) */
+    --border-hairline: #D8C9A8;
+    --border-subtle: #E5DBC5;
+    --border-strong: #BAAA83;
+
+    /* Typography Hierarchy (Deep Olive-Charcoal & Khaki Neutrals) */
+    --text-primary: #232B14;
+    --text-secondary: #4A5336;
+    --text-muted: #687250;
+    --text-subtle: #8E9876;
+
+    /* Brand Accent: Deep Olive */
+    --accent-primary: #4F5B2A;
+    --accent-hover: #3E4720;
+    --accent-active: #2F3617;
+    --accent-tint: #E8EFE1;
+    --accent-tint-subtle: #F2F7ED;
+    --accent-contrast: #FFFFFF;
+
+    /* Accent Highlight: Muted Brass */
+    --gold: #B8892D;
+    --gold-hover: #9E731F;
+    --gold-active: #845E15;
+    --gold-tint: #F9F2E3;
+    --gold-contrast: #FFFFFF;
+
+    /* Semantic Financial Indicators (Warm Earthy Tones) */
+    --success: #3D6633;
+    --success-hover: #315228;
+    --success-tint: #EBF3E8;
+    --success-contrast: #FFFFFF;
+
+    --danger: #A83232;
+    --danger-hover: #8D2727;
+    --danger-tint: #FBEAEA;
+    --danger-contrast: #FFFFFF;
+
+    /* Physical Tactile Geometry System (Distinct Curvature) */
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+
+    /* Physical Contact Shadows (Depth without Glass or Heavy Glow) */
+    --shadow-tactile-sm: 0 1px 2px rgba(35, 43, 20, 0.05), 0 1px 1px rgba(35, 43, 20, 0.03);
+    --shadow-tactile-md: 0 3px 6px -1px rgba(35, 43, 20, 0.07), 0 2px 4px -1px rgba(35, 43, 20, 0.04);
+    --shadow-tactile-lg: 0 10px 24px -4px rgba(35, 43, 20, 0.10), 0 4px 10px -2px rgba(35, 43, 20, 0.05);
+    --shadow-modal: 0 16px 40px -8px rgba(35, 43, 20, 0.22), 0 6px 16px -4px rgba(35, 43, 20, 0.12);
+
+    /* Motion Timing & Tactile Easing Curves */
+    --ease-tactile: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-natural: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-micro: 110ms var(--ease-tactile);
+    --transition-state: 190ms var(--ease-natural);
+    --transition-spatial: 280ms var(--ease-tactile);
 }
 
+/* ==========================================================================
+   Dark Mode Identity (Retains Olive Identity, Warm Undertones, Brass Accents)
+   ========================================================================== */
 .dark {
-    --bg-canvas: #09090B;
-    --bg-surface: #18181B;
-    --bg-subtle: #27272A;
-    --border-hairline: #27272A;
-    --text-primary: #FAFAFA;
-    --text-muted: #A1A1AA;
-    --accent-primary: #10B981;
-    --accent-hover: #34D399;
-    --accent-tint: #064E3B;
-    --gold: #F59E0B;
-    --danger: #F43F5E;
-    --danger-tint: #2A1215;
+    /* Night Canvas & Surfaces (Deep Olive-Charcoal Night) */
+    --bg-canvas: #14170F;
+    --bg-surface: #1B2015;
+    --bg-surface-elevated: #22281B;
+    --bg-subtle: #28301F;
+    --bg-subtle-hover: #313A27;
+
+    /* Hairline Structural Borders (Warm Dark Olive) */
+    --border-hairline: #343D2A;
+    --border-subtle: #2A3222;
+    --border-strong: #47543A;
+
+    /* Typography Hierarchy (Warm Ivory on Dark Olive) */
+    --text-primary: #F5EFE3;
+    --text-secondary: #D8CEBC;
+    --text-muted: #A6AF94;
+    --text-subtle: #798367;
+
+    /* Brand Accent: Luminous Warm Olive */
+    --accent-primary: #8EA055;
+    --accent-hover: #9FB264;
+    --accent-active: #7A8B46;
+    --accent-tint: #232B18;
+    --accent-tint-subtle: #1C2314;
+    --accent-contrast: #14170F;
+
+    /* Accent Highlight: Luminous Antique Brass */
+    --gold: #D6A449;
+    --gold-hover: #E3B45C;
+    --gold-active: #C19139;
+    --gold-tint: #2B2314;
+    --gold-contrast: #14170F;
+
+    /* Semantic Financial Indicators */
+    --success: #6CAE5C;
+    --success-hover: #7DC06C;
+    --success-tint: #1C2A18;
+    --success-contrast: #14170F;
+
+    --danger: #DB5454;
+    --danger-hover: #E66A6A;
+    --danger-tint: #331A1A;
+    --danger-contrast: #FFFFFF;
+
+    /* Physical Shadows in Dark Environment */
+    --shadow-tactile-sm: 0 1px 2px rgba(0, 0, 0, 0.40);
+    --shadow-tactile-md: 0 4px 8px -1px rgba(0, 0, 0, 0.50), 0 2px 4px -1px rgba(0, 0, 0, 0.35);
+    --shadow-tactile-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.65), 0 4px 12px -2px rgba(0, 0, 0, 0.45);
+    --shadow-modal: 0 20px 48px -8px rgba(0, 0, 0, 0.80), 0 8px 20px -4px rgba(0, 0, 0, 0.60);
 }
 
-/* Accessibility: Root Font Scaling (SRS §1.6 & §185) */
+/* ==========================================================================
+   Root Font Scaling (SRS §1.6 & §185)
+   ========================================================================== */
 html {
     font-size: 100%;
 }
@@ -55,7 +154,9 @@ html[data-font-size="xlarge"] {
     font-size: 125%;
 }
 
-/* Accessibility: Reduced Motion Support */
+/* ==========================================================================
+   Accessibility: Reduced Motion Mandate
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -64,10 +165,13 @@ html[data-font-size="xlarge"] {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+        transform: none !important;
     }
 }
 
-/* Accessibility: Visible Focus Indicators */
+/* ==========================================================================
+   Accessibility: High-Contrast Visible Focus Indicators
+   ========================================================================== */
 :focus-visible {
     outline: 2px solid var(--accent-primary) !important;
     outline-offset: 2px !important;
@@ -83,127 +187,326 @@ textarea:focus-visible,
     outline-offset: 2px !important;
 }
 
-/* Accessibility: Skip Navigation Link */
+/* ==========================================================================
+   Accessibility: Skip Navigation Link
+   ========================================================================== */
 .skip-to-content {
     position: fixed;
     top: 0.75rem;
     left: 0.75rem;
     z-index: 9999;
-    padding: 0.5rem 1rem;
+    padding: 0.625rem 1.125rem;
     background-color: var(--accent-primary);
-    color: #ffffff;
+    color: var(--accent-contrast);
     font-size: 0.875rem;
     font-weight: 600;
     border-radius: var(--radius-md);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-tactile-lg);
     text-decoration: none;
     transform: translateY(-200%);
-    transition: transform 0.15s ease;
+    transition: transform var(--transition-micro);
 }
 
 .skip-to-content:focus {
     transform: translateY(0);
-    outline: 2px solid #ffffff !important;
+    outline: 2px solid var(--gold) !important;
     outline-offset: 2px !important;
 }
 
+/* ==========================================================================
+   Base Document Body & Font Styling
+   ========================================================================== */
 body {
     background-color: var(--bg-canvas);
     color: var(--text-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
 }
 
 /* Typography tokens */
 .font-heading {
     font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.015em;
 }
 
 .font-mono,
 .tabular-nums {
     font-family: 'JetBrains Mono', monospace;
-    font-feature-settings: "tnum";
+    font-feature-settings: "tnum" 1;
     font-variant-numeric: tabular-nums;
 }
 
-/* Base Component Utilities */
+/* ==========================================================================
+   Structural Elements: Hairline Borders, Distinct Geometry & Surfaces
+   ========================================================================== */
 .hairline-border {
     border: 1px solid var(--border-hairline);
 }
 
+.hairline-border-b {
+    border-bottom: 1px solid var(--border-hairline);
+}
+
+.hairline-border-t {
+    border-top: 1px solid var(--border-hairline);
+}
+
+.hairline-border-r {
+    border-right: 1px solid var(--border-hairline);
+}
+
+.hairline-border-l {
+    border-left: 1px solid var(--border-hairline);
+}
+
+/* Solid Tactile Card: Softer Organic Structural Geometry */
 .card-campus {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-hairline);
     border-radius: var(--radius-lg);
-    padding: 20px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    padding: 24px;
+    box-shadow: var(--shadow-tactile-sm);
+    transition: border-color var(--transition-state), box-shadow var(--transition-state);
 }
 
+.card-campus:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-tactile-md);
+}
+
+/* Hero Section / Anchored Surface */
+.surface-hero {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-tactile-sm);
+}
+
+/* Inset Metric Block */
+.metric-tile {
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    transition: background-color var(--transition-micro), border-color var(--transition-micro);
+}
+
+/* ==========================================================================
+   Tactile Controls & Physical Interaction System
+   (Idle → Hover Elevation → Downward Pressed Compression → Settled Release)
+   ========================================================================== */
+
+/* Primary Action Button (Olive Anchor) */
+.btn-primary {
+    background-color: var(--accent-primary);
+    color: var(--accent-contrast);
+    font-weight: 600;
+    font-size: 0.875rem;
+    min-height: 42px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 2px rgba(35, 43, 20, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+    text-decoration: none;
+    transform: translateY(0);
+    transition: background-color var(--transition-micro), transform var(--transition-micro), box-shadow var(--transition-micro);
+    user-select: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px -1px rgba(35, 43, 20, 0.20), 0 2px 4px rgba(35, 43, 20, 0.10);
+}
+
+.btn-primary:active {
+    background-color: var(--accent-active);
+    transform: translateY(1.5px) scale(0.988);
+    box-shadow: 0 1px 1px rgba(35, 43, 20, 0.10);
+    transition-duration: 60ms;
+}
+
+.btn-primary:disabled,
+.btn-primary[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Secondary Button (Warm Subtle Surface with Tactile Hairline Border) */
+.btn-secondary {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.875rem;
+    min-height: 42px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow-tactile-sm);
+    cursor: pointer;
+    text-decoration: none;
+    transform: translateY(0);
+    transition: background-color var(--transition-micro), border-color var(--transition-micro), color var(--transition-micro), transform var(--transition-micro), box-shadow var(--transition-micro);
+    user-select: none;
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-subtle);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-tactile-md);
+}
+
+.btn-secondary:active {
+    background-color: var(--bg-subtle-hover);
+    transform: translateY(1.5px) scale(0.988);
+    box-shadow: 0 1px 1px rgba(35, 43, 20, 0.04);
+    transition-duration: 60ms;
+}
+
+.btn-secondary:disabled,
+.btn-secondary[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Tactile Icon Control Button */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-hairline);
+    background-color: var(--bg-surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    transform: translateY(0);
+    transition: background-color var(--transition-micro), color var(--transition-micro), border-color var(--transition-micro), transform var(--transition-micro);
+}
+
+.btn-icon:hover {
+    background-color: var(--bg-subtle);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.btn-icon:active {
+    transform: translateY(1px) scale(0.96);
+    transition-duration: 60ms;
+}
+
+/* Physical Form Inputs */
 .input-campus {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-hairline);
     border-radius: var(--radius-md);
     color: var(--text-primary);
-    font-size: 14px;
-    padding: 8px 12px;
+    font-size: 0.875rem;
+    min-height: 42px;
+    padding: 9px 14px;
     outline: none;
-    transition: border-color 0.15s ease;
+    box-shadow: inset 0 1px 2px rgba(35, 43, 20, 0.03);
+    transition: border-color var(--transition-micro), box-shadow var(--transition-micro), background-color var(--transition-micro);
+}
+
+.input-campus:hover {
+    border-color: var(--border-strong);
 }
 
 .input-campus:focus {
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 1px var(--accent-primary);
+    box-shadow: 0 0 0 1px var(--accent-primary), 0 1px 3px rgba(79, 91, 42, 0.12);
 }
 
-.btn-primary {
-    background-color: var(--accent-primary);
-    color: #FFFFFF;
-    font-weight: 500;
-    font-size: 14px;
-    padding: 8px 16px;
-    border-radius: var(--radius-md);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background-color 0.15s ease;
-    cursor: pointer;
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: var(--accent-hover);
-}
-
-.btn-secondary {
-    background-color: var(--bg-subtle);
-    border: 1px solid var(--border-hairline);
-    color: var(--text-primary);
-    font-weight: 500;
-    font-size: 14px;
-    padding: 8px 16px;
-    border-radius: var(--radius-md);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background-color 0.15s ease;
-    cursor: pointer;
-}
-
-.btn-secondary:hover {
-    filter: brightness(0.97);
-}
-
+/* Tactile Badges & Status Chips */
 .badge-campus {
-    border-radius: var(--radius-sm);
-    font-size: 11px;
+    border-radius: var(--radius-xs);
+    font-size: 0.6875rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 2px 6px;
+    padding: 3px 8px;
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    line-height: 1.2;
+    border: 1px solid transparent;
+}
+
+/* Physical Segmented Control Bar */
+.segmented-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-hairline);
+    background-color: var(--bg-subtle);
+}
+
+.segmented-item {
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: color var(--transition-micro), background-color var(--transition-micro), transform var(--transition-micro), box-shadow var(--transition-micro);
+    user-select: none;
+}
+
+.segmented-item:hover {
+    color: var(--text-primary);
+}
+
+.segmented-item.active,
+.segmented-item[aria-selected="true"] {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    font-weight: 600;
+    box-shadow: var(--shadow-tactile-sm);
+    border: 1px solid var(--border-subtle);
+}
+
+.segmented-item:active {
+    transform: scale(0.97);
+}
+
+/* Accessible Interactive Table Rows */
+.table-row-tactile {
+    transition: background-color var(--transition-micro);
+}
+
+.table-row-tactile:hover {
+    background-color: var(--bg-subtle-hover);
+}
+
+/* Distinct Structural Dialog Styling */
+.modal-dialog-surface {
+    background-color: var(--bg-surface-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-modal);
 }

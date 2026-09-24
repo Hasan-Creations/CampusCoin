@@ -7,15 +7,16 @@
         {{-- ===================================================== --}}
         {{-- HEADER BAR: TITLE, KPI SUMMARY & RE-EVALUATE ACTION    --}}
         {{-- ===================================================== --}}
-        <div class="p-6 rounded-[8px] border hairline-border bg-[var(--bg-surface)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="p-6 rounded-[16px] border hairline-border bg-[var(--bg-surface)] shadow-tactile-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <div class="text-xs font-mono text-[var(--accent-primary)] font-semibold uppercase tracking-wider mb-1">
-                    Deterministic Financial Intelligence &bull; Active Analysis
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] bg-[var(--accent-tint)] text-[var(--accent-primary)] text-[11px] font-mono font-semibold uppercase tracking-wider mb-2 shadow-tactile-sm">
+                    <x-icon name="lightbulb" class="w-3.5 h-3.5" />
+                    <span>Deterministic Financial Intelligence &bull; Active Analysis</span>
                 </div>
-                <h1 class="font-heading text-2xl font-bold text-[var(--text-primary)]">
+                <h1 class="font-heading text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
                     Saving Opportunities
                 </h1>
-                <p class="text-xs text-[var(--text-muted)] mt-1">
+                <p class="text-xs text-[var(--text-muted)] mt-1.5">
                     Actionable, data-driven saving tips evaluated directly from your spending ledger, category budgets, and savings targets.
                 </p>
             </div>
@@ -34,12 +35,12 @@
         {{-- FLASH FEEDBACK ALERT                                  --}}
         {{-- ===================================================== --}}
         @if ($feedbackMessage)
-            <div role="status" aria-live="polite" class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
+            <div role="status" aria-live="polite" class="p-4 rounded-[12px] border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between shadow-tactile-sm">
                 <div class="flex items-center gap-2 font-medium">
                     <x-icon name="check-circle" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                     <span>{{ $feedbackMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="text-emerald-600 hover:text-emerald-800 font-mono text-base leading-none">
+                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="btn-icon w-6 h-6 text-emerald-600 hover:text-emerald-800">
                     &times;
                 </button>
             </div>
@@ -49,10 +50,10 @@
         {{-- KPI STRIP: TOTAL POTENTIAL SAVINGS & METRICS          --}}
         {{-- ===================================================== --}}
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="card-campus border hairline-border p-5 space-y-1">
-                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+            <div class="card-campus border hairline-border p-5 space-y-1 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
+                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
                     <span>Identified Potential Savings</span>
-                    <x-icon name="trending-up" class="w-4 h-4 text-emerald-500" />
+                    <x-icon name="trending-up" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div class="font-mono text-2xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                     ${{ number_format($totalPotentialSavings, 2) }}
@@ -62,8 +63,8 @@
                 </div>
             </div>
 
-            <div class="card-campus border hairline-border p-5 space-y-1">
-                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+            <div class="card-campus border hairline-border p-5 space-y-1 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
+                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
                     <span>Active Opportunities</span>
                     <x-icon name="lightbulb" class="w-4 h-4 text-[var(--accent-primary)]" />
                 </div>
@@ -75,8 +76,8 @@
                 </div>
             </div>
 
-            <div class="card-campus border hairline-border p-5 space-y-1">
-                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+            <div class="card-campus border hairline-border p-5 space-y-1 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
+                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
                     <span>Pinned Strategies</span>
                     <x-icon name="bookmark" class="w-4 h-4 text-[var(--gold)]" />
                 </div>
@@ -93,14 +94,14 @@
         {{-- SEGMENTED TAB CONTROLS                                --}}
         {{-- ===================================================== --}}
         <div class="flex items-center justify-between border-b hairline-border pb-3">
-            <div role="tablist" aria-label="Saving tip status filters" class="inline-flex items-center gap-1.5 p-1 rounded-[6px] border hairline-border bg-[var(--bg-subtle)]">
+            <div role="tablist" aria-label="Saving tip status filters" class="segmented-bar">
                 <button type="button"
                         role="tab"
                         aria-selected="{{ $activeTab === 'active' ? 'true' : 'false' }}"
                         wire:click="setTab('active')"
-                        class="px-3.5 py-1.5 rounded-[4px] text-xs font-mono transition-colors flex items-center gap-2 {{ $activeTab === 'active' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
+                        class="segmented-item flex items-center gap-2 {{ $activeTab === 'active' ? 'active' : '' }}">
                     <span>Active Opportunities</span>
-                    <span class="px-1.5 py-0.5 rounded-[3px] text-[10px] {{ $activeTab === 'active' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
+                    <span class="px-1.5 py-0.2 rounded-[3px] text-[10px] {{ $activeTab === 'active' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
                         {{ $activeCount }}
                     </span>
                 </button>
@@ -109,10 +110,10 @@
                         role="tab"
                         aria-selected="{{ $activeTab === 'pinned' ? 'true' : 'false' }}"
                         wire:click="setTab('pinned')"
-                        class="px-3.5 py-1.5 rounded-[4px] text-xs font-mono transition-colors flex items-center gap-2 {{ $activeTab === 'pinned' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
+                        class="segmented-item flex items-center gap-2 {{ $activeTab === 'pinned' ? 'active' : '' }}">
                     <x-icon name="bookmark" class="w-3.5 h-3.5 text-[var(--gold)]" />
                     <span>Pinned</span>
-                    <span class="px-1.5 py-0.5 rounded-[3px] text-[10px] {{ $activeTab === 'pinned' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
+                    <span class="px-1.5 py-0.2 rounded-[3px] text-[10px] {{ $activeTab === 'pinned' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
                         {{ $pinnedCount }}
                     </span>
                 </button>
@@ -121,9 +122,9 @@
                         role="tab"
                         aria-selected="{{ $activeTab === 'dismissed' ? 'true' : 'false' }}"
                         wire:click="setTab('dismissed')"
-                        class="px-3.5 py-1.5 rounded-[4px] text-xs font-mono transition-colors flex items-center gap-2 {{ $activeTab === 'dismissed' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
+                        class="segmented-item flex items-center gap-2 {{ $activeTab === 'dismissed' ? 'active' : '' }}">
                     <span>Dismissed</span>
-                    <span class="px-1.5 py-0.5 rounded-[3px] text-[10px] {{ $activeTab === 'dismissed' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
+                    <span class="px-1.5 py-0.2 rounded-[3px] text-[10px] {{ $activeTab === 'dismissed' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
                         {{ $dismissedCount }}
                     </span>
                 </button>
@@ -139,8 +140,8 @@
         {{-- TIPS LISTING                                          --}}
         {{-- ===================================================== --}}
         @if ($tips->isEmpty())
-            <div class="card-campus border hairline-border p-12 text-center space-y-3">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-[6px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto">
+            <div class="card-campus border hairline-border p-12 text-center space-y-3 rounded-[16px] shadow-tactile-sm">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-[10px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto shadow-tactile-sm">
                     @if ($activeTab === 'pinned')
                         <x-icon name="bookmark" class="w-6 h-6" />
                     @elseif ($activeTab === 'dismissed')
@@ -182,19 +183,19 @@
         @else
             <div class="space-y-4">
                 @foreach ($tips as $tip)
-                    <div class="card-campus border hairline-border p-5 space-y-4 hover:border-[var(--accent-primary)]/40 transition-colors" wire:key="tip-card-{{ $tip->id }}">
+                    <div class="card-campus border hairline-border p-5 rounded-[16px] space-y-4 hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm" wire:key="tip-card-{{ $tip->id }}">
                         {{-- Top Metadata Strip --}}
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div class="flex items-center gap-2.5 flex-wrap">
                                 {{-- Category Badge or Ledger Badge --}}
                                 @if ($tip->category)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] text-xs font-medium text-white"
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-medium text-white shadow-tactile-sm"
                                           style="background-color: {{ $tip->category->color ?? '#64748B' }};">
                                         <x-icon :name="$tip->category->icon ?? 'tag'" class="w-3.5 h-3.5" />
                                         <span>{{ $tip->category->name }}</span>
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] text-xs font-mono font-medium border hairline-border bg-[var(--bg-subtle)] text-[var(--text-primary)]">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-mono font-medium border hairline-border bg-[var(--bg-subtle)] text-[var(--text-primary)] shadow-tactile-sm">
                                         <x-icon name="activity" class="w-3.5 h-3.5 text-[var(--accent-primary)]" />
                                         <span>Overall Ledger</span>
                                     </span>
@@ -215,8 +216,8 @@
 
                             {{-- Potential Savings Badge --}}
                             <div class="flex items-center gap-2">
-                                <div class="px-3 py-1.5 rounded-[4px] border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
-                                    <span class="text-[10px] font-mono uppercase tracking-wider">Est. Potential Savings:</span>
+                                <div class="px-3 py-1.5 rounded-[8px] border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 flex items-center gap-2 shadow-tactile-sm">
+                                    <span class="text-[10px] font-mono uppercase tracking-wider font-semibold">Est. Potential Savings:</span>
                                     <span class="font-mono font-bold text-sm tabular-nums">
                                         {{ $tip->formattedEstimatedSavings() }}
                                     </span>
@@ -235,7 +236,7 @@
                         </div>
 
                         {{-- Actionable Suggestion Box --}}
-                        <div class="p-3.5 rounded-[6px] border hairline-border bg-[var(--bg-subtle)]/50 space-y-1">
+                        <div class="p-3.5 rounded-[10px] border hairline-border bg-[var(--bg-subtle)]/60 space-y-1">
                             <div class="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[var(--accent-primary)] font-semibold">
                                 <x-icon name="compass" class="w-3.5 h-3.5" />
                                 <span>Actionable Recommendation</span>
@@ -246,7 +247,7 @@
                         </div>
 
                         {{-- Action Buttons Footer --}}
-                        <div class="flex items-center justify-between pt-2 border-t hairline-border">
+                        <div class="flex items-center justify-between pt-2.5 border-t hairline-border">
                             <div class="text-[10px] font-mono text-[var(--text-muted)]">
                                 Evaluated: {{ $tip->updated_at->diffForHumans() }}
                                 @if ($tip->pinned_at)

@@ -7,25 +7,26 @@
         {{-- ===================================================== --}}
         {{-- GREETING + MONTH SUMMARY BANNER                        --}}
         {{-- ===================================================== --}}
-        <div class="p-6 rounded-[8px] border hairline-border bg-[var(--bg-surface)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="p-6 rounded-[16px] border hairline-border bg-[var(--bg-surface)] shadow-tactile-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <div class="text-xs font-mono text-[var(--accent-primary)] font-semibold uppercase tracking-wider mb-1">
-                    {{ $user->academic_year ?? 'Student' }} Cohort &bull; {{ $currentMonth }}
+                <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-[6px] bg-[var(--accent-tint)] text-[var(--accent-primary)] text-[11px] font-mono font-semibold uppercase tracking-wider mb-2 shadow-tactile-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]"></span>
+                    <span>{{ $user->academic_year ?? 'Student' }} Cohort &bull; {{ $currentMonth }}</span>
                 </div>
-                <h1 class="font-heading text-2xl font-bold text-[var(--text-primary)]">
+                <h1 class="font-heading text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
                     Welcome back, {{ $user->name }}
                 </h1>
-                <p class="text-xs text-[var(--text-muted)] mt-1">
+                <p class="text-xs text-[var(--text-muted)] mt-1.5">
                     Your financial baseline: <span class="font-mono font-semibold text-[var(--text-primary)]">${{ number_format($allowance, 2) }}</span>/mo &bull;
                     Savings target: <span class="font-mono font-semibold text-[var(--gold)]">${{ number_format($savingsGoal, 2) }}</span>
                 </p>
             </div>
-            <div class="flex items-center gap-3 flex-shrink-0">
-                <a href="{{ route('budgets') }}" class="btn-secondary py-2 px-3 text-xs">
+            <div class="flex items-center gap-2.5 flex-shrink-0">
+                <a href="{{ route('budgets') }}" class="btn-secondary py-2 px-3.5 text-xs">
                     <x-icon name="target" class="w-4 h-4" />
                     <span class="hidden sm:inline">Budgets</span>
                 </a>
-                <a href="{{ route('categories') }}" class="btn-secondary py-2 px-3 text-xs">
+                <a href="{{ route('categories') }}" class="btn-secondary py-2 px-3.5 text-xs">
                     <x-icon name="tag" class="w-4 h-4" />
                     <span class="hidden sm:inline">Categories</span>
                 </a>
@@ -40,7 +41,7 @@
         {{-- IN-APP BUDGET ALERT BANNER (REAL-TIME NOTIFICATION)    --}}
         {{-- ===================================================== --}}
         @if ($overBudgets->isNotEmpty())
-            <div role="alert" aria-live="assertive" class="p-4 rounded-[6px] border border-rose-300 bg-rose-50 dark:border-rose-900 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200 flex items-start justify-between gap-3">
+            <div role="alert" aria-live="assertive" class="p-4 rounded-[12px] border border-rose-300 bg-rose-50 dark:border-rose-900 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200 flex items-start justify-between gap-3 shadow-tactile-sm">
                 <div class="flex items-start gap-3">
                     <x-icon name="shield-alert" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
                     <div class="text-xs space-y-0.5">
@@ -57,7 +58,7 @@
                 </a>
             </div>
         @elseif ($nearLimitBudgets->isNotEmpty())
-            <div role="status" aria-live="polite" class="p-4 rounded-[6px] border border-amber-300 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 flex items-start justify-between gap-3">
+            <div role="status" aria-live="polite" class="p-4 rounded-[12px] border border-amber-300 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 flex items-start justify-between gap-3 shadow-tactile-sm">
                 <div class="flex items-start gap-3">
                     <x-icon name="target" class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                     <div class="text-xs space-y-0.5">
@@ -76,15 +77,15 @@
         @endif
 
         {{-- ===================================================== --}}
-        {{-- FOUR KPI CARDS (live data)                             --}}
+        {{-- FOUR KPI CARDS (live data with tactile authority)     --}}
         {{-- ===================================================== --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
             {{-- Monthly Income --}}
-            <div class="card-campus border hairline-border p-5 space-y-2">
+            <div class="card-campus border hairline-border p-5 space-y-2 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
                 <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                     <span>This Month Income</span>
-                    <x-icon name="trending-up" class="w-4 h-4 text-emerald-500" />
+                    <x-icon name="trending-up" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div class="font-mono text-2xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                     ${{ number_format($monthlyIncome, 2) }}
@@ -95,7 +96,7 @@
             </div>
 
             {{-- Monthly Expense --}}
-            <div class="card-campus border hairline-border p-5 space-y-2">
+            <div class="card-campus border hairline-border p-5 space-y-2 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
                 <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                     <span>This Month Spent</span>
                     <x-icon name="trending-down" class="w-4 h-4 text-[var(--danger)]" />
@@ -106,9 +107,9 @@
                 <div class="text-[11px] text-[var(--text-muted)]">
                     @if ($expenseDelta !== null)
                         @if ($expenseDelta > 0)
-                            <span class="text-[var(--danger)]">+{{ $expenseDelta }}% vs last month</span>
+                            <span class="text-[var(--danger)] font-medium">+{{ $expenseDelta }}% vs last month</span>
                         @elseif ($expenseDelta < 0)
-                            <span class="text-emerald-600">{{ $expenseDelta }}% vs last month</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-medium">{{ $expenseDelta }}% vs last month</span>
                         @else
                             Same as last month
                         @endif
@@ -119,7 +120,7 @@
             </div>
 
             {{-- Safe to Spend --}}
-            <div class="card-campus border hairline-border p-5 space-y-2">
+            <div class="card-campus border hairline-border p-5 space-y-2 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
                 <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                     <span>Safe to Spend</span>
                     <x-icon name="wallet" class="w-4 h-4 text-[var(--accent-primary)]" />
@@ -136,7 +137,7 @@
             </div>
 
             {{-- Savings Progress --}}
-            <div class="card-campus border hairline-border p-5 space-y-2">
+            <div class="card-campus border hairline-border p-5 space-y-2 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
                 <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                     <span>Savings Goal</span>
                     <x-icon name="target" class="w-4 h-4 text-[var(--gold)]" />
@@ -144,7 +145,7 @@
                 <div class="font-mono text-2xl font-bold text-[var(--gold)] tabular-nums">
                     {{ $savingsProgress }}%
                 </div>
-                <div class="w-full h-1.5 rounded-full bg-[var(--bg-subtle)] mt-1">
+                <div class="w-full h-1.5 rounded-full bg-[var(--bg-subtle)] mt-1 overflow-hidden border hairline-border">
                     <div class="h-1.5 rounded-full bg-[var(--gold)] transition-all duration-500"
                          style="width: {{ $savingsProgress }}%"></div>
                 </div>
@@ -157,14 +158,14 @@
         {{-- ===================================================== --}}
         {{-- BUDGET GOALS & CONSUMPTION WIDGET (SRS §4.4, §4.5)     --}}
         {{-- ===================================================== --}}
-        <div class="card-campus border hairline-border p-5 space-y-4">
+        <div class="card-campus border hairline-border p-5 sm:p-6 rounded-[16px] space-y-4 shadow-tactile-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <div class="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">{{ $currentMonth }} &bull; Budget vs. Actual</div>
-                    <h2 class="font-heading font-semibold text-sm text-[var(--text-primary)] mt-0.5">Budget Goals & Spending Caps</h2>
+                    <h2 class="font-heading font-semibold text-base text-[var(--text-primary)] mt-0.5">Budget Goals & Spending Caps</h2>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('budgets') }}" class="text-xs font-medium text-[var(--accent-primary)] hover:underline flex items-center gap-1">
+                    <a href="{{ route('budgets') }}" class="text-xs font-medium text-[var(--accent-primary)] hover:underline flex items-center gap-1 font-mono">
                         <span>Manage All Goals</span>
                         <span>&rarr;</span>
                     </a>
@@ -172,15 +173,15 @@
             </div>
 
             @if ($decoratedBudgets->isEmpty())
-                <div class="py-6 text-center space-y-2">
-                    <div class="inline-flex items-center justify-center w-10 h-10 rounded-[6px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto">
-                        <x-icon name="target" class="w-5 h-5" />
+                <div class="py-8 text-center space-y-2">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-[10px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto shadow-tactile-sm">
+                        <x-icon name="target" class="w-6 h-6" />
                     </div>
                     <div class="text-xs font-semibold text-[var(--text-primary)]">No budget goals set for {{ $currentMonth }}</div>
                     <p class="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
                         Set spending caps on your expense categories to track consumption in real time and protect your savings.
                     </p>
-                    <a href="{{ route('budgets') }}" class="btn-primary py-1.5 px-3 text-xs inline-flex mt-1">
+                    <a href="{{ route('budgets') }}" class="btn-primary py-2 px-3.5 text-xs inline-flex mt-2">
                         Set Category Budget
                     </a>
                 </div>
@@ -192,12 +193,12 @@
                             $pct = $b['pct'];
                             $isOver = $b['status'] === 'over_budget';
                         @endphp
-                        <div class="p-3.5 rounded-[6px] border hairline-border bg-[var(--bg-subtle)]/30 space-y-2.5">
+                        <div class="p-4 rounded-[12px] border hairline-border bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)]/30 space-y-2.5 transition-colors shadow-tactile-sm">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-2 min-w-0">
-                                    <div class="w-6 h-6 rounded-[4px] flex items-center justify-center text-white flex-shrink-0"
+                                    <div class="w-7 h-7 rounded-[6px] flex items-center justify-center text-white flex-shrink-0 shadow-tactile-sm"
                                          style="background-color: {{ $cat?->color ?? '#64748B' }};">
-                                        <x-icon :name="$cat?->icon ?? 'tag'" class="w-3 h-3" />
+                                        <x-icon :name="$cat?->icon ?? 'tag'" class="w-3.5 h-3.5" />
                                     </div>
                                     <span class="font-heading font-medium text-xs text-[var(--text-primary)] truncate">
                                         {{ $cat?->name ?? 'Uncategorized' }}
@@ -208,7 +209,7 @@
                                 </span>
                             </div>
 
-                            <div class="space-y-1">
+                            <div class="space-y-1.5">
                                 <div class="flex items-baseline justify-between text-[11px] font-mono tabular-nums">
                                     <span class="text-[var(--text-primary)] font-semibold">
                                         ${{ number_format((float) $b['spent'], 2) }}
@@ -218,8 +219,8 @@
                                         {{ $pct }}%
                                     </span>
                                 </div>
-                                <div class="w-full h-1.5 rounded-[3px] bg-[var(--bg-surface)] overflow-hidden border hairline-border">
-                                    <div class="h-full rounded-[3px] transition-all duration-500"
+                                <div class="w-full h-1.5 rounded-[4px] bg-[var(--bg-subtle)] overflow-hidden border hairline-border">
+                                    <div class="h-full rounded-[4px] transition-all duration-500"
                                          style="width: {{ min(100, $pct) }}%; background-color: {{ $b['barColor'] }};">
                                     </div>
                                 </div>
@@ -247,19 +248,19 @@
         {{-- ===================================================== --}}
         {{-- PERSONALIZED SAVING OPPORTUNITIES WIDGET (PHASE 5)     --}}
         {{-- ===================================================== --}}
-        <div class="card-campus border hairline-border p-5 space-y-4">
+        <div class="card-campus border hairline-border p-5 sm:p-6 rounded-[16px] space-y-4 shadow-tactile-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <div class="text-[11px] font-mono uppercase tracking-wider text-[var(--accent-primary)] font-semibold flex items-center gap-1.5">
                         <x-icon name="lightbulb" class="w-3.5 h-3.5" />
                         <span>Intelligent Rule Evaluator</span>
                     </div>
-                    <h2 class="font-heading font-semibold text-sm text-[var(--text-primary)] mt-0.5">
+                    <h2 class="font-heading font-semibold text-base text-[var(--text-primary)] mt-0.5">
                         Personalized Saving Opportunities
                     </h2>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('student.tips') }}" class="text-xs font-medium text-[var(--accent-primary)] hover:underline flex items-center gap-1">
+                    <a href="{{ route('student.tips') }}" class="text-xs font-medium text-[var(--accent-primary)] hover:underline flex items-center gap-1 font-mono">
                         <span>View All Tips</span>
                         <span>&rarr;</span>
                     </a>
@@ -267,9 +268,9 @@
             </div>
 
             @if ($topSavingTips->isEmpty())
-                <div class="py-6 text-center space-y-2">
-                    <div class="inline-flex items-center justify-center w-10 h-10 rounded-[6px] bg-[var(--bg-subtle)] text-emerald-500 mx-auto">
-                        <x-icon name="check-circle" class="w-5 h-5" />
+                <div class="py-8 text-center space-y-2">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-[10px] bg-[var(--bg-subtle)] text-emerald-500 mx-auto shadow-tactile-sm">
+                        <x-icon name="check-circle" class="w-6 h-6" />
                     </div>
                     <div class="text-xs font-semibold text-[var(--text-primary)]">
                         No spending spikes or budget deviations detected
@@ -277,37 +278,37 @@
                     <p class="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
                         All expense categories are operating within historical baselines and budget caps.
                     </p>
-                    <a href="{{ route('student.tips') }}" class="btn-secondary py-1.5 px-3 text-xs inline-flex mt-1">
+                    <a href="{{ route('student.tips') }}" class="btn-secondary py-1.5 px-3.5 text-xs inline-flex mt-2">
                         Open Saving Tips Center
                     </a>
                 </div>
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach ($topSavingTips as $tip)
-                        <div class="p-4 rounded-[6px] border hairline-border bg-[var(--bg-subtle)]/30 space-y-3 flex flex-col justify-between hover:border-[var(--accent-primary)]/40 transition-colors" wire:key="dashboard-tip-{{ $tip->id }}">
-                            <div class="space-y-2">
+                        <div class="p-4 rounded-[12px] border hairline-border bg-[var(--bg-surface)] space-y-3 flex flex-col justify-between hover:border-[var(--accent-primary)]/40 hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm" wire:key="dashboard-tip-{{ $tip->id }}">
+                            <div class="space-y-2.5">
                                 <div class="flex items-center justify-between gap-2">
                                     @if ($tip->category)
-                                        <div class="flex items-center gap-1.5 min-w-0">
-                                            <div class="w-5 h-5 rounded-[4px] flex items-center justify-center text-white flex-shrink-0"
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            <div class="w-6 h-6 rounded-[6px] flex items-center justify-center text-white flex-shrink-0 shadow-tactile-sm"
                                                  style="background-color: {{ $tip->category->color ?? '#64748B' }};">
-                                                <x-icon :name="$tip->category->icon ?? 'tag'" class="w-3 h-3" />
+                                                <x-icon :name="$tip->category->icon ?? 'tag'" class="w-3.5 h-3.5" />
                                             </div>
                                             <span class="text-xs font-medium text-[var(--text-primary)] truncate">
                                                 {{ $tip->category->name }}
                                             </span>
                                         </div>
                                     @else
-                                        <div class="flex items-center gap-1.5 text-xs font-mono text-[var(--accent-primary)]">
+                                        <div class="flex items-center gap-1.5 text-xs font-mono text-[var(--accent-primary)] font-semibold">
                                             <x-icon name="activity" class="w-3.5 h-3.5" />
                                             <span>Overall Ledger</span>
                                         </div>
                                     @endif
 
-                                    <div class="flex items-center gap-1">
+                                    <div class="flex items-center gap-1.5">
                                         @if ($tip->isPinned())
-                                            <span class="p-1 rounded-[3px] bg-amber-500/10 text-amber-600 dark:text-amber-400" title="Pinned">
-                                                <x-icon name="bookmark" class="w-3 h-3" />
+                                            <span class="p-1 rounded-[4px] bg-amber-500/10 text-amber-600 dark:text-amber-400" title="Pinned">
+                                                <x-icon name="bookmark" class="w-3.5 h-3.5" />
                                             </span>
                                         @endif
                                         <span class="px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 tabular-nums">
@@ -325,28 +326,28 @@
                                     </p>
                                 </div>
 
-                                <div class="p-2 rounded-[4px] border hairline-border bg-[var(--bg-surface)] text-[11px] text-[var(--text-primary)] font-medium leading-tight">
+                                <div class="p-2.5 rounded-[8px] border hairline-border bg-[var(--bg-subtle)]/50 text-[11px] text-[var(--text-primary)] font-medium leading-tight">
                                     {{ $tip->suggestion }}
                                 </div>
                             </div>
 
-                            <div class="pt-2 border-t hairline-border flex items-center justify-between text-[11px]">
+                            <div class="pt-2.5 border-t hairline-border flex items-center justify-between text-[11px]">
                                 <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
                                     {{ str_replace('_', ' ', $tip->rule_key) }}
                                 </span>
 
-                                <div class="flex items-center gap-1.5">
+                                <div class="flex items-center gap-1">
                                     @if ($tip->isPinned())
                                         <button type="button"
                                                 wire:click="unpinTip({{ $tip->id }})"
-                                                class="p-1 rounded-[4px] text-[var(--gold)] hover:bg-[var(--bg-subtle)]"
+                                                class="btn-icon w-7 h-7 text-[var(--gold)]"
                                                 title="Unpin tip">
                                             <x-icon name="bookmark-minus" class="w-3.5 h-3.5" />
                                         </button>
                                     @else
                                         <button type="button"
                                                 wire:click="pinTip({{ $tip->id }})"
-                                                class="p-1 rounded-[4px] text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--bg-subtle)]"
+                                                class="btn-icon w-7 h-7"
                                                 title="Pin tip">
                                             <x-icon name="bookmark" class="w-3.5 h-3.5" />
                                         </button>
@@ -354,7 +355,7 @@
 
                                     <button type="button"
                                             wire:click="dismissTip({{ $tip->id }})"
-                                            class="p-1 rounded-[4px] text-[var(--text-muted)] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-[var(--bg-subtle)]"
+                                            class="btn-icon w-7 h-7 hover:text-[var(--danger)]"
                                             title="Dismiss tip">
                                         <x-icon name="x" class="w-3.5 h-3.5" />
                                     </button>
@@ -369,32 +370,32 @@
         {{-- ===================================================== --}}
         {{-- SIX-MONTH CASH FLOW TRENDS (SRS §4.4, §4.6)            --}}
         {{-- ===================================================== --}}
-        <div class="card-campus border hairline-border p-5 space-y-4">
+        <div class="card-campus border hairline-border p-5 sm:p-6 rounded-[16px] space-y-4 shadow-tactile-sm">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                     <div class="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                         6-Month Velocity &bull; Cash Flow Dynamics
                     </div>
-                    <h2 class="font-heading font-semibold text-sm text-[var(--text-primary)] mt-0.5">
+                    <h2 class="font-heading font-semibold text-base text-[var(--text-primary)] mt-0.5">
                         Historical Cash Flow (Income vs. Expense)
                     </h2>
                 </div>
                 {{-- Quick Summary Badges --}}
                 <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
-                    <div class="px-2.5 py-1 rounded-[4px] border hairline-border bg-[var(--bg-subtle)] flex items-center gap-1.5">
-                        <span class="text-[10px] text-[var(--text-muted)] uppercase">Inflow:</span>
-                        <span class="font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                    <div class="px-3 py-1.5 rounded-[8px] border hairline-border bg-[var(--bg-surface)] shadow-tactile-sm flex items-center gap-1.5">
+                        <span class="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Inflow:</span>
+                        <span class="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                             +${{ number_format((float) $sixMonthTrends['total_income'], 2) }}
                         </span>
                     </div>
-                    <div class="px-2.5 py-1 rounded-[4px] border hairline-border bg-[var(--bg-subtle)] flex items-center gap-1.5">
-                        <span class="text-[10px] text-[var(--text-muted)] uppercase">Outflow:</span>
-                        <span class="font-semibold text-[var(--text-primary)] tabular-nums">
+                    <div class="px-3 py-1.5 rounded-[8px] border hairline-border bg-[var(--bg-surface)] shadow-tactile-sm flex items-center gap-1.5">
+                        <span class="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Outflow:</span>
+                        <span class="font-bold text-[var(--text-primary)] tabular-nums">
                             -${{ number_format((float) $sixMonthTrends['total_expense'], 2) }}
                         </span>
                     </div>
-                    <div class="px-2.5 py-1 rounded-[4px] border hairline-border bg-[var(--bg-subtle)] flex items-center gap-1.5">
-                        <span class="text-[10px] text-[var(--text-muted)] uppercase">Net:</span>
+                    <div class="px-3 py-1.5 rounded-[8px] border hairline-border bg-[var(--bg-surface)] shadow-tactile-sm flex items-center gap-1.5">
+                        <span class="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Net:</span>
                         <span class="font-bold tabular-nums {{ (float) $sixMonthTrends['total_net'] >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' }}">
                             {{ (float) $sixMonthTrends['total_net'] >= 0 ? '+' : '' }}${{ number_format((float) $sixMonthTrends['total_net'], 2) }}
                         </span>
@@ -405,29 +406,29 @@
             {{-- Legend & Averages --}}
             <div class="flex items-center justify-between text-xs pt-1 border-t hairline-border">
                 <div class="flex items-center gap-4 text-[11px] font-mono text-[var(--text-muted)]">
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-[2px] bg-emerald-500 inline-block"></span>
-                        <span>Income</span>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-[3px] bg-[var(--accent-primary)] inline-block shadow-2xs"></span>
+                        <span class="font-medium">Income (Inflow)</span>
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-[2px] bg-rose-500 inline-block"></span>
-                        <span>Expense</span>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-[3px] bg-[var(--danger)] inline-block shadow-2xs"></span>
+                        <span class="font-medium">Expense (Outflow)</span>
                     </div>
                 </div>
                 <div class="text-[11px] font-mono text-[var(--text-muted)]">
-                    Avg Monthly Expense: <span class="font-semibold text-[var(--text-primary)]">${{ number_format((float) $sixMonthTrends['average_monthly_expense'], 2) }}</span>
+                    Avg Monthly Expense: <span class="font-bold text-[var(--text-primary)] tabular-nums">${{ number_format((float) $sixMonthTrends['average_monthly_expense'], 2) }}</span>
                 </div>
             </div>
 
-            {{-- Responsive Native SVG Chart --}}
+            {{-- Responsive Native SVG Chart Styled in Authoritative Warm Palette --}}
             <div class="w-full overflow-x-auto">
                 <div class="min-w-[580px]">
                     <svg viewBox="0 0 660 190" class="w-full h-44 sm:h-52 select-none" aria-label="6-Month Cash Flow Bar Chart">
-                        {{-- Horizontal Grid Lines --}}
-                        <line x1="55" y1="35" x2="640" y2="35" stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="3 3" />
-                        <line x1="55" y1="75" x2="640" y2="75" stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="3 3" />
-                        <line x1="55" y1="115" x2="640" y2="115" stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="3 3" />
-                        <line x1="55" y1="155" x2="640" y2="155" stroke="currentColor" stroke-opacity="0.25" />
+                        {{-- Horizontal Grid Lines Styled via Warm Theme Hairline --}}
+                        <line x1="55" y1="35" x2="640" y2="35" class="text-[var(--border-hairline)]" stroke="currentColor" stroke-dasharray="2 4" stroke-width="1" />
+                        <line x1="55" y1="75" x2="640" y2="75" class="text-[var(--border-hairline)]" stroke="currentColor" stroke-dasharray="2 4" stroke-width="1" />
+                        <line x1="55" y1="115" x2="640" y2="115" class="text-[var(--border-hairline)]" stroke="currentColor" stroke-dasharray="2 4" stroke-width="1" />
+                        <line x1="55" y1="155" x2="640" y2="155" class="text-[var(--border-hairline)]" stroke="currentColor" stroke-width="1.5" />
 
                         {{-- Y-Axis Labels --}}
                         <text x="50" y="38" text-anchor="end" class="font-mono text-[9px] fill-[var(--text-muted)]">${{ number_format($sixMonthTrends['max_volume'], 0) }}</text>
@@ -454,19 +455,19 @@
 
                             {{-- Month background column highlight on current --}}
                             @if ($m['is_current'])
-                                <rect x="{{ $cx - 36 }}" y="25" width="72" height="130" fill="currentColor" fill-opacity="0.03" rx="4" />
+                                <rect x="{{ $cx - 36 }}" y="25" width="72" height="130" fill="currentColor" fill-opacity="0.04" rx="8" />
                             @endif
 
-                            {{-- Income Bar --}}
+                            {{-- Income Bar (Warm Olive / Success Token) --}}
                             @if ($incH > 0)
                                 <rect x="{{ $cx - 18 }}" y="{{ $incY }}" width="15" height="{{ $incH }}"
-                                      fill="#10B981" rx="2" ry="2" opacity="0.9" />
+                                      class="text-[var(--accent-primary)] hover:opacity-100 transition-opacity" fill="currentColor" rx="3" ry="3" opacity="0.92" />
                             @endif
 
-                            {{-- Expense Bar --}}
+                            {{-- Expense Bar (Warm Brick / Danger Token) --}}
                             @if ($expH > 0)
                                 <rect x="{{ $cx + 3 }}" y="{{ $expY }}" width="15" height="{{ $expH }}"
-                                      fill="#F43F5E" rx="2" ry="2" opacity="0.9" />
+                                      class="text-[var(--danger)] hover:opacity-100 transition-opacity" fill="currentColor" rx="3" ry="3" opacity="0.92" />
                             @endif
 
                             {{-- Month Label --}}
@@ -486,13 +487,13 @@
                         $isPos = $m['status'] === 'positive';
                         $isNeg = $m['status'] === 'negative';
                     @endphp
-                    <div class="p-2.5 rounded-[6px] border hairline-border {{ $m['is_current'] ? 'bg-[var(--accent-tint)]/30 border-[var(--accent-primary)]/40' : 'bg-[var(--bg-subtle)]/40' }} space-y-1.5">
+                    <div class="p-3 rounded-[10px] border hairline-border {{ $m['is_current'] ? 'bg-[var(--accent-tint)]/40 border-[var(--accent-primary)]/40 shadow-tactile-sm' : 'bg-[var(--bg-surface)]' }} space-y-1.5 transition-colors">
                         <div class="flex items-center justify-between">
                             <span class="font-mono text-[10px] font-semibold text-[var(--text-primary)]">
                                 {{ $m['month_label'] }}
                             </span>
                             @if ($m['is_current'])
-                                <span class="text-[8px] font-mono uppercase px-1 py-0.2 bg-[var(--accent-primary)] text-white rounded-[2px]">
+                                <span class="badge-campus text-[8px] bg-[var(--accent-primary)] text-white">
                                     Current
                                 </span>
                             @endif
@@ -524,55 +525,55 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
             {{-- Comparative Category Spending Widget (7-col) --}}
-            <div class="lg:col-span-7 card-campus border hairline-border p-5 space-y-4">
+            <div class="lg:col-span-7 card-campus border hairline-border p-5 sm:p-6 rounded-[16px] space-y-4 shadow-tactile-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
                         <div class="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
                             <span>Comparative Analysis</span>
                             <span wire:loading wire:target="setTimePeriod" class="text-[var(--accent-primary)] animate-pulse">&bull; updating...</span>
                         </div>
-                        <h2 class="font-heading font-semibold text-sm text-[var(--text-primary)] mt-0.5">
+                        <h2 class="font-heading font-semibold text-base text-[var(--text-primary)] mt-0.5">
                             Category Spending Trends
                         </h2>
                     </div>
 
-                    {{-- Period Switcher Segmented Control --}}
-                    <div role="group" aria-label="Comparative period filter" class="inline-flex items-center gap-1 p-0.5 rounded-[6px] border hairline-border bg-[var(--bg-subtle)] flex-shrink-0">
+                    {{-- Period Switcher Segmented Control Bar --}}
+                    <div role="group" aria-label="Comparative period filter" class="segmented-bar flex-shrink-0">
                         <button type="button"
                                 wire:click="setTimePeriod('this_month')"
-                                class="px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors {{ $timePeriod === 'this_month' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
+                                class="segmented-item {{ $timePeriod === 'this_month' ? 'active' : '' }}">
                             This Month
                         </button>
                         <button type="button"
                                 wire:click="setTimePeriod('last_3_months')"
-                                class="px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors {{ $timePeriod === 'last_3_months' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
+                                class="segmented-item {{ $timePeriod === 'last_3_months' ? 'active' : '' }}">
                             3 Months
                         </button>
                         <button type="button"
                                 wire:click="setTimePeriod('last_6_months')"
-                                class="px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors {{ $timePeriod === 'last_6_months' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
+                                class="segmented-item {{ $timePeriod === 'last_6_months' ? 'active' : '' }}">
                             6 Months
                         </button>
                         <button type="button"
                                 wire:click="setTimePeriod('year')"
-                                class="px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors {{ $timePeriod === 'year' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
+                                class="segmented-item {{ $timePeriod === 'year' ? 'active' : '' }}">
                             This Year
                         </button>
                     </div>
                 </div>
 
                 {{-- Period Totals Summary Strip --}}
-                <div class="p-3 rounded-[6px] border hairline-border bg-[var(--bg-subtle)]/40 flex items-center justify-between text-xs">
+                <div class="p-3.5 rounded-[10px] border hairline-border bg-[var(--bg-subtle)]/50 flex items-center justify-between text-xs">
                     <div>
-                        <div class="text-[10px] font-mono uppercase text-[var(--text-muted)]">
+                        <div class="text-[10px] font-mono uppercase text-[var(--text-muted)] font-semibold">
                             {{ $categoryComparisons['period_label'] }} Total
                         </div>
-                        <div class="font-mono text-base font-bold text-[var(--text-primary)] tabular-nums">
+                        <div class="font-mono text-lg font-bold text-[var(--text-primary)] tabular-nums">
                             ${{ number_format((float) $categoryComparisons['current_total'], 2) }}
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-[10px] font-mono uppercase text-[var(--text-muted)]">
+                        <div class="text-[10px] font-mono uppercase text-[var(--text-muted)] font-semibold">
                             {{ $categoryComparisons['comparison_label'] }}
                         </div>
                         <div class="font-mono text-xs tabular-nums text-[var(--text-muted)]">
@@ -581,11 +582,11 @@
                                 $totDir = $categoryComparisons['total_change']['direction'];
                             @endphp
                             @if ($totDir === 'increased')
-                                <span class="font-semibold text-rose-600 dark:text-rose-400 ml-1">
+                                <span class="font-bold text-rose-600 dark:text-rose-400 ml-1">
                                     (+${{ number_format((float) $categoryComparisons['total_delta'], 2) }} / {{ $categoryComparisons['total_change']['formatted'] }})
                                 </span>
                             @elseif ($totDir === 'decreased')
-                                <span class="font-semibold text-emerald-600 dark:text-emerald-400 ml-1">
+                                <span class="font-bold text-emerald-600 dark:text-emerald-400 ml-1">
                                     (-${{ number_format(abs((float) $categoryComparisons['total_delta']), 2) }} / {{ $categoryComparisons['total_change']['formatted'] }})
                                 </span>
                             @else
@@ -598,29 +599,29 @@
                 {{-- Category Comparison Rows --}}
                 @if (empty($categoryComparisons['categories']))
                     <div class="text-center py-8 space-y-2">
-                        <div class="inline-flex items-center justify-center w-10 h-10 rounded-[6px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto">
-                            <x-icon name="pie-chart" class="w-5 h-5" />
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-[10px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto shadow-tactile-sm">
+                            <x-icon name="pie-chart" class="w-6 h-6" />
                         </div>
                         <div class="text-xs font-semibold text-[var(--text-primary)]">No expense transactions recorded</div>
                         <p class="text-xs text-[var(--text-muted)] max-w-xs mx-auto">
                             No expenses logged for {{ $categoryComparisons['period_label'] }}.
                         </p>
-                        <a href="{{ route('transactions') }}" class="btn-primary py-1.5 px-3 text-xs inline-flex mt-1">
+                        <a href="{{ route('transactions') }}" class="btn-primary py-2 px-3.5 text-xs inline-flex mt-2">
                             Add Transaction
                         </a>
                     </div>
                 @else
-                    <div class="space-y-3.5">
+                    <div class="space-y-3">
                         @foreach ($categoryComparisons['categories'] as $c)
                             @php
                                 $dir = $c['direction'];
                                 $isInc = $dir === 'increased';
                                 $isDec = $dir === 'decreased';
                             @endphp
-                            <div class="p-3 rounded-[6px] border hairline-border bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)]/30 transition-colors space-y-2">
+                            <div class="p-3.5 rounded-[10px] border hairline-border bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)]/40 transition-colors space-y-2 shadow-tactile-sm">
                                 <div class="flex items-center justify-between gap-2">
                                     <div class="flex items-center gap-2.5 min-w-0">
-                                        <div class="w-6 h-6 rounded-[4px] flex items-center justify-center text-white flex-shrink-0"
+                                        <div class="w-6 h-6 rounded-[6px] flex items-center justify-center text-white flex-shrink-0 shadow-tactile-sm"
                                              style="background-color: {{ $c['color'] }};">
                                             <x-icon :name="$c['icon']" class="w-3.5 h-3.5" />
                                         </div>
@@ -642,7 +643,7 @@
                                                 {{ $c['pct_formatted'] }}
                                             </span>
                                         @else
-                                            <span class="badge-campus text-[9px] font-mono uppercase bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300">
+                                            <span class="badge-campus text-[9px] font-mono uppercase bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                                                 0.0%
                                             </span>
                                         @endif
@@ -668,8 +669,8 @@
                                             <span class="text-[10px] text-[var(--text-muted)] font-normal">({{ $c['share_pct'] }}% of total)</span>
                                         </div>
                                     </div>
-                                    <div class="w-full h-1.5 rounded-[3px] bg-[var(--bg-subtle)] overflow-hidden">
-                                        <div class="h-full rounded-[3px] transition-all duration-500"
+                                    <div class="w-full h-1.5 rounded-[4px] bg-[var(--bg-subtle)] overflow-hidden border hairline-border">
+                                        <div class="h-full rounded-[4px] transition-all duration-500"
                                              style="width: {{ $c['share_pct'] }}%; background-color: {{ $c['color'] }};"></div>
                                     </div>
                                 </div>
@@ -680,21 +681,21 @@
             </div>
 
             {{-- Recent Transactions (5-col) --}}
-            <div class="lg:col-span-5 card-campus border hairline-border overflow-hidden p-0">
-                <div class="p-5 border-b hairline-border flex items-center justify-between">
+            <div class="lg:col-span-5 card-campus border hairline-border overflow-hidden p-0 rounded-[16px] shadow-tactile-sm">
+                <div class="p-5 border-b hairline-border flex items-center justify-between bg-[var(--bg-surface)]">
                     <div>
-                        <div class="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">Live Ledger</div>
-                        <div class="font-heading font-semibold text-sm text-[var(--text-primary)] mt-0.5">Recent Transactions</div>
+                        <div class="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">Live Ledger</div>
+                        <div class="font-heading font-semibold text-base text-[var(--text-primary)] mt-0.5">Recent Transactions</div>
                     </div>
-                    <a href="{{ route('transactions') }}" class="text-xs font-medium text-[var(--accent-primary)] hover:underline">
+                    <a href="{{ route('transactions') }}" class="text-xs font-medium text-[var(--accent-primary)] hover:underline font-mono">
                         View All &rarr;
                     </a>
                 </div>
 
                 @if ($recentTransactions->isEmpty())
                     <div class="p-10 text-center space-y-3">
-                        <div class="inline-flex items-center justify-center w-10 h-10 rounded-[6px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto">
-                            <x-icon name="wallet" class="w-5 h-5" />
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-[10px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto shadow-tactile-sm">
+                            <x-icon name="wallet" class="w-6 h-6" />
                         </div>
                         <div class="font-heading text-sm font-bold text-[var(--text-primary)] uppercase tracking-wide">
                             NO TRANSACTIONS RECORDED YET
@@ -709,9 +710,9 @@
                 @else
                     <div class="divide-y hairline-border">
                         @foreach ($recentTransactions as $t)
-                            <div class="px-5 py-3.5 flex items-center justify-between hover:bg-[var(--bg-subtle)]/60 transition-colors">
+                            <div class="px-5 py-3.5 flex items-center justify-between table-row-tactile">
                                 <div class="flex items-center gap-3 min-w-0">
-                                    <div class="w-8 h-8 rounded-[6px] flex items-center justify-center text-white flex-shrink-0"
+                                    <div class="w-8 h-8 rounded-[8px] flex items-center justify-center text-white flex-shrink-0 shadow-tactile-sm"
                                          style="background-color: {{ $t->category?->color ?? '#64748B' }};">
                                         <x-icon :name="$t->category?->icon ?? 'tag'" class="w-3.5 h-3.5" />
                                     </div>
@@ -731,8 +732,8 @@
                             </div>
                         @endforeach
                     </div>
-                    <div class="px-5 py-3 border-t hairline-border bg-[var(--bg-subtle)]/30">
-                        <a href="{{ route('transactions') }}" class="text-xs text-[var(--text-muted)] hover:text-[var(--accent-primary)] font-medium transition-colors">
+                    <div class="px-5 py-3 border-t hairline-border bg-[var(--bg-subtle)]/40">
+                        <a href="{{ route('transactions') }}" class="text-xs text-[var(--text-muted)] hover:text-[var(--accent-primary)] font-medium transition-colors font-mono">
                             View full ledger &rarr;
                         </a>
                     </div>
@@ -744,21 +745,21 @@
         {{-- ALL-TIME STATS FOOTER                                  --}}
         {{-- ===================================================== --}}
         <div class="grid grid-cols-3 gap-4">
-            <div class="card-campus border hairline-border p-4 text-center space-y-1">
-                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">All-Time Income</div>
-                <div class="font-mono font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+            <div class="card-campus border hairline-border p-4 text-center space-y-1 rounded-[16px] shadow-tactile-sm">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">All-Time Income</div>
+                <div class="font-mono text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                     ${{ number_format($allTimeIncome, 2) }}
                 </div>
             </div>
-            <div class="card-campus border hairline-border p-4 text-center space-y-1">
-                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">All-Time Expenses</div>
-                <div class="font-mono font-bold text-[var(--text-primary)] tabular-nums">
+            <div class="card-campus border hairline-border p-4 text-center space-y-1 rounded-[16px] shadow-tactile-sm">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">All-Time Expenses</div>
+                <div class="font-mono text-lg font-bold text-[var(--text-primary)] tabular-nums">
                     ${{ number_format($allTimeExpense, 2) }}
                 </div>
             </div>
-            <div class="card-campus border hairline-border p-4 text-center space-y-1">
-                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">Total Entries</div>
-                <div class="font-mono font-bold text-[var(--text-primary)] tabular-nums">
+            <div class="card-campus border hairline-border p-4 text-center space-y-1 rounded-[16px] shadow-tactile-sm">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">Total Entries</div>
+                <div class="font-mono text-lg font-bold text-[var(--text-primary)] tabular-nums">
                     {{ number_format($totalCount) }}
                 </div>
             </div>

@@ -1,15 +1,24 @@
 # Campus Coin — Project State
 
 ## Current Phase
-**Phase 8 — Accessibility Controls & Final Hardening (COMPLETED & VERIFIED)**
-All functional, security, and accessibility milestones of Campus Coin are fully implemented and verified.
-Ready for dedicated visual redesign in subsequent cycle.
+**Distinctive Product Design & Tactile Physical Interaction (COMPLETED & VERIFIED)**
+All functional, security, accessibility, and visual design milestones of Campus Coin are fully implemented, polished, and verified.
 
 ## Current Task
-Phase 8 has been fully implemented, integrated, and verified on `master`. System-wide keyboard accessibility, high-contrast `:focus-visible` indicators, persistent dark/light theme switching with synchronous FOUC prevention, three-tier root font-size scaling (`normal` 100%, `large` 112.5%, `xlarge` 125%) per SRS §1.6 & §185, reduced-motion preferences, skip-to-content links, semantic modal dialogs (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`, Escape dismiss), accessible data table scopes (`<th scope="col">`), live status/error announcements (`role="status"`/`role="alert"`), input boundary validation, and XSS prevention are fully operational. Full automated regression test suite passing at 100% (151 tests, 722 assertions).
+The dedicated **Distinctive Product Design & Tactile Physical Interaction** phase has been fully implemented, integrated, and verified on `master`.
+The application delivers an authoritative visual and tactile identity engineered to stand out decisively against competing student projects without decorative gimmicks or SaaS clichés:
+- **Locked Warm Palette:** Light mode foundation on Warm Ivory (`#F5EFE3`), Deep Olive (`#4F5B2A`), Muted Brass (`#B8892D`), and Warm Beige hairline borders (`#D8C9A8`). Night mode foundation on Deep Olive-Charcoal Night (`#14170F`), Luminous Olive (`#8EA055`), and Antique Brass (`#D6A449`).
+- **Tactile Physical Interaction Mechanics:** Micro-interactions feature physical mechanical compression (`translateY(1.5px) scale(0.988)` at 60ms) and resting contact shadows, giving controls a tangible physical feel without cartoon bounce.
+- **Intentional Geometry System:** Strict hierarchy of structural corner radii: 16px (`rounded-[16px]`) for surfaces and cards, 22px (`rounded-[22px]`) for dialogs and sheets, 10px (`rounded-[10px]`) for controls, inputs, and metric tiles, and 4px (`rounded-[4px]`) for status badges and chips. Universal 8px rounding has been eliminated.
+- **Solid Material Depth:** Zero glassmorphism, zero `backdrop-blur`, and zero floating gradient blobs. Modals render on solid physical backdrops (`bg-black/55`) with elevated surfaces (`bg-[var(--bg-surface-elevated)]`).
+- **Financial Figures Authority:** Tabular monospaced numbers (`JetBrains Mono`, `tabular-nums`) across all dollar amounts, dates, and percentages.
+- **Native SVG Chart Modernization:** Redesigned cash flow line charts and category volume distributions with dynamic CSS theme tokens.
+- **100% Phase 8 Accessibility Compliance:** Retains three-tier root font scaling (`100%`, `112.5%`, `125%`), high-contrast `:focus-visible` rings, skip-to-content navigation, and `@media (prefers-reduced-motion: reduce)` overrides.
+- **Automated Regression Suite:** 151 tests, 722 assertions, 100% passing.
+- **Asset Compilation & Code Quality:** Vite production build clean; Laravel Pint clean.
 
 ## Overall Completion
-**100%** (Phases 0–8 completed and verified: Foundation, Core Student Data, Budget Goals, Cash Flow Analytics, Monthly Reports, Saving Tips Engine, Advisory AI Categorization, Operational Admin Panel, Accessibility Controls & Final Hardening).
+**100%** (Phases 0–8 + Dedicated Distinctive Product Design Phase completed and verified: Foundation, Core Student Data, Budget Goals, Cash Flow Analytics, Monthly Reports, Saving Tips Engine, Advisory AI Categorization, Operational Admin Panel, Accessibility Controls & Final Hardening, and Distinctive Product Design).
 
 ## Phase Definitions & Roadmap (Reconciled & Authoritative)
 - **Phase 0:** Project Initialization, Scaffolding & Multi-Role Authentication (COMPLETED)
@@ -21,9 +30,10 @@ Phase 8 has been fully implemented, integrated, and verified on `master`. System
 - **Phase 6:** Advisory AI Categorization & CSV Batch Processing (COMPLETED & VERIFIED)
 - **Phase 7:** Operational Admin Panel & Category Controls (COMPLETED & VERIFIED)
 - **Phase 8:** Accessibility Controls & Final Hardening (COMPLETED & VERIFIED)
+- **Distinctive Product Design:** Tactile Physical Interaction, Warm Ivory & Olive Palette, and Distinctive Geometry (COMPLETED & VERIFIED)
 
 ## Completed Features
-- **Environment & Framework:** PHP 8.4.23, Composer 2.10.2, Node 22.21.0, NPM 10.9.4, MariaDB 10.4.32 on port 3306, Laravel 12 application with Livewire 3 (`livewire/livewire ^4.4`), Laravel Boost installed.
+- **Environment & Framework:** PHP 8.4.23, Composer 2.10.2, Node 22.21.0, NPM 10.9.4, MariaDB 10.4.32 on port 3306, Laravel 12 application with Livewire 3 (`livewire/livewire ^4.4`), Tailwind CSS v4, Laravel Boost installed.
 - **Database & Schemas:**
   - `users`: student profile fields (`academic_year`, `monthly_allowance`, `savings_goal`), role separation (`student`, `admin`), and account status (`active`, `disabled`).
   - `categories`: personal and system default categories with icon, hex color, type (`income`, `expense`), and operational status `is_active` (`boolean`, default `true`, indexed).
@@ -38,76 +48,19 @@ Phase 8 has been fully implemented, integrated, and verified on `master`. System
   - Direct-access administrator login portal (`/admin/login`).
   - Middleware: `EnsureUserIsAdmin` (direct root role guard) and `EnsureUserIsActive` (appended to `web` middleware pipeline, terminating sessions and redirecting/aborting disabled users).
   - Multi-tenant student isolation enforcing `where('user_id', Auth::id())` across all personal data queries.
+- **Visual Design & Tactile Experience:**
+  - Standardized component classes: `.btn-primary`, `.btn-secondary`, `.btn-icon`, `.input-campus`, `.segmented-bar`, `.segmented-item`, `.card-campus`, `.metric-tile`, `.table-row-tactile`, `.modal-dialog-surface`.
+  - Consistent layout mirroring across `resources/views/layouts/` and `resources/views/components/layouts/`.
+  - Native SVG charts adopting CSS variables for mode-independent rendering.
 - **Accessibility & UX Controls (Phase 8):**
   - **FOUC Prevention & Immediate Boot:** Synchronous `<head>` boot script reads `localStorage` for theme and font-size preferences, immediately applying `.dark` and `data-font-size="..."` prior to render to eliminate layout jumps.
   - **Font-Size Scaling Preference:** Root CSS variables scale base typography at `normal` (100%), `large` (112.5%), and `xlarge` (125%) per SRS §1.6 & §185, with accessible dropdown selectors in Student, Admin, Guest, and Welcome headers.
   - **Keyboard Navigation & Visible Focus:** High-contrast focus indicators (`outline: 2px solid var(--accent-primary) !important`) for all interactive elements via `:focus-visible`.
   - **Skip to Main Content:** Accessible skip navigation link on every layout with focus slide-in transition targeting `<main id="main-content" tabindex="-1">`.
   - **Reduced Motion:** Global `@media (prefers-reduced-motion: reduce)` block nullifying transitions, animations, and smooth scrolling for users with vestibular sensitivities.
-  - **Semantic Modal Dialogs:** Full ARIA modal attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`, Escape dismiss via Alpine `@keydown.escape.window`) across Single Transaction Modal, CSV Batch Import Modal, Student Category Modal, Global Category Modal, User Inspection Modal, and Budget Modal.
-  - **Accessible Data Tables:** Complete table headers with `<th scope="col">` and dynamic `aria-sort` indicators across Transaction List, Category Breakdown, 6-Month Velocity, Daily Summary, Weekly Summary, Filtered Ledger, Most-Used Categories, and Recent Campus Accounts.
-  - **Form Accessibility:** All inputs associated with explicit `<label for="...">`, search inputs and filter selectors given descriptive `aria-label`s, and authentication inputs configured with standard browser `autocomplete` attributes.
-  - **Live Announcements:** Dynamic flash messages, budget threshold notices, and operational error banners configured with `role="status" aria-live="polite"` or `role="alert" aria-live="assertive"`.
-  - **Mobile Navigation Drawer:** Responsive slide-over drawer with Alpine state binding (`mobileNavOpen`), backdrop dismiss, and keyboard escape handling.
-- **Category Management & Governance:**
-  - 12 system default categories seeded.
-  - Student `CategoryManager` Livewire component (`/categories`) for personal category CRUD, type filters, and color/icon palettes.
-  - Admin `CategoryManager` Livewire component (`/admin/categories`):
-    - System default category creation (`is_default = true`, `user_id = null`).
-    - Global category editing (name, cash-flow type, icon, color).
-    - Status toggle (Active / Inactive) preventing inactive categories from being selected for new entries while preserving historical ledger records.
-    - Safe non-destructive deletion guard blocking hard deletion when referenced by transactions, budgets, tips, or learned mappings, recommending archival/deactivation instead.
-    - Scope filters: Global System Defaults vs Student Custom Categories vs All.
-- **Student Account Status Governance:**
-  - Admin `UserManager` Livewire component (`/admin/users`):
-    - Search by name or email, filter by cohort, status (`active`, `disabled`), role (`student`, `admin`), and sort by activity/name/date.
-    - Server-side status toggle (`toggleStatus(int $userId)`): deactivating an account updates status and terminates active database session records in `sessions` table.
-    - Root account protection: administrators cannot deactivate their own root accounts or alter admin status from student manager.
-    - Inspection modal: provides student profile details, academic cohort, financial baselines, and aggregated ledger activity counts without exposing sensitive credentials or passwords.
-    - Financial baseline reset: allows administrators to reset student baseline stipend and target savings goal to zero.
-- **Operational Platform Metrics & Telemetry:**
-  - Dedicated `AdminMetricsService` (`app/Services/AdminMetricsService.php`):
-    - High-performance SQL aggregates (`COUNT`, `SUM`, `AVG`, `GROUP BY`) with zero memory bloat and zero-state protection.
-    - Student metrics: total students, active vs disabled count, active percentage (%), 30-day signup velocity, cohort distribution, total committed monthly stipends and savings goals.
-    - Transaction metrics: total transactions, gross ledger volume, expense volume vs income volume, average transaction ticket size, 30-day transaction count.
-    - Category metrics: global default vs personal category breakdown, active vs inactive counts, and top 5 most-used categories by transaction frequency and volume share.
-    - Budget metrics: total active budget goals, aggregate budgeted limit, and participating student count.
-  - Admin `Dashboard` Livewire component (`/admin/dashboard`):
-    - 4 operational KPI cards adhering to fintech aesthetic.
-    - Most-Used Categories leaderboard with direct links to category administration.
-    - Student Demographics & Commitments breakdown with progress distribution.
-    - Recent Registered Campus Accounts table with inline status toggling and quick links.
-- **Automated Test Suite:**
-  - **151 tests with 722 assertions** passing at 100% (`php artisan test`).
-  - Includes 12 dedicated Phase 8 feature tests covering skip links, main landmarks, text scaling, theme persistence, form autocomplete, table scopes, modal dialog semantics, and input sanitization / XSS escaping.
-
-## Partially Completed Features
-- None.
-
-## Not Started Features
-- Dedicated Campus Coin visual redesign (scheduled for subsequent phase).
-
-## Known Bugs
-None.
-
-## Known Limitations
-- Real banking integrations are intentionally absent per SRS (strictly manual entry / CSV imports).
-- Financial values are stored as `DECIMAL(10,2)` and manipulated with BCMath to prevent floating-point inaccuracies.
-- Spending data is calculated directly from actual ledger expenses rather than cached in the budget table.
-- AI categorization is purely advisory; manual category selection is always authoritative.
-
-## Current Database State
-- Database `campus_coin` active on MySQL/MariaDB `127.0.0.1:3306` (SQLite in-memory for testing).
-- Tables migrated: `users`, `password_reset_tokens`, `sessions`, `cache`, `jobs`, `categories`, `transactions`, `budgets`, `saving_tips`, `category_learnings`.
-- Default credentials active:
-  - Admin: `admin@campuscoin.edu` / `AdminSecure123!`
-  - Student 1: `alex.rivera@campus.edu` / `StudentSecure123!`
-  - Student 2: `maria.santos@campus.edu` / `StudentSecure123!`
-- 12 system default categories seeded.
-- Sample transactions seeded for Alex Rivera.
-
-## Current Test Status
-- 151 tests, 722 assertions passing at 100% (`php artisan test`).
-
-## Immediate Next Task
-- Transition to dedicated visual redesign phase or production deployment.
+  - **Semantic Modal Dialogs:** Full ARIA modal attributes across all 8 dialogs in the application.
+  - **Accessible Data Tables:** Complete table headers with `<th scope="col">` and dynamic `aria-sort` indicators.
+- **Verification Baseline:**
+  - Automated Tests: 151 tests, 722 assertions, 100% passing.
+  - Linting: Laravel Pint clean.
+  - Assets: Vite production build clean.

@@ -1,135 +1,135 @@
-# Campus Coin — UI Implementation Specification
+# Campus Coin — Distinctive Product Design & Tactile Physical Interaction Specification
 
-## 1. Design Direction
-**Precision-oriented fintech dashboard + student product**
-- References: Linear, Stripe Dashboard, Copilot Money
-- Aesthetic: Data-dense, flat, structured 12-column grid, hairline borders (1px), high typographic contrast, no visual fluff.
+## 1. Executive Identity & Aesthetic Thesis
+Campus Coin is engineered with a **distinctive, authoritative visual identity** that deliberately stands out from standard SaaS templates and 20+ competing student teams without relying on decorative noise, cartoon animations, or visual clichés.
 
----
-
-## 2. Anti-Cliché Rules (Strictly Enforced)
-- **NO** pill-shaped buttons (`rounded-full` or 9999px radius).
-- **NO** huge rounded cards.
-- **NO** purple/blue gradients or pink/orange gradients.
-- **NO** glassmorphism, frosted glass, or `backdrop-blur`.
-- **NO** floating background blobs or particle effects.
-- **NO** 3D illustrations or isometric graphics.
-- **NO** emoji icons in UI chrome (SVG Lucide line icons only).
-- **NO** hiding important financial figures inside accordions.
+### The Identity Pillar: Warm Editorial Precision + Physical Instrument Depth
+- **Tactile Physicality:** Controls feel mechanical and grounded. Buttons compress downward upon click with tangible resistance rather than floating or springing cartoonishly.
+- **Warm Architectural Palette:** Anchored by Warm Ivory canvas, Deep Olive brand accents, and Muted Brass highlights, rejecting cold generic slate/blue palettes.
+- **Intentional Geometry:** A strict hierarchy of corner radii matching structural purpose (16px cards, 22px dialogs, 10px inputs/buttons, 4px badges), deliberately avoiding ubiquitous 8px monotony.
+- **Solid Material Depth:** Zero glassmorphism, zero `backdrop-blur`, and zero floating gradient blobs. Depth is achieved strictly through calibrated hairline borders, subtle tonal insets, and physical contact shadows.
+- **Financial Authority:** Monospaced figures with tabular numbers (`tabular-nums`) and strict double-entry ledger alignment communicate fiscal clarity and credibility.
 
 ---
 
-## 3. Typography System
-Fonts loaded via Google Fonts CDN:
-- **Headings:** `Space Grotesk`, weights 600, 700
-- **Body & Controls:** `Inter`, weights 400, 500, 600
-- **Financial Figures & Dates:** `JetBrains Mono`, weights 500, 600 (with `font-feature-settings: "tnum"`)
+## 2. Locked Color Token System
 
-### Type Scale
-- `H1`: 24px, 700, -0.02em tracking
-- `H2`: 18px, 600, -0.01em tracking
-- `H3`: 14px, 600
-- `Body`: 14px, 400/500, line-height 1.5
-- `Subtitle`: 13px, 400, muted
-- `Labels`: 11px, 600, uppercase, letter-spacing 0.05em
+### Light Mode Foundations
+| Token | Hex Value | Purpose |
+| :--- | :--- | :--- |
+| `--bg-canvas` | `#F5EFE3` | Warm Ivory page foundation |
+| `--bg-surface` | `#FCFAF6` | Rested cards, containers, sidebars |
+| `--bg-surface-elevated` | `#FFFFFF` | Modal dialogs, dropdown popovers, active layers |
+| `--bg-subtle` | `#EFE8DA` | Inset metric blocks, table headers, segmented bars |
+| `--bg-subtle-hover` | `#E8DFCDB8` | Inset hover state |
+| `--border-hairline` | `#D8C9A8` | Warm beige structural 1px bounding lines |
+| `--border-subtle` | `#E5DBC5` | Inset tile borders |
+| `--border-strong` | `#BAAA83` | Hovered and focused bounding lines |
+| `--text-primary` | `#232B14` | Deep olive-charcoal body and heading typography |
+| `--text-secondary` | `#4A5336` | Secondary body text and subtitles |
+| `--text-muted` | `#687250` | Table headers, metadata, field descriptions |
+| `--text-subtle` | `#8E9876` | Inactive dates and subtle icons |
+| `--accent-primary` | `#4F5B2A` | Deep Olive brand anchor, primary action fills |
+| `--accent-hover` | `#3E4720` | Primary action hover fill |
+| `--accent-active` | `#2F3617` | Primary action pressed fill |
+| `--accent-tint` | `#E8EFE1` | Deep Olive tinted backgrounds |
+| `--gold` | `#B8892D` | Muted Brass highlights, allowance chips, badges |
+| `--gold-hover` | `#9E731F` | Brass interactive hover |
+| `--gold-tint` | `#F9F2E3` | Brass tinted badge fills |
+| `--success` | `#3D6633` | Warm Olive Green positive cash-flow indicator |
+| `--success-tint` | `#EBF3E8` | Income status pill fills |
+| `--danger` | `#A83232` | Warm Brick Red outflow and expense indicator |
+| `--danger-tint` | `#FBEAEA` | Expense status pill fills |
 
----
-
-## 4. Color Tokens
-
-### Light Mode (`:root` / default)
-- `--bg-canvas`: `#F8FAFC`
-- `--bg-surface`: `#FFFFFF`
-- `--bg-subtle`: `#F1F5F9`
-- `--border-hairline`: `#E2E8F0`
-- `--text-primary`: `#0F172A`
-- `--text-muted`: `#64748B`
-- `--accent-primary`: `#059669`
-- `--accent-hover`: `#047857`
-- `--accent-tint`: `#ECFDF5`
-- `--gold`: `#D97706`
-- `--danger`: `#E11D48`
-
-### Dark Mode (`.dark`)
-- `--bg-canvas`: `#09090B`
-- `--bg-surface`: `#18181B`
-- `--bg-subtle`: `#27272A`
-- `--border-hairline`: `#27272A`
-- `--text-primary`: `#FAFAFA`
-- `--text-muted`: `#A1A1AA`
-- `--accent-primary`: `#10B981`
-- `--accent-hover`: `#34D399`
-- `--accent-tint`: `#064E3B`
-- `--gold`: `#F59E0B`
-- `--danger`: `#F43F5E`
-
----
-
-## 5. Spacing & Radius System
-- **Radius Small (Badges, Tags):** `4px`
-- **Radius Medium (Inputs, Buttons):** `6px`
-- **Radius Large (Cards, Modals):** `8px`
-- **Spacing Scale:** `4px`, `8px`, `12px`, `16px`, `24px`, `32px`, `48px`
-- **Card Specification:** 1px solid border, 8px radius, 20px padding, no heavy elevation.
+### Dark Mode (Night Mode) Foundations
+The dark mode preserves the warm olive identity rather than defaulting to cold pitch black:
+| Token | Hex Value | Purpose |
+| :--- | :--- | :--- |
+| `--bg-canvas` | `#14170F` | Deep Olive-Charcoal Night canvas |
+| `--bg-surface` | `#1B2015` | Resting surface layer |
+| `--bg-surface-elevated` | `#22281B` | Elevated modal dialogs and sheets |
+| `--bg-subtle` | `#28301F` | Dark inset metric tiles and segmented bars |
+| `--border-hairline` | `#343D2A` | Warm dark olive structural hairline lines |
+| `--border-strong` | `#47543A` | Hovered border lines |
+| `--text-primary` | `#F5EFE3` | Warm ivory contrast text |
+| `--text-secondary` | `#D8CEBC` | Secondary ivory text |
+| `--text-muted` | `#A6AF94` | Soft olive-khaki metadata |
+| `--accent-primary` | `#8EA055` | Luminous Warm Olive interactive elements |
+| `--accent-hover` | `#9FB264` | Luminous hover state |
+| `--gold` | `#D6A449` | Luminous Antique Brass accents |
+| `--success` | `#6CAE5C` | Warm luminous green positive indicators |
+| `--danger` | `#DB5454` | Warm brick red expense indicators |
 
 ---
 
-## 6. Iconography
-Lucide-compatible SVG stroke icons (`stroke-width="1.75"`):
-- `Wallet`, `Lock`, `ArrowRight`, `CheckCircle2`, `GraduationCap`, `DollarSign`, `Target`, `ShieldCheck`, `TrendingUp`, `TrendingDown`, `PieChart`, `Plus`, `Lightbulb`, `CreditCard`, `Search`, `Filter`, `Download`, `Calendar`, `Tag`, `Users`, `Activity`, `Database`, `ShieldAlert`, `Sliders`.
+## 3. Strict Anti-Cliché Boundaries
+1. **NO Glassmorphism & NO Backdrop Blur:** Every instance of `backdrop-blur-*` has been eliminated. Modals render with solid physical backdrops (`bg-black/55`) and solid elevated card surfaces (`bg-[var(--bg-surface-elevated)]`).
+2. **NO Pill Buttons:** Interactive controls maintain an intentional `10px` curvature (`rounded-[10px]`); `rounded-full` is restricted solely to circular category color swatches, status dots, and avatars.
+3. **NO Universal 8px Rounding:** Surfaces follow an architectural radius hierarchy:
+   - **Surfaces & Cards:** `16px` (`rounded-[16px]` / `var(--radius-lg)`)
+   - **Modals & Dialogs:** `22px` (`rounded-[22px]` / `var(--radius-xl)`)
+   - **Buttons, Inputs & Tiles:** `10px` (`rounded-[10px]` / `var(--radius-md)`)
+   - **Badges & Status Chips:** `4px` (`rounded-[4px]` / `var(--radius-xs)`)
+4. **NO Generic SaaS Gradients or Neon Blobs:** All chromatic relationships are defined by warm earth-derived tokens.
+5. **NO Unstyled Emojis:** Native SVG stroke icons with consistent `1.75px` stroke weights throughout.
 
 ---
 
-## 7. Responsive Breakpoints
-- `xl`: `>= 1200px` (Multi-column dashboard, 12-col grid)
-- `md`: `>= 768px` (Tablet 2×2 grid, collapsible sidebar)
-- `sm`: `< 768px` (Single column, horizontal scrolling KPI bar, bottom action sheet for transaction modal)
+## 4. Tactile Physical Interaction Mechanics
+All interactive elements implement physical four-state mechanical feedback:
+1. **Resting (Idle):**
+   - Flat solid surface with subtle hairline contact shadow (`--shadow-tactile-sm`).
+2. **Hover (Elevation):**
+   - Micro-lift upward: `transform: translateY(-1px)`.
+   - Contact shadow expansion: `--shadow-tactile-md`.
+3. **Pressed Compression (Active):**
+   - Physical mechanical compression: `transform: translateY(1.5px) scale(0.988)`.
+   - Compression timing: ultra-fast `60ms` response (`transition-duration: 60ms`).
+   - Shadow flattens into surface: `box-shadow: 0 1px 1px rgba(35, 43, 20, 0.10)`.
+4. **Release (Settled):**
+   - Returns to resting position via custom natural cubic-bezier easing (`cubic-bezier(0.16, 1, 0.3, 1)`).
+
+### Core Reusable CSS Components (`resources/css/app.css`)
+- `.btn-primary`: Olive anchor button with mechanical compression, white text, and inset top-highlight.
+- `.btn-secondary`: Warm surface button with tactile hairline border and hover elevation.
+- `.btn-icon`: 38×38px mechanical square icon action button.
+- `.input-campus`: Warm surface input with 10px radius, hairline border, and olive focus ring.
+- `.segmented-bar` & `.segmented-item`: Mechanical inset segmented toggle bar with elevated active indicator.
+- `.card-campus`: 16px radius solid card with subtle contact shadow and hairline border.
+- `.metric-tile`: Inset container for secondary statistics with hairline border.
+- `.table-row-tactile`: Ledger table row with tactile hover background transition.
+- `.modal-dialog-surface`: 22px radius elevated dialog container with solid physical depth (`--shadow-modal`).
 
 ---
 
-## 8. Admin Operations & Governance Interface *(Phase 7)*
-- **Layout Architecture (`resources/views/layouts/admin.blade.php`):**
-  - Dedicated admin shell with left-hand operational sidebar, root operator profile badge, and dark/light mode toggle.
-  - Active route highlighting across Overview (`admin.dashboard`), Student Accounts (`admin.users`), and Global Categories (`admin.categories`).
-- **Operational Dashboard (`livewire/admin/dashboard.blade.php`):**
-  - 4 primary telemetry KPI cards: Total Students, Tracked Ledger Volume, Logged Transactions, and Category Governance.
-  - 12-column responsive layout: 7-column Most-Used Categories leaderboard with volume shares; 5-column Student Demographics & Commitments progress card.
-  - Recent registered campus accounts table with cohort details, ledger activity counts, and inline status toggle action.
-- **Global Category Manager (`livewire/admin/category-manager.blade.php`):**
-  - Segmented scope tabs (Global Defaults vs Student Custom vs All Categories).
-  - Type filters (`income`, `expense`), status filters (`active`, `inactive`), and real-time debounced search.
-  - Modal form for creating and editing global default categories with icon palette and hex accent selectors.
-  - Safe non-destructive deletion and status toggle with visual badges.
-- **Student Account Manager (`livewire/admin/user-manager.blade.php`):**
-  - Status, cohort, and role filters with sorting by newest, name, or transaction activity.
-  - Interactive inspection modal displaying full profile, baseline allowances, and aggregated ledger telemetry without exposing sensitive credentials.
-  - One-click account deactivation/reactivation and baseline reset actions with confirmation dialogues.
+## 5. Typography & Financial Data Authority
+- **Headings:** `Space Grotesk`, weights 600, 700 with `-0.015em` tracking.
+- **Body & UI Chrome:** `Inter`, weights 400, 500, 600.
+- **Financial Figures, Dates & Codes:** `JetBrains Mono`, weights 500, 600, 700 with explicit `font-feature-settings: "tnum" 1` and `tabular-nums`. Every dollar amount aligns with exact column verticality.
 
 ---
 
-## 9. Accessibility System & Controls *(Phase 8)*
-- **FOUC Prevention & Head Script:**
-  - Placed in `<head>` before CSS and DOM paint across all layouts.
-  - Immediately parses `localStorage.getItem('theme')` (with fallback to `matchMedia('(prefers-color-scheme: dark)')`) and `localStorage.getItem('font-size')`.
-  - Attaches `.dark` and `data-font-size` directly to `document.documentElement` to eliminate layout jumps.
-- **Three-Tier Font-Size Scaling (SRS §1.6 & §185):**
-  - Selectable in headers via the `aA` font size dropdown:
-    - **Normal (100%):** Standard 16px root scale (`html[data-font-size="normal"]`).
-    - **Large (112.5%):** Enlarged 18px root scale (`html[data-font-size="large"]`).
-    - **X-Large (125%):** Maximum 20px root scale (`html[data-font-size="xlarge"]`).
-  - Scales all `rem`-based typography, paddings, and card layouts proportionally without clipping.
-- **Skip to Main Content:**
-  - High-contrast `.skip-to-content` link (`position: fixed; top: 12px; left: 12px; z-index: 9999`) hidden off-screen until focused via Tab key.
-  - Slides smoothly into view on focus, linking directly to `<main id="main-content" tabindex="-1">`.
-- **Keyboard Focus Indicators:**
-  - Global `:focus-visible` styling (`outline: 2px solid var(--accent-primary) !important; outline-offset: 2px;`) ensures keyboard focus rings stand out clearly against both light and dark backgrounds.
-- **Motion Sensitivity:**
-  - Global `@media (prefers-reduced-motion: reduce)` block disables CSS transitions, keyframe animations, and smooth scrolling for users with vestibular disorders.
-- **ARIA Semantics & Screen Reader Support:**
-  - All modal dialogs implement `role="dialog"`, `aria-modal="true"`, `aria-labelledby="[id]"`, and `@keydown.escape.window` listeners.
-  - All tabular data structures feature `<th scope="col">` column headers and dynamic `aria-sort` indicators.
-  - Form controls include explicit `<label for="...">`, search and filter inputs include descriptive `aria-label`s, and authentication inputs declare standard browser `autocomplete` attributes.
-  - Dynamic banners and budget alerts declare `role="status" aria-live="polite"` or `role="alert" aria-live="assertive"`.
-- **Mobile Navigation Drawer:**
-  - Responsive slide-over drawer toggled via `mobileNavOpen` state, dismissible via backdrop click or the Escape key.
+## 6. Native SVG Chart Modernization
+Interactive charts (Cash Flow trend lines, outflow bars, velocity indicators) in `resources/views/livewire/student/dashboard.blade.php` and `resources/views/livewire/student/monthly-reports.blade.php` were redesigned:
+- **Inflow / Receipts:** `text-[var(--accent-primary)] fill-current` (warm deep olive in light, luminous olive in dark).
+- **Outflow / Expenses:** `text-[var(--danger)] fill-current` (warm brick red).
+- **Gridlines & Ticks:** `text-[var(--border-hairline)] stroke-current` with dashed hairline styling (`stroke-dasharray="3 3"`).
+- **Tooltips & Value Labels:** Solid physical cards with `tabular-nums`.
 
+---
+
+## 7. Accessibility Preservation (Phase 8 Compliance)
+The visual redesign retains 100% of Phase 8 accessibility and keyboard controls:
+- **Skip Navigation Link:** `.skip-to-content` targeting `<main id="main-content" tabindex="-1">`.
+- **High-Contrast Visible Focus Rings:** `:focus-visible` with `outline: 2px solid var(--accent-primary) !important; outline-offset: 2px !important`.
+- **Root Typography Scaling:** Three-tier scaling via `html[data-font-size="normal|large|xlarge"]` (`100%`, `112.5%`, `125%`).
+- **Vestibular Motion Protection:** Full `@media (prefers-reduced-motion: reduce)` block nullifying all CSS animations and transform translations.
+- **Semantic Dialogs:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and Alpine `@keydown.escape.window` dismiss across all 8 application modals.
+- **Accessible Table Headers:** `<th scope="col">` with `aria-sort` indicators across all ledger views.
+
+---
+
+## 8. Verification & Quality Metrics
+- **Automated PHPUnit Tests:** 151 tests, 722 assertions, 100% passing.
+- **Laravel Pint Code Formatter:** 0 style violations, clean formatting.
+- **Vite Production Asset Build:** Clean compilation in ~4s (`app.css` 86kB / 14.7kB gzip, `app.js` 0.38kB).

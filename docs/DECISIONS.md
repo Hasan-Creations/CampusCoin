@@ -68,3 +68,11 @@
 - **Reason:** Root-level font percentage scaling allows every `rem`-based font, spacing, and component dimension to adjust proportionally without breaking responsive flex layouts or truncating text in fixed-height cards. The synchronous `<head>` script eliminates distracting visual flashes during navigation, while high-contrast focus rings and complete ARIA attributes satisfy WCAG 2.1 AA standards for keyboard users and assistive technologies.
 - **Status:** Accepted
 
+---
+
+## DEC-011 — Distinctive Product Design, Tactile Physical Interaction & Material Depth
+- **Decision:** Establish an authoritative visual and tactile identity for Campus Coin to stand out decisively against 20+ competing student teams without relying on decorative noise, cartoon animations, or SaaS clichés. Lock the chromatic system to warm, earth-derived tones (Warm Ivory `#F5EFE3`, Deep Olive `#4F5B2A`, Muted Brass `#B8892D`, Warm Beige `#D8C9A8`, and Olive-Charcoal Night `#14170F`). Enforce an intentional corner radius hierarchy (16px surfaces/cards, 22px dialogs/sheets, 10px controls/inputs, 4px badges) and strictly reject universal 8px rounding. Implement 4-state tactile physical micro-interactions on interactive controls (resting elevation → hover lift → downward pressed compression at 60ms → settled release). Eradicate all `backdrop-blur` and glassmorphism in favor of solid physical depth (`bg-black/55`, `modal-dialog-surface`). Format all financial figures using monospaced tabular numerals (`tabular-nums`).
+- **Reason:** Generic purple/blue SaaS palettes, ubiquitous 8px radii, and frosted glass clichés make student projects look templated and indistinct. The combination of warm editorial palette tokens, deliberate architectural geometry, mechanical physical button compression, and solid contact shadows gives Campus Coin the gravitas of a precision financial instrument while retaining 100% test compatibility and accessibility compliance.
+- **Status:** Accepted
+
+

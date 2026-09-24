@@ -10,7 +10,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
 
     <!-- Immediate Theme & Font-Size Boot Script (Prevents FOUC & Text Shifts) -->
     <script>
@@ -41,48 +41,48 @@
         <!-- Admin Ops Sidebar (Desktop) -->
         <aside class="hidden md:flex md:w-64 md:flex-col border-r hairline-border bg-[var(--bg-surface)] shrink-0" aria-label="Administrator Sidebar Navigation">
             <div class="p-6 border-b hairline-border flex items-center justify-between">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-[4px] bg-[var(--text-primary)] text-[var(--bg-surface)] flex items-center justify-center font-heading font-bold text-sm tracking-tight shadow-sm" aria-hidden="true">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group">
+                    <div class="w-9 h-9 rounded-[8px] bg-[var(--text-primary)] text-[var(--bg-surface)] flex items-center justify-center font-heading font-bold text-sm tracking-tight shadow-tactile-sm transition-transform group-hover:scale-105" aria-hidden="true">
                         OP
                     </div>
                     <div>
                         <div class="font-heading font-bold text-base tracking-tight leading-none text-[var(--text-primary)]">Campus<span class="text-[var(--gold)]">Admin</span></div>
-                        <div class="text-[10px] font-mono text-[var(--text-muted)] tracking-wider uppercase mt-1">Operations Console</div>
+                        <div class="text-[10px] font-mono text-[var(--gold)] tracking-wider uppercase mt-1 font-semibold">Operations Console</div>
                     </div>
                 </a>
             </div>
 
             <!-- Admin Navigation -->
-            <nav class="flex-1 p-4 space-y-1" aria-label="Administrator Main Navigation">
+            <nav class="flex-1 p-3.5 space-y-1" aria-label="Administrator Main Navigation">
                 <a href="{{ route('admin.dashboard') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
-                    <x-icon name="activity" class="w-4 h-4" />
-                    Overview & Telemetry
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-xs font-medium transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-semibold shadow-tactile-sm border-l-3 border-[var(--gold)] pl-2.5' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:translate-x-0.5' }}">
+                    <x-icon name="activity" class="w-4 h-4 flex-shrink-0" />
+                    <span>Overview & Telemetry</span>
                 </a>
 
                 <a href="{{ route('admin.users') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.users*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
-                    <x-icon name="users" class="w-4 h-4" />
-                    Student Accounts
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-xs font-medium transition-all {{ request()->routeIs('admin.users*') ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-semibold shadow-tactile-sm border-l-3 border-[var(--gold)] pl-2.5' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:translate-x-0.5' }}">
+                    <x-icon name="users" class="w-4 h-4 flex-shrink-0" />
+                    <span>Student Accounts</span>
                 </a>
 
                 <a href="{{ route('admin.categories') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.categories*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
-                    <x-icon name="tag" class="w-4 h-4" />
-                    Global Categories
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-xs font-medium transition-all {{ request()->routeIs('admin.categories*') ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-semibold shadow-tactile-sm border-l-3 border-[var(--gold)] pl-2.5' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:translate-x-0.5' }}">
+                    <x-icon name="tag" class="w-4 h-4 flex-shrink-0" />
+                    <span>Global Categories</span>
                 </a>
             </nav>
 
-            <div class="p-4 border-t hairline-border bg-[var(--bg-subtle)]/50">
-                <div class="text-xs font-semibold text-[var(--text-primary)] mb-1">{{ Auth::user()->name }}</div>
-                <div class="text-[10px] font-mono text-[var(--gold)] uppercase tracking-wider mb-3">Root Operator</div>
+            <div class="p-4 border-t hairline-border bg-[var(--bg-subtle)]/60">
+                <div class="text-xs font-semibold text-[var(--text-primary)] mb-0.5">{{ Auth::user()->name }}</div>
+                <div class="text-[10px] font-mono text-[var(--gold)] uppercase tracking-wider mb-3 font-semibold">Root Operator</div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" 
                             aria-label="Sign out of administrator console"
-                            class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-[6px] text-xs font-medium border hairline-border bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] text-[var(--danger)] transition-colors">
+                            class="btn-secondary w-full py-2 text-xs text-[var(--danger)] hover:border-[var(--danger)]/30">
                         <x-icon name="log-out" class="w-3.5 h-3.5" />
-                        Sign Out
+                        <span>Sign Out</span>
                     </button>
                 </form>
             </div>
@@ -116,10 +116,10 @@
                  x-transition:leave="transition ease-in-out duration-200 transform"
                  x-transition:leave-start="translate-x-0"
                  x-transition:leave-end="-translate-x-full"
-                 class="relative flex-1 flex flex-col max-w-xs w-full bg-[var(--bg-surface)] border-r hairline-border shadow-xl">
+                 class="relative flex-1 flex flex-col max-w-xs w-full bg-[var(--bg-surface)] border-r hairline-border shadow-modal rounded-r-[22px]">
                 <div class="p-4 border-b hairline-border flex items-center justify-between">
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
-                        <div class="w-7 h-7 rounded-[4px] bg-[var(--text-primary)] text-[var(--bg-surface)] flex items-center justify-center font-heading font-bold text-xs tracking-tight shadow-sm" aria-hidden="true">
+                        <div class="w-8 h-8 rounded-[6px] bg-[var(--text-primary)] text-[var(--bg-surface)] flex items-center justify-center font-heading font-bold text-xs tracking-tight shadow-tactile-sm" aria-hidden="true">
                             OP
                         </div>
                         <span class="font-heading font-bold text-sm tracking-tight text-[var(--text-primary)]">Campus<span class="text-[var(--gold)]">Admin</span></span>
@@ -127,65 +127,75 @@
                     <button type="button" 
                             @click="mobileNavOpen = false"
                             aria-label="Close admin navigation menu"
-                            class="p-1.5 rounded-[4px] border hairline-border hover:bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)]">
+                            class="btn-icon">
                         <x-icon name="x" class="w-4 h-4" />
                     </button>
                 </div>
 
-                <nav class="flex-1 p-4 space-y-1 overflow-y-auto" aria-label="Admin Mobile Navigation">
+                <nav class="flex-1 p-3.5 space-y-1 overflow-y-auto" aria-label="Admin Mobile Navigation">
                     <a href="{{ route('admin.dashboard') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-xs font-medium transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-semibold shadow-tactile-sm' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
                         <x-icon name="activity" class="w-4 h-4" />
-                        Overview & Telemetry
+                        <span>Overview & Telemetry</span>
                     </a>
 
                     <a href="{{ route('admin.users') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.users*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-xs font-medium transition-all {{ request()->routeIs('admin.users*') ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-semibold shadow-tactile-sm' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
                         <x-icon name="users" class="w-4 h-4" />
-                        Student Accounts
+                        <span>Student Accounts</span>
                     </a>
 
                     <a href="{{ route('admin.categories') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.categories*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-xs font-medium transition-all {{ request()->routeIs('admin.categories*') ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-semibold shadow-tactile-sm' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
                         <x-icon name="tag" class="w-4 h-4" />
-                        Global Categories
+                        <span>Global Categories</span>
                     </a>
                 </nav>
 
-                <div class="p-4 border-t hairline-border bg-[var(--bg-subtle)]/50">
-                    <div class="text-xs font-semibold text-[var(--text-primary)] mb-1">{{ Auth::user()->name }}</div>
-                    <div class="text-[10px] font-mono text-[var(--gold)] uppercase tracking-wider mb-3">Root Operator</div>
+                <div class="p-4 border-t hairline-border bg-[var(--bg-subtle)]/60">
+                    <div class="text-xs font-semibold text-[var(--text-primary)] mb-0.5">{{ Auth::user()->name }}</div>
+                    <div class="text-[10px] font-mono text-[var(--gold)] uppercase tracking-wider mb-3 font-semibold">Root Operator</div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" 
                                 aria-label="Sign out of administrator console"
-                                class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-[6px] text-xs font-medium border hairline-border bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] text-[var(--danger)] transition-colors">
+                                class="btn-secondary w-full py-2 text-xs text-[var(--danger)]">
                             <x-icon name="log-out" class="w-3.5 h-3.5" />
-                            Sign Out
+                            <span>Sign Out</span>
                         </button>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content Area -->
+        <!-- Main Workspace Area -->
         <div class="flex-1 flex flex-col min-w-0">
-            <header class="border-b hairline-border bg-[var(--bg-surface)] px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+            <!-- Top Admin App Bar -->
+            <header class="border-b hairline-border bg-[var(--bg-surface)] px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <button type="button" 
                             @click="mobileNavOpen = true"
                             aria-label="Open admin navigation menu"
                             :aria-expanded="mobileNavOpen"
                             aria-controls="admin-mobile-navigation"
-                            class="md:hidden p-2 rounded-[6px] border hairline-border text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]">
+                            class="md:hidden btn-icon">
                         <x-icon name="sliders" class="w-4 h-4" />
                     </button>
-                    <div class="text-xs font-mono text-[var(--text-muted)]">
-                        OPERATIONAL CONTROL PANEL &bull; RESTRICTED ACCESS
-                    </div>
+                    <!-- Breadcrumbs -->
+                    <nav class="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]" aria-label="Admin Breadcrumb">
+                        <span class="text-[var(--text-primary)] font-semibold">Campus Admin Ops</span>
+                        <span aria-hidden="true" class="opacity-50">/</span>
+                        <span class="text-[var(--gold)] font-medium">{{ $header ?? 'Console' }}</span>
+                    </nav>
                 </div>
 
                 <div class="flex items-center gap-3">
+                    <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-[10px] border hairline-border bg-[var(--bg-surface)] text-xs font-mono shadow-tactile-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-[var(--text-muted)] text-[10px] uppercase tracking-wider font-semibold">Tele-State:</span>
+                        <span class="font-bold text-[var(--text-primary)]">Live Sync</span>
+                    </div>
+
                     <!-- Font-Size Scaling Control (SRS §1.6 & §185) -->
                     <div class="relative" x-data="{
                         open: false,
@@ -208,7 +218,7 @@
                                 :aria-expanded="open"
                                 aria-label="Adjust text scaling size"
                                 title="Adjust text scaling"
-                                class="p-2 rounded-[4px] border hairline-border hover:bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 font-mono text-xs">
+                                class="btn-icon text-xs font-mono gap-1 w-auto px-2.5">
                             <span class="font-bold text-xs" aria-hidden="true">aA</span>
                             <x-icon name="sliders" class="w-3 h-3" />
                         </button>
@@ -217,11 +227,11 @@
                              x-cloak
                              role="menu"
                              aria-label="Text size options"
-                             class="absolute right-0 mt-1 w-40 rounded-[6px] border hairline-border bg-[var(--bg-surface)] shadow-lg p-1 z-50 text-xs font-mono">
+                             class="absolute right-0 mt-2 w-44 rounded-[16px] border hairline-border bg-[var(--bg-surface)] shadow-modal p-1.5 z-50 text-xs font-mono">
                             <button type="button"
                                     role="menuitem"
                                     @click="setFontSize('normal')"
-                                    class="w-full text-left px-2.5 py-1.5 rounded-[4px] flex items-center justify-between transition-colors"
+                                    class="w-full text-left px-3 py-2 rounded-[8px] flex items-center justify-between transition-colors"
                                     :class="fontSize === 'normal' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'">
                                 <span>Normal (100%)</span>
                                 <span x-show="fontSize === 'normal'" aria-hidden="true">✓</span>
@@ -229,7 +239,7 @@
                             <button type="button"
                                     role="menuitem"
                                     @click="setFontSize('large')"
-                                    class="w-full text-left px-2.5 py-1.5 rounded-[4px] flex items-center justify-between transition-colors"
+                                    class="w-full text-left px-3 py-2 rounded-[8px] flex items-center justify-between transition-colors"
                                     :class="fontSize === 'large' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'">
                                 <span>Large (112.5%)</span>
                                 <span x-show="fontSize === 'large'" aria-hidden="true">✓</span>
@@ -237,7 +247,7 @@
                             <button type="button"
                                     role="menuitem"
                                     @click="setFontSize('xlarge')"
-                                    class="w-full text-left px-2.5 py-1.5 rounded-[4px] flex items-center justify-between transition-colors"
+                                    class="w-full text-left px-3 py-2 rounded-[8px] flex items-center justify-between transition-colors"
                                     :class="fontSize === 'xlarge' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'">
                                 <span>X-Large (125%)</span>
                                 <span x-show="fontSize === 'xlarge'" aria-hidden="true">✓</span>
@@ -250,14 +260,15 @@
                             onclick="window.CampusCoin ? window.CampusCoin.toggleTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))"
                             aria-label="Toggle dark mode"
                             title="Toggle dark mode"
-                            class="p-2 rounded-[4px] border hairline-border hover:bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
+                            class="btn-icon">
                         <x-icon name="sun" class="w-4 h-4 dark:hidden" />
                         <x-icon name="moon" class="w-4 h-4 hidden dark:block" />
                     </button>
                 </div>
             </header>
 
-            <main id="main-content" tabindex="-1" class="flex-1 p-6 lg:p-8 overflow-y-auto focus:outline-none">
+            <!-- Page Body -->
+            <main id="main-content" tabindex="-1" class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto focus:outline-none">
                 {{ $slot }}
             </main>
         </div>

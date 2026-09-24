@@ -1,17 +1,17 @@
 <x-layouts.guest title="Student Profile Setup">
     <div class="w-full max-w-xl mx-auto">
-        <div class="card-campus border hairline-border shadow-sm p-6 sm:p-8">
+        <div class="card-campus border hairline-border shadow-modal p-6 sm:p-8 rounded-[16px]">
             <div class="mb-6">
-                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] bg-[var(--accent-tint)] text-[var(--accent-primary)] text-[11px] font-mono font-semibold uppercase tracking-wider mb-2">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-[var(--accent-tint)] text-[var(--accent-primary)] text-[11px] font-mono font-semibold uppercase tracking-wider mb-2 shadow-tactile-sm">
                     <x-icon name="graduation-cap" class="w-3.5 h-3.5" />
-                    New Student Onboarding
+                    <span>New Student Onboarding</span>
                 </div>
                 <h1 class="font-heading text-2xl font-bold text-[var(--text-primary)]">Setup Your Campus Coin Ledger</h1>
                 <p class="text-xs text-[var(--text-muted)] mt-1">Configure your academic cohort and spending baselines to unlock tailored budgeting</p>
             </div>
 
             @if ($errors->any())
-                <div role="alert" aria-live="assertive" class="mb-4 p-3 rounded-[6px] border border-rose-200 bg-rose-50 dark:bg-rose-950/30 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-400">
+                <div role="alert" aria-live="assertive" class="mb-4 p-3.5 rounded-[10px] border border-rose-200 bg-rose-50 dark:bg-rose-950/30 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-400">
                     <ul class="list-disc pl-4 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -25,7 +25,7 @@
 
                 <!-- Full Name -->
                 <div>
-                    <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+                    <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
                         Full Name
                     </label>
                     <input id="name" 
@@ -42,7 +42,7 @@
                 <!-- Campus Email with .edu indicator -->
                 <div>
                     <div class="flex items-center justify-between mb-1.5">
-                        <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                        <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] font-mono">
                             Campus Email (.edu)
                         </label>
                         <span id="edu-indicator" 
@@ -65,7 +65,7 @@
 
                 <!-- Academic Year Cohort -->
                 <div>
-                    <label for="academic_year" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+                    <label for="academic_year" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
                         Academic Standing / Cohort
                     </label>
                     <select id="academic_year" 
@@ -85,11 +85,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <!-- Monthly Allowance -->
                     <div>
-                        <label for="monthly_allowance" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+                        <label for="monthly_allowance" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
                             Monthly Allowance / Inflow ($)
                         </label>
                         <div class="relative">
-                            <span class="absolute left-3 top-2 text-xs font-mono text-[var(--text-muted)]">$</span>
+                            <span class="absolute left-3 top-2.5 text-xs font-mono text-[var(--text-muted)]">$</span>
                             <input id="monthly_allowance" 
                                    type="number" 
                                    step="0.01" 
@@ -100,16 +100,16 @@
                                    placeholder="1000.00"
                                    class="input-campus w-full text-sm font-mono pl-7 tabular-nums">
                         </div>
-                        <span class="text-[10px] text-[var(--text-muted)] mt-1 block">Stipends, parents, or job baseline</span>
+                        <span class="text-[10px] text-[var(--text-muted)] mt-1 block font-mono">Stipends, parents, or job baseline</span>
                     </div>
 
                     <!-- Target Monthly Savings Goal -->
                     <div>
-                        <label for="savings_goal" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+                        <label for="savings_goal" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
                             Monthly Savings Target ($)
                         </label>
                         <div class="relative">
-                            <span class="absolute left-3 top-2 text-xs font-mono text-[var(--text-muted)]">$</span>
+                            <span class="absolute left-3 top-2.5 text-xs font-mono text-[var(--text-muted)]">$</span>
                             <input id="savings_goal" 
                                    type="number" 
                                    step="0.01" 
@@ -120,14 +120,14 @@
                                    placeholder="200.00"
                                    class="input-campus w-full text-sm font-mono pl-7 tabular-nums">
                         </div>
-                        <span class="text-[10px] text-[var(--text-muted)] mt-1 block">Target reserve to build monthly</span>
+                        <span class="text-[10px] text-[var(--text-muted)] mt-1 block font-mono">Target reserve to build monthly</span>
                     </div>
                 </div>
 
                 <!-- Password and Confirmation -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div>
-                        <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+                        <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
                             Password
                         </label>
                         <input id="password" 
@@ -140,7 +140,7 @@
                     </div>
 
                     <div>
-                        <label for="password_confirmation" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+                        <label for="password_confirmation" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
                             Confirm Password
                         </label>
                         <input id="password_confirmation" 
