@@ -105,7 +105,7 @@ Phases 0–6 fully implemented, integrated, and verified on `master`. Both paral
   - Explicit manual override guarantee: user's manual category selection is always authoritative and updates learned mappings.
   - Interactive CSV Batch Categorization modal in `TransactionList`: bounded up to 50 rows, parses date/merchant/amount/type, generates suggestions, displays review table with category dropdown overrides, and confirms batch import with ledger creation and learning persistence.
 - **Automated Test Suite:**
-  - Full automated feature regression test suite passing at 100% (`php artisan test`).
+  - **111 tests with 541 assertions** passing at 100% (`php artisan test`).
 - **End-to-End Browser Verification:**
   - Playwright browser test verifying budget creation, edit, ledger expense logging, consumption update, near-limit alert, over-budget trigger, dashboard display, student data isolation, and budget deletion.
 
@@ -136,7 +136,7 @@ None.
 - Sample transactions seeded for Alex Rivera.
 
 ## Current Test Status
-- Full integrated test suite passing at 100% (`php artisan test`).
+- 111 tests, 541 assertions passing at 100% (`php artisan test`).
 
 ## Immediate Next Task
 - **Phase 7 — Operational Admin Panel & Category Controls:**

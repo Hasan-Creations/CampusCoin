@@ -127,7 +127,7 @@ php artisan serve
 
 ## 6. Tests to Run
 ```powershell
-# Run full integrated test suite
+# Run full integrated test suite (111 tests / 541 assertions)
 php artisan test --compact
 
 # Run saving tips test suite (19 tests / 82 assertions)
