@@ -103,22 +103,34 @@ php artisan serve
   - Server-side PDF export with Dompdf (`/reports/export/pdf`), print-ready layout preview (`?preview=1`), and streaming CSV export (`/reports/export/csv`).
   - Strict student tenant isolation across all report queries and export endpoints.
   - 77 automated feature tests passing with 389 assertions (100% pass rate).
-- **Immediate Next Action (Phase 5 — Saving Tips Engine & Intelligent Rule Evaluator):**
-  - Implement heuristic rule engine evaluating budget adherence, discretionary spending patterns, dining-out ratios, and recurring subscription burdens.
-  - Build interactive Saving Tips widget for the student dashboard and dedicated tips feed.
+- **Phase 5 (Saving Tips Engine & Intelligent Rule Evaluator):** COMPLETED & VERIFIED.
+  - Deterministic `SavingTipsService` evaluating 5 financial rules on student ledger data.
+  - BCMath decimal calculations for estimated potential savings figures.
+  - Deterministic ranking of tips by potential savings impact descending.
+  - `saving_tips` table with composite unique constraint `(user_id, rule_key, category_id)` preventing duplicates and preserving student `pinned` and `dismissed` states.
+  - Dedicated student hub at `/tips` (`SavingTipsManager`) with segmented tabs (`active`, `pinned`, `dismissed`), potential savings metrics, and pin/dismiss/restore actions.
+  - Dashboard integration: "Personalized Saving Opportunities" widget with top 3 tips and inline pin/dismiss controls.
+  - Strict student tenant isolation enforced across all saving tips queries and actions.
+  - 96 total automated feature tests passing with 471 assertions (100% pass rate).
+- **Immediate Next Action (Phase 6 / Parallel Integration):**
+  - Merge and reconcile with Phase 6 branch (`phase-6`), incorporating `AiCategorizationService`, `CategoryLearning`, heuristics fallback, and CSV batch categorization.
+  - Proceed to Phase 7 (Operational Admin Panel & Category Controls).
 
 ---
 
 ## 6. Tests to Run
 ```powershell
-# Run full automated test suite (77 tests / 389 assertions)
-php artisan test
+# Run full automated test suite (96 tests / 471 assertions)
+php artisan test --compact
+
+# Run saving tips test suite (19 tests / 82 assertions)
+php artisan test tests/Feature/SavingTipsTest.php
 
 # Run monthly reports test suite (14 tests / 78 assertions)
 php artisan test tests/Feature/MonthlyReportsTest.php
 
 # Run code styling check
-vendor/bin/pint --dirty --format agent
+php vendor/bin/pint --format agent
 
 # Build frontend assets
 npm run build

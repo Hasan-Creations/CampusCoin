@@ -39,3 +39,11 @@
 - **Decision:** AI categorization and monthly insights are completely advisory and encapsulated in service classes. Application logic functions identically when AI services are offline.
 - **Reason:** Students must retain complete control over their category assignments and budgets. External AI outages must never block expense logging.
 - **Status:** Accepted
+
+---
+
+## DEC-007 — Deterministic Saving Tips Engine & Composite Key State Persistence
+- **Decision:** Build the Saving Tips Engine (`SavingTipsService`) on deterministic, database-driven rules (above-average spending, approaching/exceeded category budgets, single-category concentration >40%, month-over-month growth >25%, and savings goal lagging) rather than relying on LLM generation. Calculate potential savings with BCMath and order tips deterministically by savings impact. Persist tips into a `saving_tips` table with a composite unique index on `(user_id, rule_key, category_id)`.
+- **Reason:** Deterministic evaluation guarantees 100% predictable, explainable, and reproducible financial recommendations with zero network latency, zero token costs, and no hallucination risk. The unique composite index enables idempotent re-evaluation (`syncTips`) where live numbers update and resolved tips expire, while user preferences (`pinned`, `dismissed`) remain permanently intact.
+- **Status:** Accepted
+

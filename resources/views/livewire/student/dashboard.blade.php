@@ -245,6 +245,127 @@
         </div>
 
         {{-- ===================================================== --}}
+        {{-- PERSONALIZED SAVING OPPORTUNITIES WIDGET (PHASE 5)     --}}
+        {{-- ===================================================== --}}
+        <div class="card-campus border hairline-border p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-[11px] font-mono uppercase tracking-wider text-[var(--accent-primary)] font-semibold flex items-center gap-1.5">
+                        <x-icon name="lightbulb" class="w-3.5 h-3.5" />
+                        <span>Intelligent Rule Evaluator</span>
+                    </div>
+                    <h2 class="font-heading font-semibold text-sm text-[var(--text-primary)] mt-0.5">
+                        Personalized Saving Opportunities
+                    </h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('student.tips') }}" class="text-xs font-medium text-[var(--accent-primary)] hover:underline flex items-center gap-1">
+                        <span>View All Tips</span>
+                        <span>&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            @if ($topSavingTips->isEmpty())
+                <div class="py-6 text-center space-y-2">
+                    <div class="inline-flex items-center justify-center w-10 h-10 rounded-[6px] bg-[var(--bg-subtle)] text-emerald-500 mx-auto">
+                        <x-icon name="check-circle" class="w-5 h-5" />
+                    </div>
+                    <div class="text-xs font-semibold text-[var(--text-primary)]">
+                        No spending spikes or budget deviations detected
+                    </div>
+                    <p class="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
+                        All expense categories are operating within historical baselines and budget caps.
+                    </p>
+                    <a href="{{ route('student.tips') }}" class="btn-secondary py-1.5 px-3 text-xs inline-flex mt-1">
+                        Open Saving Tips Center
+                    </a>
+                </div>
+            @else
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach ($topSavingTips as $tip)
+                        <div class="p-4 rounded-[6px] border hairline-border bg-[var(--bg-subtle)]/30 space-y-3 flex flex-col justify-between hover:border-[var(--accent-primary)]/40 transition-colors" wire:key="dashboard-tip-{{ $tip->id }}">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between gap-2">
+                                    @if ($tip->category)
+                                        <div class="flex items-center gap-1.5 min-w-0">
+                                            <div class="w-5 h-5 rounded-[4px] flex items-center justify-center text-white flex-shrink-0"
+                                                 style="background-color: {{ $tip->category->color ?? '#64748B' }};">
+                                                <x-icon :name="$tip->category->icon ?? 'tag'" class="w-3 h-3" />
+                                            </div>
+                                            <span class="text-xs font-medium text-[var(--text-primary)] truncate">
+                                                {{ $tip->category->name }}
+                                            </span>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center gap-1.5 text-xs font-mono text-[var(--accent-primary)]">
+                                            <x-icon name="activity" class="w-3.5 h-3.5" />
+                                            <span>Overall Ledger</span>
+                                        </div>
+                                    @endif
+
+                                    <div class="flex items-center gap-1">
+                                        @if ($tip->isPinned())
+                                            <span class="p-1 rounded-[3px] bg-amber-500/10 text-amber-600 dark:text-amber-400" title="Pinned">
+                                                <x-icon name="bookmark" class="w-3 h-3" />
+                                            </span>
+                                        @endif
+                                        <span class="px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 tabular-nums">
+                                            Est. {{ $tip->formattedEstimatedSavings() }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <h3 class="font-heading font-semibold text-xs text-[var(--text-primary)] line-clamp-1">
+                                        {{ $tip->title }}
+                                    </h3>
+                                    <p class="text-[11px] text-[var(--text-muted)] leading-relaxed line-clamp-2">
+                                        {{ $tip->message }}
+                                    </p>
+                                </div>
+
+                                <div class="p-2 rounded-[4px] border hairline-border bg-[var(--bg-surface)] text-[11px] text-[var(--text-primary)] font-medium leading-tight">
+                                    {{ $tip->suggestion }}
+                                </div>
+                            </div>
+
+                            <div class="pt-2 border-t hairline-border flex items-center justify-between text-[11px]">
+                                <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
+                                    {{ str_replace('_', ' ', $tip->rule_key) }}
+                                </span>
+
+                                <div class="flex items-center gap-1.5">
+                                    @if ($tip->isPinned())
+                                        <button type="button"
+                                                wire:click="unpinTip({{ $tip->id }})"
+                                                class="p-1 rounded-[4px] text-[var(--gold)] hover:bg-[var(--bg-subtle)]"
+                                                title="Unpin tip">
+                                            <x-icon name="bookmark-minus" class="w-3.5 h-3.5" />
+                                        </button>
+                                    @else
+                                        <button type="button"
+                                                wire:click="pinTip({{ $tip->id }})"
+                                                class="p-1 rounded-[4px] text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--bg-subtle)]"
+                                                title="Pin tip">
+                                            <x-icon name="bookmark" class="w-3.5 h-3.5" />
+                                        </button>
+                                    @endif
+
+                                    <button type="button"
+                                            wire:click="dismissTip({{ $tip->id }})"
+                                            class="p-1 rounded-[4px] text-[var(--text-muted)] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-[var(--bg-subtle)]"
+                                            title="Dismiss tip">
+                                        <x-icon name="x" class="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
         {{-- ===================================================== --}}
         {{-- SIX-MONTH CASH FLOW TRENDS (SRS §4.4, §4.6)            --}}
         {{-- ===================================================== --}}

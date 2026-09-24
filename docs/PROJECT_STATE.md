@@ -1,14 +1,14 @@
 # Campus Coin — Project State
 
 ## Current Phase
-**Phase 4 — Monthly Financial Reports & Multi-Format Exports (COMPLETED & VERIFIED)**
-Transitioning to: **Phase 5 — Deterministic Saving Tips Engine & Bookmarks**
+**Phase 5 — Deterministic Saving Tips Engine & Intelligent Rule Evaluator (COMPLETED & VERIFIED)**
+Transitioning to: **Phase 6 / Parallel Integration (AI Categorization & Advanced Insights)**
 
 ## Current Task
-Phase 4 fully implemented and verified with 77 automated feature tests (389 assertions). Dedicated student reports interface at `/reports` with Livewire `MonthlyReports`, multi-period presets, custom date range filtering, category and income-source filtering, 6-month historical view, daily/weekly current-month summaries, and server-side PDF (`barryvdh/laravel-dompdf`) and CSV exports. Ready to begin Phase 5: deterministic saving tips engine, impact ranking, and tip pinning/bookmarking.
+Phase 5 fully implemented and verified with 19 automated feature tests (82 assertions), bringing the comprehensive test suite to 96 tests / 471 assertions (100% pass rate). Deterministic, database-driven saving tips engine with 5 explicit rules, BCMath potential savings estimation, deterministic ranking by financial impact, database persistence with unique composite key `(user_id, rule_key, category_id)` preventing duplicates while preserving pinned/dismissed states, dedicated student tips hub at `/tips` (`SavingTipsManager`), and dashboard top-3 widget integration.
 
 ## Overall Completion
-**65%** (Phase 0: Foundation, Phase 1: Core Student Data, Phase 2: Budget Goals & Alerts, Phase 3: Cash Flow Trends, Phase 4: Monthly Reports & Financial Reporting complete).
+**75%** (Phase 0: Foundation, Phase 1: Core Student Data, Phase 2: Budget Goals & Alerts, Phase 3: Cash Flow Trends, Phase 4: Monthly Reports & Financial Reporting, Phase 5: Saving Tips Engine complete).
 
 ## Phase Definitions & Roadmap (Reconciled & Authoritative)
 - **Phase 0:** Project Initialization, Scaffolding & Multi-Role Authentication (COMPLETED)
@@ -16,7 +16,7 @@ Phase 4 fully implemented and verified with 77 automated feature tests (389 asse
 - **Phase 2:** Budget Goals, Alerts & Dashboard Budget Integration (COMPLETED & VERIFIED)
 - **Phase 3:** Interactive Cash Flow Trends & Advanced Analytics (COMPLETED & VERIFIED)
 - **Phase 4:** Monthly Financial Reports & Multi-Format Exports (CSV/PDF) (COMPLETED & VERIFIED)
-- **Phase 5:** Deterministic Saving Tips Engine & Bookmarks (NEXT)
+- **Phase 5:** Deterministic Saving Tips Engine & Bookmarks (COMPLETED & VERIFIED)
 - **Phase 6:** Advisory AI Categorization & Monthly Insights (User Override)
 - **Phase 7:** Operational Admin Panel & Category Controls
 - **Phase 8:** Accessibility Controls & Final Hardening
@@ -64,16 +64,30 @@ Phase 4 fully implemented and verified with 77 automated feature tests (389 asse
   - Executive financial summary KPI cards: Total Inflow, Total Outflow, Net Movement, and Savings Efficiency rate.
   - Server-side branded PDF statement generation via `barryvdh/laravel-dompdf` (`/reports/export/pdf`), print-ready layout (`?preview=1`), and structured CSV streaming export (`/reports/export/csv`).
   - Strict student tenant isolation enforced across all reporting queries and export endpoints.
+- **Saving Tips Engine & Intelligent Rule Evaluator (Phase 5):**
+  - Database table `saving_tips` with composite unique constraint on `(user_id, rule_key, category_id)` ensuring persistent state across tip re-evaluations.
+  - Eloquent `SavingTip` model with relationships, scopes (`forUser`, `active`, `pinned`, `dismissed`), and mutation helpers (`pin()`, `unpin()`, `dismiss()`, `unDismiss()`).
+  - Deterministic `SavingTipsService` (`app/Services/SavingTipsService.php`) evaluating 5 data-driven financial rules:
+    1. Category spending significantly above historical 3-month average (>20% with >=$15 minimum delta).
+    2. Category approaching (>=80%) or exceeding (>100%) monthly category budget.
+    3. High spending share where a single category accounts for >40% of total monthly expenses.
+    4. Month-over-month overall spending growth exceeding 25% with >=$50 delta.
+    5. Savings goal lagging where student's net balance falls behind their monthly savings goal.
+  - BCMath decimal calculations for all estimated potential savings figures.
+  - Deterministic ranking of tips by calculated potential savings impact descending.
+  - Idempotent `syncTips()` method inserting newly triggered tips, updating live metrics, removing obsolete unpinned/active tips, and strictly preserving student `pinned` and `dismissed` states.
+  - Dedicated student hub at `/tips` with Livewire `SavingTipsManager` (`app/Livewire/Student/SavingTipsManager.php`) supporting tabbed views (`active`, `pinned`, `dismissed`), live metrics header (Total Potential Savings, Active Opportunities, Pinned Strategies), and pin/dismiss/restore actions.
+  - Dashboard integration: "Personalized Saving Opportunities" widget presenting the top 3 prioritized active/pinned tips with quick pin/dismiss controls and direct links to `/tips`.
+  - Multi-tenant student isolation strictly enforced across all database queries and actions.
 - **Automated Test Suite:**
-  - **77 tests with 389 assertions** passing at 100% (`php artisan test`).
+  - **96 tests with 471 assertions** passing at 100% (`php artisan test`).
 - **End-to-End Browser Verification:**
   - Playwright browser test verifying budget creation, edit, ledger expense logging, consumption update, near-limit alert, over-budget trigger, dashboard display, student data isolation, and budget deletion.
 
 ## Partially Completed Features
-- Sidebar navigation link for Saving Tips visible (pages scheduled for Phase 5).
+- None.
 
 ## Not Started Features
-- Deterministic Saving Tips Engine & Bookmarks (Phase 5)
 - Advisory AI Categorization & Insights with user override (Phase 6)
 - Operational Admin Panel user toggle & category controls (Phase 7)
 - Accessibility controls & advanced UX (Phase 8)
@@ -88,7 +102,7 @@ None.
 
 ## Current Database State
 - Database `campus_coin` active on MySQL/MariaDB `127.0.0.1:3306`.
-- Tables migrated: `users`, `password_reset_tokens`, `sessions`, `cache`, `jobs`, `categories`, `transactions`, `budgets`.
+- Tables migrated: `users`, `password_reset_tokens`, `sessions`, `cache`, `jobs`, `categories`, `transactions`, `budgets`, `saving_tips`.
 - Default credentials active:
   - Admin: `admin@campuscoin.edu` / `AdminSecure123!`
   - Student 1: `alex.rivera@campus.edu` / `StudentSecure123!`
@@ -97,10 +111,9 @@ None.
 - Sample transactions seeded for Alex Rivera.
 
 ## Current Test Status
-- 77 tests, 389 assertions passing at 100% (`php artisan test`).
+- 96 tests, 471 assertions passing at 100% (`php artisan test`).
 
 ## Immediate Next Task
-- **Phase 5 — Deterministic Saving Tips Engine & Bookmarks:**
-  - Implement `SavingTipService` analyzing category spending, budget compliance, and allowance baseline to generate actionable saving tips.
-  - Implement tip impact ranking and dashboard widget.
-  - Implement tip bookmarking / pinning.
+- **Phase 6 / Parallel Integration:**
+  - Merge and reconcile with Phase 6 branch (`phase-6`), which introduces `AiCategorizationService`, `CategoryLearning`, heuristics fallback, and CSV batch categorization.
+  - Proceed to Phase 7 (Operational Admin Panel & Category Controls).

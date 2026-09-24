@@ -48,7 +48,8 @@ app/
 │   │   ├── TransactionModal.php
 │   │   ├── BudgetManager.php
 │   │   ├── CategoryManager.php
-│   │   └── MonthlyReports.php
+│   │   ├── MonthlyReports.php
+│   │   └── SavingTipsManager.php
 │   └── Admin/
 ├── Models/
 │   ├── User.php
@@ -59,6 +60,7 @@ app/
 │   └── MonthlyInsight.php
 ├── Services/
 │   ├── FinancialCalculationService.php
+│   ├── SavingTipsService.php
 │   ├── AiAdvisorService.php
 │   └── CsvImportService.php
 ```
@@ -75,11 +77,27 @@ app/
 ## 5. Security & Isolation Strategy
 - **Authentication:** Bcrypt password hashing (minimum 12 rounds), session invalidation on logout.
 - **Role Isolation:** Two roles (`student`, `admin`). Students can never access `/admin/*` routes.
-- **Tenant Isolation:** Every financial query is scoped to `where('user_id', Auth::id())`. No student may inspect or modify another student's categories, budgets, or transactions.
+- **Tenant Isolation:** Every financial query is scoped to `where('user_id', Auth::id())`. No student may inspect or modify another student's categories, budgets, transactions, or saving tips.
 
 ---
 
-## 6. AI Integration Boundary
+## 6. Deterministic Saving Tips Engine Architecture
+- **Rule Evaluator (`SavingTipsService`):**
+  - Evaluates 5 explicit financial rules over actual student ledger data:
+    1. Historical spending spike (>20% over 3-month average, min $15 delta).
+    2. Category budget threshold alerts (>=80% warning, >100% exceeded).
+    3. Category concentration (>40% of total monthly expenses).
+    4. Month-over-month overall expense growth (>25% surge, min $50 delta).
+    5. Savings goal lagging (net balance under student's monthly savings target).
+  - Calculates potential savings impact using BCMath arithmetic.
+  - Deterministically ranks opportunities by calculated savings descending.
+- **Stateful Persistence Model:**
+  - `saving_tips` table with composite unique index `(user_id, rule_key, category_id)`.
+  - Ensures tip sync operations are idempotent: active tips update their live metrics, newly triggered tips are inserted, resolved/obsolete tips are purged, and student manual actions (`pinned`, `dismissed`) are strictly preserved.
+
+---
+
+## 7. AI Integration Boundary
 - AI functionalities (transaction categorization and monthly advisory tips) reside behind an isolated service interface (`AiAdvisorService`).
 - If an external AI provider fails or is unreachable, fallback deterministic rules apply seamlessly without interrupting student workflow.
 - All AI recommendations are advisory and require explicit user consent/override.

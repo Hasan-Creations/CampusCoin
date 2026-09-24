@@ -89,4 +89,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Budget::class);
     }
+
+    /**
+     * Saving tips generated for this student.
+     */
+    public function savingTips(): HasMany
+    {
+        return $this->hasMany(SavingTip::class);
+    }
 }

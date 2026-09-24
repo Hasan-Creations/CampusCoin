@@ -148,3 +148,70 @@
 - **Phase 5 — Saving Tips Engine & Intelligent Rule Evaluator:**
   - Build rule-based heuristic saving tips engine evaluating budget adherence, discretionary spending, dining-out ratios, and allowance utilization.
   - Implement student saving tips widget on Dashboard and dedicated Tips view.
+
+---
+
+## 2026-09-24 — Phase 5: Saving Tips Engine & Intelligent Rule Evaluator
+
+### Implemented
+- Database Schema (`database/migrations/2026_09_25_000001_create_saving_tips_table.php`):
+  - Created `saving_tips` table with `user_id` (foreign key, cascade delete), `rule_key`, `category_id` (nullable foreign key, cascade delete), `title`, `message`, `suggestion`, `trigger_data` (JSON), `estimated_savings` (`DECIMAL(10,2)`), `status` (`ENUM('active', 'dismissed', 'pinned')`), `dismissed_at`, and `pinned_at`.
+  - Added unique composite key `(user_id, rule_key, category_id)` to guarantee idempotency and prevent duplicate tip rows across re-evaluations while retaining student state.
+  - Added performance indexes on `(user_id, status)` and `(user_id, estimated_savings)`.
+- Eloquent Model (`app/Models/SavingTip.php`):
+  - Relationships: `user()` (`BelongsTo`), `category()` (`BelongsTo`).
+  - Scopes: `scopeForUser()`, `scopeActive()`, `scopePinned()`, `scopeDismissed()`.
+  - Action methods: `pin()`, `unpin()`, `dismiss()`, `unDismiss()`.
+  - State checkers: `isPinned()`, `isDismissed()`, `isActive()`.
+  - Added `savingTips()` `HasMany` relation on both `User` and `Category` models.
+- Factory (`database/factories/SavingTipFactory.php`):
+  - Created factory with `pinned`, `dismissed`, and `withCategory` states.
+- Service Layer (`app/Services/SavingTipsService.php`):
+  - Deterministic evaluation of 5 explicit data-driven financial rules:
+    1. `evaluateCategoryAboveAverage()`: Flags categories where current calendar month spending exceeds the student's 3-month historical average by >20%, with minimum excess threshold of $15.00. Estimated savings calculated as `bcsub(current, average)`.
+    2. `evaluateCategoryBudgetAlert()`: Identifies active monthly category budgets approaching (>=80%) or exceeding (>100%) limits. Estimated savings is the excess spend or projected buffer.
+    3. `evaluateHighSpendingShare()`: Flags single category capturing >40% of total expenses (minimum total spend $50.00). Suggests 15% reduction using BCMath.
+    4. `evaluateMonthOverMonthGrowth()`: Detects overall monthly expense surge >25% with absolute delta >$50.00 compared to previous calendar month.
+    5. `evaluateSavingsGoalLagging()`: Detects when net balance (inflow - outflow) falls short of the student's defined monthly `savings_goal`.
+  - BCMath decimal precision for all potential savings calculations (`bcsub`, `bcmul`, `bcdiv`, `bccomp`).
+  - Deterministic ranking: tips ordered by `estimated_savings` descending using `bccomp`.
+  - Idempotent `syncTips()`: inserts new tips, updates trigger metadata and savings estimates on existing tips, soft-cleans obsolete active tips whose conditions no longer trigger, and strictly preserves student `pinned` and `dismissed` states.
+- Livewire Hub (`app/Livewire/Student/SavingTipsManager.php` at route `/tips`):
+  - Tabbed filtering (`active`, `pinned`, `dismissed`) with dynamic counts.
+  - Summary KPI header: Total Potential Savings identified, Active Opportunities count, and Pinned Strategies count.
+  - Interactive student controls: `pinTip()`, `unpinTip()`, `dismissTip()`, `restoreTip()`, and `refreshTips()`.
+  - Strict tenant isolation: verifies `tip->user_id === Auth::id()` before performing state transitions.
+- Blade View (`resources/views/livewire/student/saving-tips-manager.blade.php`):
+  - Precision fintech styling: 1px hairline borders (`#E2E8F0` / `#27272A`), Space Grotesk headings, Inter body, JetBrains Mono monetary figures.
+  - Segmented tab controls, trigger detail pill tags, actionable suggestions, and empty state cards.
+- Dashboard Integration (`app/Livewire/Student/Dashboard.php` & `resources/views/livewire/student/dashboard.blade.php`):
+  - "Personalized Saving Opportunities" widget presenting the top 3 prioritized active/pinned tips.
+  - Inline Pin and Dismiss actions directly on dashboard cards with reactive refresh.
+  - Direct deep-link to `/tips` for full opportunity management.
+- Web Routes & Layout Navigation:
+  - Route `GET /tips` (`student.tips`) protected by `auth`, `active`, and student role checks.
+  - Sidebar navigation updated with active state indicator and Lightbulb icon.
+- Automated Testing (`tests/Feature/SavingTipsTest.php`):
+  - 19 comprehensive feature tests (82 assertions):
+    - Category spending above average rule trigger and thresholds
+    - Category budget alert rule trigger (near-limit & over-budget)
+    - High spending share rule (>40% threshold)
+    - Month-over-month overall growth rule (>25% & >$50 delta)
+    - Savings goal lagging rule trigger
+    - Deterministic ranking by potential savings impact
+    - Zero/empty transaction handling and insufficient historical data safety
+    - Pin, unpin, dismiss, and restore state transitions
+    - Persistence and duplicate prevention via composite key
+    - Multi-tenant student isolation (cross-student access rejection)
+    - Tab navigation and dashboard widget rendering
+  - Full suite passed: **96 tests, 471 assertions** (100% pass rate).
+
+### Verified
+- Executed `php vendor/bin/pint --format agent` — all PHP files passed clean formatting.
+- Executed `npm run build` — compiled all assets in 1.08s with 0 errors.
+- Executed `php artisan test --compact` — 96 tests passed with 471 assertions in 11.2s.
+
+### Next
+- **Phase 6 / Parallel Integration:**
+  - Merge and reconcile with Phase 6 branch (`phase-6`), incorporating `AiCategorizationService`, `CategoryLearning`, heuristics fallback, and CSV batch categorization.
+  - Proceed to Phase 7 (Operational Admin Panel & Category Controls).

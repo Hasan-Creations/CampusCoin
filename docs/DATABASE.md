@@ -99,6 +99,35 @@ Monthly limits by student and category.
 
 ---
 
+### 2.5 `saving_tips` *(Phase 5 — Implemented & Verified)*
+Personalized saving opportunities generated deterministically from student financial metrics.
+
+| Column | Type | Nullable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `BIGINT UNSIGNED` | No | AUTO_INCREMENT | Primary Key |
+| `user_id` | `BIGINT UNSIGNED` | No | — | Foreign key to `users.id` |
+| `rule_key` | `VARCHAR(64)` | No | — | Rule identifier (e.g. `category_above_average`) |
+| `category_id` | `BIGINT UNSIGNED` | Yes | `NULL` | Foreign key to `categories.id` (if category-specific) |
+| `title` | `VARCHAR(255)` | No | — | Concise headline |
+| `message` | `TEXT` | No | — | Trigger explanation and diagnostic context |
+| `suggestion` | `TEXT` | No | — | Concrete actionable financial advice |
+| `trigger_data` | `JSON` | Yes | `NULL` | Structured metric snapshots |
+| `estimated_savings` | `DECIMAL(10,2)` | No | `0.00` | Calculated potential monthly savings impact |
+| `status` | `ENUM('active','dismissed','pinned')` | No | `'active'` | Tip lifecycle state |
+| `dismissed_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp when student dismissed tip |
+| `pinned_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp when student pinned tip |
+| `created_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+| `updated_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+
+**Foreign Keys & Constraints:**
+- `FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE`
+- `FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE`
+- `UNIQUE KEY unique_user_rule_category (user_id, rule_key, category_id)`
+- `INDEX saving_tips_user_id_status_index (user_id, status)`
+- `INDEX saving_tips_user_id_savings_index (user_id, estimated_savings)`
+
+---
+
 ## 3. Data Isolation Rules
 1. **Never Trust Client Identifiers:** Query builders and Eloquent scopes must explicitly enforce `user_id = Auth::id()`.
 2. **Deterministic Calculations:** All arithmetic aggregation runs through `SUM(amount)` with `DECIMAL(10,2)` preservation.

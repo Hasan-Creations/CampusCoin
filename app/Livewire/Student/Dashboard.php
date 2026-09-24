@@ -4,8 +4,10 @@ namespace App\Livewire\Student;
 
 use App\Models\Budget;
 use App\Models\Category;
+use App\Models\SavingTip;
 use App\Models\Transaction;
 use App\Services\FinancialCalculationService;
+use App\Services\SavingTipsService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -29,9 +31,36 @@ class Dashboard extends Component
     }
 
     /**
+     * Pin a saving tip from the dashboard widget.
+     */
+    public function pinTip(int $tipId): void
+    {
+        $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
+        $tip->pin();
+    }
+
+    /**
+     * Unpin a saving tip from the dashboard widget.
+     */
+    public function unpinTip(int $tipId): void
+    {
+        $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
+        $tip->unpin();
+    }
+
+    /**
+     * Dismiss a saving tip from the dashboard widget.
+     */
+    public function dismissTip(int $tipId): void
+    {
+        $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
+        $tip->dismiss();
+    }
+
+    /**
      * Render the live dashboard with real financial KPIs, 6-month cash flow trends, and comparative analytics.
      */
-    public function render(FinancialCalculationService $calculationService)
+    public function render(FinancialCalculationService $calculationService, SavingTipsService $savingTipsService)
     {
         $userId = Auth::id();
         $user = Auth::user();
@@ -157,6 +186,18 @@ class Dashboard extends Component
         $sixMonthTrends = $calculationService->getSixMonthCashFlow($userId, $now);
         $categoryComparisons = $calculationService->getCategoryComparisons($userId, $this->timePeriod, $now);
 
+        // --- Deterministic Saving Tips & Opportunities (Phase 5) ---
+        if ($user && SavingTip::where('user_id', $userId)->count() === 0) {
+            $savingTipsService->syncTips($user, $now);
+        }
+        $topSavingTips = SavingTip::where('user_id', $userId)
+            ->whereIn('status', ['active', 'pinned'])
+            ->with('category')
+            ->orderByRaw("CASE WHEN status = 'pinned' THEN 0 ELSE 1 END")
+            ->orderByDesc('estimated_savings')
+            ->limit(3)
+            ->get();
+
         return view('livewire.student.dashboard', [
             'user' => $user,
             'monthlyIncome' => (float) $monthlyIncome,
@@ -183,6 +224,7 @@ class Dashboard extends Component
             'sixMonthTrends' => $sixMonthTrends,
             'categoryComparisons' => $categoryComparisons,
             'timePeriod' => $this->timePeriod,
+            'topSavingTips' => $topSavingTips,
         ])->layout('components.layouts.app', ['title' => 'Dashboard']);
     }
 }

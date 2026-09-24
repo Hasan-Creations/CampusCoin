@@ -63,6 +63,14 @@ class Category extends Model
     }
 
     /**
+     * Saving tips associated with this category.
+     */
+    public function savingTips(): HasMany
+    {
+        return $this->hasMany(SavingTip::class);
+    }
+
+    /**
      * Scope to categories accessible by a specific user (their personal categories + system defaults).
      */
     public function scopeForUser(Builder $query, int $userId): Builder

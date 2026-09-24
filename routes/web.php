@@ -9,6 +9,7 @@ use App\Livewire\Student\BudgetManager;
 use App\Livewire\Student\CategoryManager;
 use App\Livewire\Student\Dashboard;
 use App\Livewire\Student\MonthlyReports;
+use App\Livewire\Student\SavingTipsManager;
 use App\Livewire\Student\TransactionList;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,7 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function () {
     Route::get('/reports', MonthlyReports::class)->name('reports');
     Route::get('/reports/export/pdf', [ReportExportController::class, 'exportPdf'])->name('reports.export.pdf');
     Route::get('/reports/export/csv', [ReportExportController::class, 'exportCsv'])->name('reports.export.csv');
+    Route::get('/tips', SavingTipsManager::class)->name('student.tips');
 });
 
 /*

@@ -63,8 +63,8 @@
                     Reports
                 </a>
 
-                <a href="{{ url('/tips') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->is('tips*') ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
+                <a href="{{ route('student.tips') }}" 
+                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('student.tips*') || request()->is('tips*') ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
                     <x-icon name="lightbulb" class="w-4 h-4" />
                     Saving Tips
                 </a>
