@@ -1,180 +1,188 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap');
 @import 'tailwindcss';
+
+@theme {
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  --color-secondary: var(--secondary);
+  --color-expense: var(--expense);
+  --color-hairline: var(--hairline);
+  --color-muted: var(--muted);
+
+  --font-display: 'Fraunces', serif;
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --shadow-panel: 0 20px 46px -30px rgba(21, 20, 15, 0.18);
+  --shadow-hero: 0 24px 56px -32px rgba(21, 20, 15, 0.20);
+}
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../views/**/*.blade.php';
 
 /* ==========================================================================
-   Campus Coin — Authoritative Visual Identity & Tactile Design Tokens
-   Core Palette:
-   • Warm Ivory:  #F5EFE3
-   • Deep Olive:  #4F5B2A
-   • Muted Brass: #B8892D
-   • Warm Beige:  #D8C9A8
+   Campus Coin — "Ledger" Design System (v2 — Old Money Green)
+   Authoritative visual tokens per docs/campuscoin-design-system.md
    ========================================================================== */
 
 :root {
-    /* Base Surfaces & Canvas (Warm Ivory Foundation) */
-    --bg-canvas: #F5EFE3;
-    --bg-surface: #FCFAF6;
-    --bg-surface-elevated: #FFFFFF;
-    --bg-subtle: #EFE8DA;
-    --bg-subtle-hover: #E8DFCDB8;
+  /* Base Surfaces & Canvas — Old Money Green */
+  --paper: #F8F7F3;
+  --panel: #FFFFFF;
+  --ink: #221F19;
+  --accent: #234F3B;
+  --secondary: #B08C4F;
+  --expense: #A8431F;
+  --hairline: #DAD8CC;
+  --muted: #8F8D80;
 
-    /* Hairline Structural Borders (Warm Beige) */
-    --border-hairline: #D8C9A8;
-    --border-subtle: #E5DBC5;
-    --border-strong: #BAAA83;
+  /* Backward-compatible mappings for existing views during rollout */
+  --bg-canvas: var(--paper);
+  --bg-surface: var(--panel);
+  --bg-surface-elevated: var(--panel);
+  --bg-subtle: #F0EFEA;
+  --bg-subtle-hover: #E7E5DC;
 
-    /* Typography Hierarchy (Deep Olive-Charcoal & Khaki Neutrals) */
-    --text-primary: #232B14;
-    --text-secondary: #4A5336;
-    --text-muted: #687250;
-    --text-subtle: #8E9876;
+  --border-hairline: var(--hairline);
+  --border-subtle: #E2DFD3;
+  --border-strong: var(--ink);
 
-    /* Brand Accent: Deep Olive */
-    --accent-primary: #4F5B2A;
-    --accent-hover: #3E4720;
-    --accent-active: #2F3617;
-    --accent-tint: #E8EFE1;
-    --accent-tint-subtle: #F2F7ED;
-    --accent-contrast: #FFFFFF;
+  --text-primary: var(--ink);
+  --text-secondary: #4A463E;
+  --text-muted: var(--muted);
+  --text-subtle: #989689;
 
-    /* Accent Highlight: Muted Brass */
-    --gold: #B8892D;
-    --gold-hover: #9E731F;
-    --gold-active: #845E15;
-    --gold-tint: #F9F2E3;
-    --gold-contrast: #FFFFFF;
+  --accent-primary: var(--accent);
+  --accent-hover: #193C2C;
+  --accent-active: #122B20;
+  --accent-tint: #E8EFEA;
+  --accent-tint-subtle: #F2F7F4;
+  --accent-contrast: var(--paper);
 
-    /* Semantic Financial Indicators (Warm Earthy Tones) */
-    --success: #3D6633;
-    --success-hover: #315228;
-    --success-tint: #EBF3E8;
-    --success-contrast: #FFFFFF;
+  --gold: var(--secondary);
+  --gold-hover: #987842;
+  --gold-active: #806436;
+  --gold-tint: #F7F3EB;
+  --gold-contrast: var(--paper);
 
-    --danger: #A83232;
-    --danger-hover: #8D2727;
-    --danger-tint: #FBEAEA;
-    --danger-contrast: #FFFFFF;
+  --success: var(--accent);
+  --success-hover: #193C2C;
+  --success-tint: #E8EFEA;
+  --success-contrast: var(--paper);
 
-    /* Physical Tactile Geometry System (Distinct Curvature) */
-    --radius-xs: 4px;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --radius-xl: 22px;
+  --danger: var(--expense);
+  --danger-hover: #8F3718;
+  --danger-tint: #F9EBE6;
+  --danger-contrast: var(--paper);
 
-    /* Physical Contact Shadows (Depth without Glass or Heavy Glow) */
-    --shadow-tactile-sm: 0 1px 2px rgba(35, 43, 20, 0.05), 0 1px 1px rgba(35, 43, 20, 0.03);
-    --shadow-tactile-md: 0 3px 6px -1px rgba(35, 43, 20, 0.07), 0 2px 4px -1px rgba(35, 43, 20, 0.04);
-    --shadow-tactile-lg: 0 10px 24px -4px rgba(35, 43, 20, 0.10), 0 4px 10px -2px rgba(35, 43, 20, 0.05);
-    --shadow-modal: 0 16px 40px -8px rgba(35, 43, 20, 0.22), 0 6px 16px -4px rgba(35, 43, 20, 0.12);
+  --shadow-tactile-sm: none;
+  --shadow-tactile-md: none;
+  --shadow-tactile-lg: none;
+  --shadow-modal: 0 20px 46px -20px rgba(21, 20, 15, 0.35);
 
-    /* Motion Timing & Tactile Easing Curves */
-    --ease-tactile: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-natural: cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-micro: 110ms var(--ease-tactile);
-    --transition-state: 190ms var(--ease-natural);
-    --transition-spatial: 280ms var(--ease-tactile);
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
 }
 
 /* ==========================================================================
-   Dark Mode Identity (Retains Olive Identity, Warm Undertones, Brass Accents)
+   Dark Mode — Swapped tokens per §1 (zero invented colors)
    ========================================================================== */
 .dark {
-    /* Night Canvas & Surfaces (Deep Olive-Charcoal Night) */
-    --bg-canvas: #14170F;
-    --bg-surface: #1B2015;
-    --bg-surface-elevated: #22281B;
-    --bg-subtle: #28301F;
-    --bg-subtle-hover: #313A27;
+  --paper: #15140F;
+  --panel: #221F19;
+  --ink: #F1EFE6;
+  --hairline: #3A362C;
+  --accent: #4E8A70;
+  --secondary: #CDA968;
+  --expense: #D2704A;
+  --muted: #8F8D80;
 
-    /* Hairline Structural Borders (Warm Dark Olive) */
-    --border-hairline: #343D2A;
-    --border-subtle: #2A3222;
-    --border-strong: #47543A;
+  --bg-canvas: var(--paper);
+  --bg-surface: var(--panel);
+  --bg-surface-elevated: #2A261F;
+  --bg-subtle: #1C1A14;
+  --bg-subtle-hover: #29261E;
 
-    /* Typography Hierarchy (Warm Ivory on Dark Olive) */
-    --text-primary: #F5EFE3;
-    --text-secondary: #D8CEBC;
-    --text-muted: #A6AF94;
-    --text-subtle: #798367;
+  --border-hairline: var(--hairline);
+  --border-subtle: #2C2920;
+  --border-strong: #F1EFE6;
 
-    /* Brand Accent: Luminous Warm Olive */
-    --accent-primary: #8EA055;
-    --accent-hover: #9FB264;
-    --accent-active: #7A8B46;
-    --accent-tint: #232B18;
-    --accent-tint-subtle: #1C2314;
-    --accent-contrast: #14170F;
+  --text-primary: var(--ink);
+  --text-secondary: #C8C5B9;
+  --text-muted: var(--muted);
+  --text-subtle: #6D6A61;
 
-    /* Accent Highlight: Luminous Antique Brass */
-    --gold: #D6A449;
-    --gold-hover: #E3B45C;
-    --gold-active: #C19139;
-    --gold-tint: #2B2314;
-    --gold-contrast: #14170F;
+  --accent-primary: var(--accent);
+  --accent-hover: #5DA184;
+  --accent-active: #40755E;
+  --accent-tint: #1C2922;
+  --accent-tint-subtle: #17221C;
+  --accent-contrast: #15140F;
 
-    /* Semantic Financial Indicators */
-    --success: #6CAE5C;
-    --success-hover: #7DC06C;
-    --success-tint: #1C2A18;
-    --success-contrast: #14170F;
+  --gold: var(--secondary);
+  --gold-hover: #D9B777;
+  --gold-active: #B5934C;
+  --gold-tint: #2B2418;
+  --gold-contrast: #15140F;
 
-    --danger: #DB5454;
-    --danger-hover: #E66A6A;
-    --danger-tint: #331A1A;
-    --danger-contrast: #FFFFFF;
+  --success: var(--accent);
+  --success-hover: #5DA184;
+  --success-tint: #1C2922;
+  --success-contrast: #15140F;
 
-    /* Physical Shadows in Dark Environment */
-    --shadow-tactile-sm: 0 1px 2px rgba(0, 0, 0, 0.40);
-    --shadow-tactile-md: 0 4px 8px -1px rgba(0, 0, 0, 0.50), 0 2px 4px -1px rgba(0, 0, 0, 0.35);
-    --shadow-tactile-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.65), 0 4px 12px -2px rgba(0, 0, 0, 0.45);
-    --shadow-modal: 0 20px 48px -8px rgba(0, 0, 0, 0.80), 0 8px 20px -4px rgba(0, 0, 0, 0.60);
+  --danger: var(--expense);
+  --danger-hover: #DD805C;
+  --danger-tint: #2F1B16;
+  --danger-contrast: #FFFFFF;
+
+  --shadow-modal: 0 20px 48px -8px rgba(0, 0, 0, 0.80);
 }
 
 /* ==========================================================================
-   Root Font Scaling (SRS §1.6 & §185)
+   Root Font Scaling (SRS §1.6 & §185 — Preserved as mandatory functionality)
    ========================================================================== */
 html {
-    font-size: 100%;
+  font-size: 100%;
 }
 
 html[data-font-size="normal"] {
-    font-size: 100%;
+  font-size: 100%;
 }
 
 html[data-font-size="large"] {
-    font-size: 112.5%;
+  font-size: 112.5%;
 }
 
 html[data-font-size="xlarge"] {
-    font-size: 125%;
+  font-size: 125%;
 }
 
 /* ==========================================================================
    Accessibility: Reduced Motion Mandate
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-        transform: none !important;
-    }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transform: none !important;
+  }
 }
 
 /* ==========================================================================
-   Accessibility: High-Contrast Visible Focus Indicators
+   Accessibility: High-Contrast Visible Focus Indicators (§4a, §4b)
    ========================================================================== */
 :focus-visible {
-    outline: 2px solid var(--accent-primary) !important;
-    outline-offset: 2px !important;
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
 }
 
 button:focus-visible,
@@ -183,330 +191,475 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-    outline: 2px solid var(--accent-primary) !important;
-    outline-offset: 2px !important;
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
 }
 
 /* ==========================================================================
    Accessibility: Skip Navigation Link
    ========================================================================== */
 .skip-to-content {
-    position: fixed;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 9999;
-    padding: 0.625rem 1.125rem;
-    background-color: var(--accent-primary);
-    color: var(--accent-contrast);
-    font-size: 0.875rem;
-    font-weight: 600;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-tactile-lg);
-    text-decoration: none;
-    transform: translateY(-200%);
-    transition: transform var(--transition-micro);
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 9999;
+  padding: 10px 18px;
+  background-color: var(--accent);
+  color: var(--paper);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  border: 1px solid var(--accent);
+  border-radius: 0 !important;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 150ms ease;
 }
 
 .skip-to-content:focus {
-    transform: translateY(0);
-    outline: 2px solid var(--gold) !important;
-    outline-offset: 2px !important;
+  transform: translateY(0);
+  outline: 2px solid var(--secondary) !important;
+  outline-offset: 2px !important;
+}
+
+/* ==========================================================================
+   Shape: Hard Zero Border-Radius Everywhere (§4)
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+/* The ONLY circular elements allowed are avatar photos and status dots */
+.rounded-avatar,
+.avatar-img,
+.status-dot,
+.dot-indicator {
+  border-radius: 9999px !important;
 }
 
 /* ==========================================================================
    Base Document Body & Font Styling
    ========================================================================== */
 body {
-    background-color: var(--bg-canvas);
-    color: var(--text-primary);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
-/* Typography tokens */
+/* Typography tokens per §2 */
+.font-display,
 .font-heading {
-    font-family: 'Space Grotesk', sans-serif;
-    letter-spacing: -0.015em;
+  font-family: 'Fraunces', serif !important;
+  font-weight: 500;
+}
+
+.font-sans {
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .font-mono,
-.tabular-nums {
-    font-family: 'JetBrains Mono', monospace;
-    font-feature-settings: "tnum" 1;
-    font-variant-numeric: tabular-nums;
+.tabular-nums,
+.field-numeric,
+.amount-mono {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.label-caps,
+.font-caps {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+/* Headline accent rule (§5) */
+.headline-rule {
+  position: relative;
+  display: inline-block;
+}
+.headline-rule::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 32px;
+  height: 2px;
+  background-color: var(--accent);
 }
 
 /* ==========================================================================
-   Structural Elements: Hairline Borders, Distinct Geometry & Surfaces
+   Hairline Borders & Surface System (§5)
    ========================================================================== */
 .hairline-border {
-    border: 1px solid var(--border-hairline);
+  border: 1px solid var(--hairline);
 }
 
 .hairline-border-b {
-    border-bottom: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .hairline-border-t {
-    border-top: 1px solid var(--border-hairline);
+  border-top: 1px solid var(--hairline);
 }
 
 .hairline-border-r {
-    border-right: 1px solid var(--border-hairline);
+  border-right: 1px solid var(--hairline);
 }
 
 .hairline-border-l {
-    border-left: 1px solid var(--border-hairline);
+  border-left: 1px solid var(--hairline);
 }
 
-/* Solid Tactile Card: Softer Organic Structural Geometry */
-.card-campus {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    box-shadow: var(--shadow-tactile-sm);
-    transition: border-color var(--transition-state), box-shadow var(--transition-state);
+/* Panels */
+.card-campus,
+.panel-ledger {
+  background-color: var(--panel);
+  border: 1px solid var(--hairline);
+  box-shadow: none;
 }
 
-.card-campus:hover {
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-tactile-md);
-}
-
-/* Hero Section / Anchored Surface */
+/* Hero Panel (§5: Shadows allowed only for hero & elevated side panels) */
 .surface-hero {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-tactile-sm);
+  background-color: var(--panel);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 24px 56px -32px rgba(21, 20, 15, 0.20);
 }
 
-/* Inset Metric Block */
+.dark .surface-hero {
+  box-shadow: 0 24px 56px -32px rgba(0, 0, 0, 0.50);
+}
+
+/* Authenticated navigation stays a dark institutional rail in both themes. */
+.dark .sidebar-shell {
+  background-color: var(--paper) !important;
+  color: var(--ink);
+}
+
+.dark .sidebar-shell [class~="text-[var(--paper)]"] {
+  color: var(--ink) !important;
+}
+
+/* Metric Inset */
 .metric-tile {
-    background-color: var(--bg-subtle);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 16px;
-    transition: background-color var(--transition-micro), border-color var(--transition-micro);
+  background-color: transparent;
+  padding: 16px;
 }
 
 /* ==========================================================================
-   Tactile Controls & Physical Interaction System
-   (Idle → Hover Elevation → Downward Pressed Compression → Settled Release)
+   Button System — Invert on Hover (§4a)
+   Solid fill at idle, inverts to outline of same color on hover.
    ========================================================================== */
+.btn {
+  border-radius: 0 !important;
+  border: 1px solid transparent;
+  padding: 13px 22px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13.5px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  line-height: 1;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  user-select: none;
+}
 
-/* Primary Action Button (Olive Anchor) */
+/* Primary — ink */
 .btn-primary {
-    background-color: var(--accent-primary);
-    color: var(--accent-contrast);
-    font-weight: 600;
-    font-size: 0.875rem;
-    min-height: 42px;
-    padding: 9px 18px;
-    border-radius: var(--radius-md);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    box-shadow: 0 1px 2px rgba(35, 43, 20, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    cursor: pointer;
-    text-decoration: none;
-    transform: translateY(0);
-    transition: background-color var(--transition-micro), transform var(--transition-micro), box-shadow var(--transition-micro);
-    user-select: none;
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
-
 .btn-primary:hover {
-    background-color: var(--accent-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 3px 6px -1px rgba(35, 43, 20, 0.20), 0 2px 4px rgba(35, 43, 20, 0.10);
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--ink);
 }
 
-.btn-primary:active {
-    background-color: var(--accent-active);
-    transform: translateY(1.5px) scale(0.988);
-    box-shadow: 0 1px 1px rgba(35, 43, 20, 0.10);
-    transition-duration: 60ms;
+/* Accent — forest green CTA */
+.btn-accent {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+.btn-accent:hover {
+  background: var(--paper);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
-.btn-primary:disabled,
-.btn-primary[disabled] {
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-/* Secondary Button (Warm Subtle Surface with Tactile Hairline Border) */
+/* Secondary — bronze */
 .btn-secondary {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-hairline);
-    color: var(--text-primary);
-    font-weight: 500;
-    font-size: 0.875rem;
-    min-height: 42px;
-    padding: 9px 18px;
-    border-radius: var(--radius-md);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: var(--shadow-tactile-sm);
-    cursor: pointer;
-    text-decoration: none;
-    transform: translateY(0);
-    transition: background-color var(--transition-micro), border-color var(--transition-micro), color var(--transition-micro), transform var(--transition-micro), box-shadow var(--transition-micro);
-    user-select: none;
+  background: var(--secondary);
+  color: var(--paper);
+  border-color: var(--secondary);
 }
-
 .btn-secondary:hover {
-    background-color: var(--bg-subtle);
-    border-color: var(--border-strong);
-    color: var(--text-primary);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-tactile-md);
+  background: var(--paper);
+  color: var(--secondary);
+  border-color: var(--secondary);
 }
 
-.btn-secondary:active {
-    background-color: var(--bg-subtle-hover);
-    transform: translateY(1.5px) scale(0.988);
-    box-shadow: 0 1px 1px rgba(35, 43, 20, 0.04);
-    transition-duration: 60ms;
+/* Destructive — semantic rust */
+.btn-destructive {
+  background: var(--expense);
+  color: var(--paper);
+  border-color: var(--expense);
+}
+.btn-destructive:hover {
+  background: var(--paper);
+  color: var(--expense);
+  border-color: var(--expense);
 }
 
-.btn-secondary:disabled,
-.btn-secondary[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
 }
 
-/* Tactile Icon Control Button */
+.btn:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
+}
+
+/* Icon Button */
 .btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-hairline);
-    background-color: var(--bg-surface);
-    color: var(--text-muted);
-    cursor: pointer;
-    transform: translateY(0);
-    transition: background-color var(--transition-micro), color var(--transition-micro), border-color var(--transition-micro), transform var(--transition-micro);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
-
 .btn-icon:hover {
-    background-color: var(--bg-subtle);
-    border-color: var(--border-strong);
-    color: var(--text-primary);
-    transform: translateY(-1px);
+  background: var(--paper);
+  border-color: var(--ink);
+}
+.btn-icon:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
 }
 
-.btn-icon:active {
-    transform: translateY(1px) scale(0.96);
-    transition-duration: 60ms;
-}
-
-/* Physical Form Inputs */
+/* ==========================================================================
+   Inputs & Selects (§4b)
+   Idle state neutral, color enters on focus via accent green.
+   ========================================================================== */
+.field,
 .input-campus {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-md);
-    color: var(--text-primary);
-    font-size: 0.875rem;
-    min-height: 42px;
-    padding: 9px 14px;
-    outline: none;
-    box-shadow: inset 0 1px 2px rgba(35, 43, 20, 0.03);
-    transition: border-color var(--transition-micro), box-shadow var(--transition-micro), background-color var(--transition-micro);
+  border-radius: 0 !important;
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 12px 14px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13.5px;
+  transition: border-color 150ms ease;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
+.field:hover,
 .input-campus:hover {
-    border-color: var(--border-strong);
+  border-color: var(--muted);
 }
 
-.input-campus:focus {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 1px var(--accent-primary), 0 1px 3px rgba(79, 91, 42, 0.12);
+.field:focus,
+.input-campus:focus,
+.field:focus-visible,
+.input-campus:focus-visible {
+  border-color: var(--accent) !important;
+  outline: none !important;
 }
 
-/* Tactile Badges & Status Chips */
+.field:invalid,
+.field.has-error,
+.input-campus.has-error {
+  border-color: var(--expense) !important;
+}
+
+.field-numeric {
+  font-family: 'IBM Plex Mono', monospace !important;
+  text-align: right;
+}
+
+/* ==========================================================================
+   Stat Strip (§12)
+   Hairline-divided stat row, not separate boxes
+   ========================================================================== */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+}
+.stat-strip > div {
+  padding: 24px 28px;
+  border-right: 1px solid var(--hairline);
+}
+.stat-strip > div:last-child {
+  border-right: none;
+}
+
+/* ==========================================================================
+   Ledger Table (§12)
+   Header row (small-caps, muted) + rows (mono amounts, hover tint)
+   ========================================================================== */
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ledger-table th {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-variant: small-caps;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--panel);
+}
+
+.ledger-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
+  font-size: 13.5px;
+}
+
+.table-row-tactile:hover,
+.ledger-table tr:hover td {
+  background-color: rgba(35, 79, 59, 0.04);
+}
+
+.dark .table-row-tactile:hover,
+.dark .ledger-table tr:hover td {
+  background-color: rgba(78, 138, 112, 0.08);
+}
+
+/* ==========================================================================
+   Badges & Tags (§12)
+   Category/status tags, small-caps
+   ========================================================================== */
+.badge,
 .badge-campus {
-    border-radius: var(--radius-xs);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 3px 8px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    line-height: 1.2;
-    border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-variant: small-caps;
+  font-size: 11px;
+  padding: 3px 8px;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.2;
+  border-radius: 0 !important;
 }
 
-/* Physical Segmented Control Bar */
+.badge-income {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: transparent;
+}
+
+.badge-expense {
+  border-color: var(--expense);
+  color: var(--expense);
+  background: transparent;
+}
+
+.badge-secondary {
+  border-color: var(--secondary);
+  color: var(--secondary);
+  background: transparent;
+}
+
+/* ==========================================================================
+   Empty State (§9, §12)
+   Dashed border + direct sentence, no illustration
+   ========================================================================== */
+.empty-state {
+  border: 1px dashed var(--hairline);
+  padding: 40px 24px;
+  text-align: center;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+/* ==========================================================================
+   Modal Dialog Surface (§4, §5, §7)
+   Hairline border, zero radius, 200ms ease slide/fade
+   ========================================================================== */
+.modal-dialog-surface {
+  background-color: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: 0 !important;
+  box-shadow: 0 20px 46px -20px rgba(21, 20, 15, 0.35);
+}
+
+.dark .modal-dialog-surface {
+  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.80);
+}
+
+/* Segmented Control Bar */
 .segmented-bar {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-hairline);
-    background-color: var(--bg-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  padding: 0;
 }
 
 .segmented-item {
-    padding: 6px 14px;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 500;
-    color: var(--text-muted);
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    transition: color var(--transition-micro), background-color var(--transition-micro), transform var(--transition-micro), box-shadow var(--transition-micro);
-    user-select: none;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-variant: small-caps;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border: none;
+  border-right: 1px solid var(--hairline);
+  background: transparent;
+  transition: background-color 150ms ease, color 150ms ease;
+  user-select: none;
+}
+
+.segmented-item:last-child {
+  border-right: none;
 }
 
 .segmented-item:hover {
-    color: var(--text-primary);
+  color: var(--ink);
+  background: var(--paper);
 }
 
 .segmented-item.active,
 .segmented-item[aria-selected="true"] {
-    background-color: var(--bg-surface);
-    color: var(--text-primary);
-    font-weight: 600;
-    box-shadow: var(--shadow-tactile-sm);
-    border: 1px solid var(--border-subtle);
-}
-
-.segmented-item:active {
-    transform: scale(0.97);
-}
-
-/* Accessible Interactive Table Rows */
-.table-row-tactile {
-    transition: background-color var(--transition-micro);
-}
-
-.table-row-tactile:hover {
-    background-color: var(--bg-subtle-hover);
-}
-
-/* Distinct Structural Dialog Styling */
-.modal-dialog-surface {
-    background-color: var(--bg-surface-elevated);
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-modal);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
 }
