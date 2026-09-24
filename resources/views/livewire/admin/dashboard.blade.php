@@ -27,20 +27,10 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b hairline-border">
         <div>
-            <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-wider bg-[var(--gold-tint)] text-[var(--gold-hover)] border hairline-border font-bold">
-                    Ops Console
-                </span>
-                <span class="text-xs text-[var(--text-muted)] font-mono">Platform Telemetry</span>
-            </div>
-            <h1 class="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-1">System Operations & Metric Telemetry</h1>
+            <h1 class="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">System Operations & Metric Telemetry</h1>
             <p class="text-xs sm:text-sm text-[var(--text-muted)] mt-1">Platform-level student governance, global category administration, and operational metrics</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-[4px] border hairline-border bg-[var(--bg-subtle)] text-[var(--success)] text-xs font-mono font-semibold">
-                <span class="w-2 h-2 rounded-full bg-[var(--success)] animate-pulse"></span>
-                SYSTEM OPERATIONAL
-            </span>
             <a href="{{ route('admin.categories') }}" class="btn-secondary !text-xs !min-h-[38px] !py-2 !px-3.5 inline-flex items-center gap-1.5">
                 <x-icon name="tag" class="w-3.5 h-3.5 text-[var(--gold)]" />
                 Manage Categories
@@ -53,14 +43,11 @@
     </div>
 
     <!-- 4 High-Level Telemetry Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border hairline-border bg-[var(--panel)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--hairline)]">
         <!-- Students Metric -->
-        <div class="card-campus p-5 space-y-3">
+        <div class="p-5 space-y-3">
             <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                 <span>Total Students</span>
-                <div class="w-7 h-7 rounded-[6px] bg-[var(--bg-subtle)] flex items-center justify-center text-[var(--accent-primary)]">
-                    <x-icon name="users" class="w-4 h-4" />
-                </div>
             </div>
             <div class="font-mono text-3xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">
                 {{ number_format($metrics['students']['total']) }}
@@ -76,12 +63,9 @@
         </div>
 
         <!-- Platform Ledger Volume -->
-        <div class="card-campus p-5 space-y-3">
+        <div class="p-5 space-y-3">
             <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                 <span>Tracked Ledger Volume</span>
-                <div class="w-7 h-7 rounded-[6px] bg-[var(--gold-tint)] flex items-center justify-center text-[var(--gold)]">
-                    <x-icon name="dollar-sign" class="w-4 h-4" />
-                </div>
             </div>
             <div class="font-mono text-3xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">
                 ${{ number_format((float) $metrics['transactions']['total_volume'], 2) }}
@@ -93,12 +77,9 @@
         </div>
 
         <!-- Ledger Transactions Count -->
-        <div class="card-campus p-5 space-y-3">
+        <div class="p-5 space-y-3">
             <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                 <span>Logged Transactions</span>
-                <div class="w-7 h-7 rounded-[6px] bg-[var(--bg-subtle)] flex items-center justify-center text-[var(--accent-primary)]">
-                    <x-icon name="activity" class="w-4 h-4" />
-                </div>
             </div>
             <div class="font-mono text-3xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">
                 {{ number_format($metrics['transactions']['total_count']) }}
@@ -110,12 +91,9 @@
         </div>
 
         <!-- Category & Budget Coverage -->
-        <div class="card-campus p-5 space-y-3">
+        <div class="p-5 space-y-3">
             <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                 <span>Category Governance</span>
-                <div class="w-7 h-7 rounded-[6px] bg-[var(--bg-subtle)] flex items-center justify-center text-[var(--gold)]">
-                    <x-icon name="tag" class="w-4 h-4" />
-                </div>
             </div>
             <div class="font-mono text-3xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">
                 {{ $metrics['categories']['global'] }} <span class="text-sm font-normal text-[var(--text-muted)]">Global / {{ $metrics['categories']['personal'] }} Pers.</span>
@@ -143,7 +121,7 @@
             </div>
 
             @if(count($metrics['categories']['most_used']) > 0)
-                <div class="overflow-x-auto rounded-[10px] border hairline-border">
+                <div class="overflow-x-auto border hairline-border">
                     <table class="w-full text-xs text-left">
                         <thead class="font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)] border-b hairline-border">
                             <tr>
@@ -159,10 +137,10 @@
                                 <tr class="table-row-tactile">
                                     <td class="p-3">
                                         <div class="flex items-center gap-2.5">
-                                            <span class="w-3 h-3 rounded-full shrink-0 shadow-xs" style="background-color: {{ $cat['color'] }}"></span>
+                                            <span class="status-dot w-3 h-3 shrink-0" style="background-color: {{ $cat['color'] }}"></span>
                                             <span class="font-medium text-[var(--text-primary)]">{{ $cat['name'] }}</span>
                                             @if($cat['is_default'])
-                                                <span class="px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono bg-[var(--bg-subtle)] border hairline-border text-[var(--accent-primary)] font-medium">Default</span>
+                                                <span class="px-1.5 py-0.5 text-[10px] font-mono bg-[var(--bg-subtle)] text-[var(--accent-primary)] font-medium">Default</span>
                                             @endif
                                         </div>
                                     </td>
@@ -225,11 +203,11 @@
                 <h3 class="text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-3">Cohort Enrollment Distribution</h3>
                 <div class="space-y-2.5">
                     @forelse($metrics['students']['cohort_distribution'] as $cohort => $count)
-                        <div class="p-2.5 rounded-[10px] bg-[var(--bg-subtle)] border hairline-border flex items-center justify-between text-xs">
+                        <div class="p-2.5 bg-[var(--bg-subtle)] border-b hairline-border flex items-center justify-between text-xs">
                             <span class="font-medium text-[var(--text-primary)]">{{ $cohort }}</span>
                             <div class="flex items-center gap-3">
                                 <span class="font-mono tabular-nums text-[var(--text-muted)]">{{ $count }} student{{ $count > 1 ? 's' : '' }}</span>
-                                <div class="w-20 h-2 rounded-full bg-[var(--bg-surface)] border hairline-border overflow-hidden">
+                                <div class="w-20 h-2 bg-[var(--bg-surface)] overflow-hidden">
                                     <div class="h-full bg-[var(--accent-primary)] transition-all" style="width: {{ $metrics['students']['total'] > 0 ? ($count / $metrics['students']['total']) * 100 : 0 }}%"></div>
                                 </div>
                             </div>
@@ -255,7 +233,7 @@
             </a>
         </div>
 
-        <div class="overflow-x-auto rounded-[10px] border hairline-border">
+        <div class="overflow-x-auto border hairline-border">
             <table class="w-full text-xs text-left">
                 <thead class="font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)] border-b hairline-border">
                     <tr>

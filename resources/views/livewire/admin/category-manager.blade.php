@@ -28,9 +28,6 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b hairline-border">
         <div>
             <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-wider bg-[var(--gold-tint)] text-[var(--gold-hover)] border hairline-border font-bold">
-                    Ops Console
-                </span>
                 <span class="text-xs text-[var(--text-muted)] font-mono">Taxonomy Governance</span>
             </div>
             <h1 class="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-1">Global Category Administration</h1>
