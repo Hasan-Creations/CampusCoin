@@ -33,12 +33,12 @@
 | **Spending Breakdown & Trends** | SRS §4.4 | Phase 3 | **VERIFIED** | `FinancialCalculationService`, `Dashboard.php`, SVG Cash Flow Chart | `CashFlowTrendsTest.php` (10 tests, 103 assertions passed) |
 | **Monthly Financial Reports** | SRS §4.6 | Phase 4 | **VERIFIED** | `MonthlyReports.php`, `FinancialCalculationService` | `MonthlyReportsTest.php` (14 tests passed) |
 | **Export Reports (CSV/PDF)** | SRS §4.6 | Phase 4 | **VERIFIED** | `ReportExportController.php`, `pdf.blade.php`, Dompdf | `MonthlyReportsTest.php` (14 tests passed) |
-| **Deterministic Saving Tips** | SRS §4.7 | Phase 5 | `NOT_STARTED` | `SavingTipService` | — |
-| **Pin / Bookmark Tips & Insights** | SRS §4.7, §4.9 | Phase 5 | `NOT_STARTED` | `Bookmark` pivot table & actions | — |
-| **Advisory AI Categorization** | SRS §4.8 | Phase 6 | `NOT_STARTED` | `AiAdvisorService` | — |
-| **User Override of AI Suggestions** | SRS §4.8 | Phase 6 | `NOT_STARTED` | Interactive review modal | — |
-| **Historical CSV Import with Safety** | SRS §4.3, §4.8 | Phase 6 | `NOT_STARTED` | `CsvImportService` with duplicate detection | — |
-| **Advisory AI Monthly Insights** | SRS §4.9 | Phase 6 | `NOT_STARTED` | `AiInsightService` | — |
+| **Deterministic Saving Tips** | SRS §4.7 | Phase 5 | `NOT_STARTED` | `SavingTipService` (Parallel Track A) | — |
+| **Pin / Bookmark Tips & Insights** | SRS §4.7, §4.9 | Phase 5 | `NOT_STARTED` | `SavingTip` actions (Parallel Track A) | — |
+| **Advisory AI Categorization** | SRS §4.8 | Phase 6 | **VERIFIED** | `AiCategorizationService`, `CategorizationProviderInterface`, `HeuristicCategorizationProvider`, `OpenAiCategorizationProvider` | `AiCategorizationTest.php` (15 tests, 70 assertions passed) |
+| **User Override of AI Suggestions** | SRS §4.8 | Phase 6 | **VERIFIED** | `TransactionList.php` (`acceptSuggestion`, `selectCategory`, manual priority) | `AiCategorizationTest.php` (manual override tests passed) |
+| **Student-Specific Learned Corrections** | SRS §4.8 | Phase 6 | **VERIFIED** | `CategoryLearning` model, `category_learnings` schema, `recordCorrection()` | `AiCategorizationTest.php` (isolation & learning tests passed) |
+| **Historical CSV Import with Batch Suggestions** | SRS §4.3, §4.8 | Phase 6 | **VERIFIED** | `TransactionList.php` (`processCsvUpload`, `confirmImport`, review modal) | `AiCategorizationTest.php` (batch & invalid row tests passed) |
 | **Operational Admin Dashboard** | SRS §4.11 | Phase 7 | `NOT_STARTED` | Admin metrics, user toggle, system categories | Base layout verified |
 | **Dark Mode & Accessibility** | SRS §5.1, UI Spec | Phase 8 | `NOT_STARTED` | CSS tokens, contrast, theme toggler | Base token system verified |
 | **Full Data Isolation Guard** | Security Spec | Continuous | **VERIFIED** | Scoped queries, 403 authorization, cross-student test | Automated tests & Playwright E2E verified |

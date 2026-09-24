@@ -1,14 +1,14 @@
 # Campus Coin — Project State
 
 ## Current Phase
-**Phase 4 — Monthly Financial Reports & Multi-Format Exports (COMPLETED & VERIFIED)**
-Transitioning to: **Phase 5 — Deterministic Saving Tips Engine & Bookmarks**
+**Phase 6 — Advisory AI Categorization Assistant & CSV Batch Processing (COMPLETED & VERIFIED)**
+Track: Parallel Track B (Branch: `phase-6`)
 
 ## Current Task
-Phase 4 fully implemented and verified with 77 automated feature tests (389 assertions). Dedicated student reports interface at `/reports` with Livewire `MonthlyReports`, multi-period presets, custom date range filtering, category and income-source filtering, 6-month historical view, daily/weekly current-month summaries, and server-side PDF (`barryvdh/laravel-dompdf`) and CSV exports. Ready to begin Phase 5: deterministic saving tips engine, impact ranking, and tip pinning/bookmarking.
+Phase 6 fully implemented and verified with 92 automated tests (459 assertions). Built advisory expense categorization engine with provider abstraction (`CategorizationProviderInterface`), deterministic heuristic student keyword provider (`HeuristicCategorizationProvider`), OpenAI LLM provider (`OpenAiCategorizationProvider`) with 3s timeout and automatic fallback, student-specific feedback/correction learning (`category_learnings` table), interactive transaction entry/edit modal suggestions, manual override preservation, and bounded CSV batch categorization & import review flow.
 
 ## Overall Completion
-**65%** (Phase 0: Foundation, Phase 1: Core Student Data, Phase 2: Budget Goals & Alerts, Phase 3: Cash Flow Trends, Phase 4: Monthly Reports & Financial Reporting complete).
+**75%** (Phase 0: Foundation, Phase 1: Core Student Data, Phase 2: Budget Goals & Alerts, Phase 3: Cash Flow Trends, Phase 4: Monthly Reports, Phase 6: Advisory AI Categorization & CSV Batch complete).
 
 ## Phase Definitions & Roadmap (Reconciled & Authoritative)
 - **Phase 0:** Project Initialization, Scaffolding & Multi-Role Authentication (COMPLETED)
@@ -16,9 +16,9 @@ Phase 4 fully implemented and verified with 77 automated feature tests (389 asse
 - **Phase 2:** Budget Goals, Alerts & Dashboard Budget Integration (COMPLETED & VERIFIED)
 - **Phase 3:** Interactive Cash Flow Trends & Advanced Analytics (COMPLETED & VERIFIED)
 - **Phase 4:** Monthly Financial Reports & Multi-Format Exports (CSV/PDF) (COMPLETED & VERIFIED)
-- **Phase 5:** Deterministic Saving Tips Engine & Bookmarks (NEXT)
-- **Phase 6:** Advisory AI Categorization & Monthly Insights (User Override)
-- **Phase 7:** Operational Admin Panel & Category Controls
+- **Phase 5:** Deterministic Saving Tips Engine & Bookmarks (PARALLEL TRACK A)
+- **Phase 6:** Advisory AI Categorization & CSV Batch Categorization (COMPLETED & VERIFIED)
+- **Phase 7:** Operational Admin Panel & Category Controls (NEXT)
 - **Phase 8:** Accessibility Controls & Final Hardening
 
 ## Completed Features
@@ -64,17 +64,25 @@ Phase 4 fully implemented and verified with 77 automated feature tests (389 asse
   - Executive financial summary KPI cards: Total Inflow, Total Outflow, Net Movement, and Savings Efficiency rate.
   - Server-side branded PDF statement generation via `barryvdh/laravel-dompdf` (`/reports/export/pdf`), print-ready layout (`?preview=1`), and structured CSV streaming export (`/reports/export/csv`).
   - Strict student tenant isolation enforced across all reporting queries and export endpoints.
+- **Advisory AI Categorization & CSV Batch Processing (Phase 6):**
+  - Configurable categorization provider architecture (`CategorizationProviderInterface`) registered in `AppServiceProvider`.
+  - Deterministic `HeuristicCategorizationProvider` with semantic keyword and alias pattern matching across all core student categories (food, academics, transport, housing, utilities, subscriptions, entertainment, personal, etc.).
+  - External `OpenAiCategorizationProvider` integration (configurable via `AI_API_KEY` / `AI_MODEL`) with 3-second network timeout, strict schema instructions, backtick cleaning, invalid/hallucinated category rejection, and automatic fallback to heuristic provider.
+  - Central `AiCategorizationService` coordinating student-specific learned corrections, provider suggestions, and accessible category validation.
+  - Student learning persistence via `category_learnings` table (`user_id`, `keyword`, `category_id`, `usage_count`, `last_used_at`) with strict multi-tenant isolation.
+  - Real-time debounced transaction entry/edit modal suggestions with confidence scores and one-click acceptance.
+  - Explicit manual override guarantee: user's manual category selection is always authoritative and updates learned mappings.
+  - Interactive CSV Batch Categorization modal in `TransactionList`: bounded up to 50 rows, parses date/merchant/amount/type, generates suggestions, displays review table with category dropdown overrides, and confirms batch import with ledger creation and learning persistence.
 - **Automated Test Suite:**
-  - **77 tests with 389 assertions** passing at 100% (`php artisan test`).
+  - **92 tests with 459 assertions** passing at 100% (`php artisan test`).
 - **End-to-End Browser Verification:**
   - Playwright browser test verifying budget creation, edit, ledger expense logging, consumption update, near-limit alert, over-budget trigger, dashboard display, student data isolation, and budget deletion.
 
 ## Partially Completed Features
-- Sidebar navigation link for Saving Tips visible (pages scheduled for Phase 5).
+- Sidebar navigation link for Saving Tips visible (scheduled for Phase 5 on parallel track).
 
 ## Not Started Features
-- Deterministic Saving Tips Engine & Bookmarks (Phase 5)
-- Advisory AI Categorization & Insights with user override (Phase 6)
+- Deterministic Saving Tips Engine & Bookmarks (Phase 5 - Parallel Track A)
 - Operational Admin Panel user toggle & category controls (Phase 7)
 - Accessibility controls & advanced UX (Phase 8)
 
@@ -85,10 +93,11 @@ None.
 - Real banking integrations are intentionally absent per SRS (strictly manual entry / CSV imports).
 - Financial values are stored as `DECIMAL(10,2)` and manipulated with BCMath to prevent floating-point inaccuracies.
 - Spending data is calculated directly from actual ledger expenses rather than cached in the budget table.
+- AI categorization is purely advisory; manual category selection is always authoritative. External AI calls require `AI_API_KEY`, otherwise automatic deterministic heuristic fallback applies seamlessly with 0 configuration.
 
 ## Current Database State
 - Database `campus_coin` active on MySQL/MariaDB `127.0.0.1:3306`.
-- Tables migrated: `users`, `password_reset_tokens`, `sessions`, `cache`, `jobs`, `categories`, `transactions`, `budgets`.
+- Tables migrated: `users`, `password_reset_tokens`, `sessions`, `cache`, `jobs`, `categories`, `transactions`, `budgets`, `category_learnings`.
 - Default credentials active:
   - Admin: `admin@campuscoin.edu` / `AdminSecure123!`
   - Student 1: `alex.rivera@campus.edu` / `StudentSecure123!`
@@ -97,10 +106,8 @@ None.
 - Sample transactions seeded for Alex Rivera.
 
 ## Current Test Status
-- 77 tests, 389 assertions passing at 100% (`php artisan test`).
+- 92 tests, 459 assertions passing at 100% (`php artisan test`).
 
 ## Immediate Next Task
-- **Phase 5 — Deterministic Saving Tips Engine & Bookmarks:**
-  - Implement `SavingTipService` analyzing category spending, budget compliance, and allowance baseline to generate actionable saving tips.
-  - Implement tip impact ranking and dashboard widget.
-  - Implement tip bookmarking / pinning.
+- **Phase 7 — Operational Admin Panel & Category Controls:**
+  - Implement system-wide category CRUD, student account management (status active/disabled), and platform telemetry metrics.

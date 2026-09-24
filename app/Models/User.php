@@ -89,4 +89,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Budget::class);
     }
+
+    /**
+     * Learned categorization preferences of this student.
+     */
+    public function categoryLearnings(): HasMany
+    {
+        return $this->hasMany(CategoryLearning::class);
+    }
 }

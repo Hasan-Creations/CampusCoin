@@ -145,6 +145,52 @@
 - Executed `php artisan test` — all 77 tests passed with 389 assertions.
 
 ### Next
-- **Phase 5 — Saving Tips Engine & Intelligent Rule Evaluator:**
-  - Build rule-based heuristic saving tips engine evaluating budget adherence, discretionary spending, dining-out ratios, and allowance utilization.
-  - Implement student saving tips widget on Dashboard and dedicated Tips view.
+- **Phase 5 — Saving Tips Engine & Intelligent Rule Evaluator:** (Parallel Track A)
+
+---
+
+## 2026-09-24 — Phase 6: Advisory AI Categorization Assistant & CSV Batch Processing
+
+### Implemented
+- Architecture & Provider Abstraction:
+  - Created `App\Contracts\CategorizationProviderInterface` defining contract `suggestCategory(string $description, Collection $availableCategories, ?User $user = null): ?CategorySuggestion`.
+  - Created `App\DTO\CategorySuggestion` DTO holding category ID, name, confidence, confidence level (`high`/`medium`/`low`), explanation, and source (`learned`/`rules`/`ai`).
+  - Created `App\Services\Categorization\HeuristicCategorizationProvider`: deterministic semantic keyword & token matching engine across all primary student spending areas (food, academics, transport, housing, utilities, subscriptions, tech, entertainment, miscellaneous, allowance, part-time job, scholarships, gifts).
+  - Created `App\Services\Categorization\OpenAiCategorizationProvider`: optional external LLM categorization provider configured via `services.openai` (`AI_API_KEY`, `AI_MODEL`, `AI_TIMEOUT`), enforcing 3-second network timeout, strict schema prompt, backtick stripping, rejection of hallucinated/inaccessible categories, and automatic fallback to `HeuristicCategorizationProvider` on any failure or missing credentials.
+  - Created `App\Services\AiCategorizationService`: central orchestrator that prioritizes tenant-isolated student learned corrections, invokes configured suggestion provider, validates that suggested categories belong to the student, and records user corrections.
+  - Registered singletons and bindings in `AppServiceProvider`.
+- Learning & Feedback Layer:
+  - Database migration `2026_09_25_000002_create_category_learnings_table.php` with foreign keys to `users` and `categories`, composite unique index on `(user_id, keyword)`, usage counter, and timestamp.
+  - Model `CategoryLearning` with student relations, casting, and `scopeForUser()`.
+  - Relation updates on `User` and `Category` models (`categoryLearnings()`).
+  - `recordCorrection()` method updates or inserts learned preference and increments usage frequency.
+  - Exact match and token-containment matching with confidence boosted based on usage frequency.
+- Livewire Transaction Entry Integration:
+  - In `TransactionList.php` & `transaction-list.blade.php`:
+    - Debounced live description and merchant typing triggers non-blocking suggestion queries.
+    - Advisory suggestion card rendered with category name, confidence badge, concise explanation, and "Accept" button.
+    - Clicking "Accept" applies category to the form without locking the user.
+    - Manual category selection is strictly authoritative (`selectCategory()`) and will never be overridden by AI.
+    - Saving a transaction records student's category correction for future queries and flags `ai_suggested` and `ai_confidence` on the transaction.
+    - Transaction table displays `✨ AI` badge for AI-categorized transactions.
+- CSV Batch Categorization & Import Review:
+  - Interactive CSV import modal added to `TransactionList.php`:
+    - File upload handling with validation (up to 2MB, .csv format).
+    - Flexible header normalization for Date, Merchant/Description, Amount, and Type.
+    - Bounded batch parsing (up to 50 rows per batch) protecting system performance.
+    - Batch categorization running suggestions across all rows.
+    - Review step displaying parsed rows in a responsive table with AI suggestion badges and category select dropdowns for manual override.
+    - Negative amounts and missing data safely caught and flagged.
+    - Confirm button creates ledger transactions and persists learned category mappings.
+- Automated Testing (`tests/Feature/AiCategorizationTest.php`):
+  - 15 comprehensive feature tests covering heuristic rules, OpenAI mock response, failure/timeout fallback, hallucinated category rejection, learned corrections precedence, student tenant isolation, repeated correction confidence boost, Livewire advisory UI, manual override priority, non-AI fallback, CSV batch parsing, bounded 50 rows, invalid row safety, and CSV import confirmation.
+  - Full suite passed: **92 tests, 459 assertions** (100% pass rate).
+
+### Verified
+- Executed `vendor/bin/pint --dirty --format agent` — all PHP files passed clean formatting.
+- Executed `npm run build` — compiled all assets in 1.03s with 0 errors.
+- Executed `php artisan test` — all 92 tests passed with 459 assertions in 17.43s.
+
+### Next
+- **Phase 7 — Operational Admin Panel & Category Controls:**
+  - Build administrative views for managing global categories, reviewing system usage statistics, and toggling user account status.

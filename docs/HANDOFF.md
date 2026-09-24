@@ -103,19 +103,27 @@ php artisan serve
   - Server-side PDF export with Dompdf (`/reports/export/pdf`), print-ready layout preview (`?preview=1`), and streaming CSV export (`/reports/export/csv`).
   - Strict student tenant isolation across all report queries and export endpoints.
   - 77 automated feature tests passing with 389 assertions (100% pass rate).
-- **Immediate Next Action (Phase 5 — Saving Tips Engine & Intelligent Rule Evaluator):**
-  - Implement heuristic rule engine evaluating budget adherence, discretionary spending patterns, dining-out ratios, and recurring subscription burdens.
-  - Build interactive Saving Tips widget for the student dashboard and dedicated tips feed.
+- **Phase 5 (Deterministic Saving Tips Engine & Bookmarks):** PARALLEL TRACK A.
+- **Phase 6 (Advisory AI Categorization Assistant & CSV Batch Processing):** COMPLETED & VERIFIED.
+  - Pluggable provider architecture (`CategorizationProviderInterface`) registered in `AppServiceProvider`.
+  - Semantic heuristic matching engine (`HeuristicCategorizationProvider`) providing zero-latency fallback across all standard student spending categories.
+  - OpenAI provider integration (`OpenAiCategorizationProvider`) with 3s timeout, structured schema prompt, invalid/hallucinated category rejection, and automatic fallback.
+  - Student learning and correction persistence (`category_learnings` table) with strict student multi-tenant isolation.
+  - Live advisory suggestions during single transaction entry/edit in `TransactionList.php` with one-click acceptance and manual override guarantee.
+  - Interactive CSV batch categorization and import modal: parses CSV files up to 50 rows, runs batch suggestions, renders review table with category dropdown overrides, and confirms batch ledger imports.
+  - 92 automated feature tests passing with 459 assertions (100% pass rate).
+- **Immediate Next Action (Phase 7 — Operational Admin Panel & Category Controls):**
+  - Implement system-wide category CRUD, user account toggle (active/disabled), and platform operational statistics.
 
 ---
 
 ## 6. Tests to Run
 ```powershell
-# Run full automated test suite (77 tests / 389 assertions)
+# Run full automated test suite (92 tests / 459 assertions)
 php artisan test
 
-# Run monthly reports test suite (14 tests / 78 assertions)
-php artisan test tests/Feature/MonthlyReportsTest.php
+# Run AI categorization test suite (15 tests / 70 assertions)
+php artisan test tests/Feature/AiCategorizationTest.php
 
 # Run code styling check
 vendor/bin/pint --dirty --format agent

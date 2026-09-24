@@ -99,6 +99,29 @@ Monthly limits by student and category.
 
 ---
 
+### 2.5 `category_learnings` *(Phase 6 — Implemented & Verified)*
+Student-specific categorization preferences learned from manual corrections and confirmations.
+
+| Column | Type | Nullable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `BIGINT UNSIGNED` | No | AUTO_INCREMENT | Primary Key |
+| `user_id` | `BIGINT UNSIGNED` | No | — | Student owner (`users.id`) |
+| `keyword` | `VARCHAR(100)` | No | — | Normalized description keyword / merchant token |
+| `category_id` | `BIGINT UNSIGNED` | No | — | Target preferred category (`categories.id`) |
+| `usage_count` | `INT UNSIGNED` | No | `1` | Frequency count of this correction |
+| `last_used_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp of most recent correction |
+| `created_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+| `updated_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
+
+**Foreign Keys & Constraints:**
+- `FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE`
+- `FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE`
+- `UNIQUE KEY category_learnings_user_id_keyword_unique (user_id, keyword)`
+- `INDEX category_learnings_user_id_usage_count_index (user_id, usage_count)`
+
+---
+
 ## 3. Data Isolation Rules
 1. **Never Trust Client Identifiers:** Query builders and Eloquent scopes must explicitly enforce `user_id = Auth::id()`.
 2. **Deterministic Calculations:** All arithmetic aggregation runs through `SUM(amount)` with `DECIMAL(10,2)` preservation.
+3. **Learned Correction Scoping:** Category learnings are strictly scoped to the student. Learned preferences of Student A never influence suggestions for Student B.

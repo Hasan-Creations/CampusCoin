@@ -39,3 +39,10 @@
 - **Decision:** AI categorization and monthly insights are completely advisory and encapsulated in service classes. Application logic functions identically when AI services are offline.
 - **Reason:** Students must retain complete control over their category assignments and budgets. External AI outages must never block expense logging.
 - **Status:** Accepted
+
+---
+
+## DEC-007 — Advisory AI Categorization, Heuristic Fallback & Student Learning Layer
+- **Decision:** Implement a dual-provider architecture behind `CategorizationProviderInterface` with `HeuristicCategorizationProvider` (zero-latency semantic matching across student domains) and `OpenAiCategorizationProvider` (optional LLM integration with 3-second timeout). Precede all provider calls with student-isolated `CategoryLearning` lookups and strictly validate all suggestions against the student's available categories before rendering.
+- **Reason:** Ensures zero-cost, zero-latency instant suggestions without requiring external API keys while providing clean extensibility when keys are provided. Strictly prevents category hallucinations, protects student privacy, preserves manual override supremacy, and enables customized suggestions based on previous student choices.
+- **Status:** Accepted
