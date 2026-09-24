@@ -109,24 +109,27 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2 border-t hairline-border">
                 {{-- Date From --}}
                 <div>
-                    <label class="block text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">Date From</label>
+                    <label for="report-date-from" class="block text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">Date From</label>
                     <input type="date"
+                           id="report-date-from"
                            wire:model.live="dateFrom"
                            class="w-full px-2.5 py-1.5 rounded-[4px] border hairline-border bg-[var(--bg-surface)] text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]" />
                 </div>
 
                 {{-- Date To --}}
                 <div>
-                    <label class="block text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">Date To</label>
+                    <label for="report-date-to" class="block text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">Date To</label>
                     <input type="date"
+                           id="report-date-to"
                            wire:model.live="dateTo"
                            class="w-full px-2.5 py-1.5 rounded-[4px] border hairline-border bg-[var(--bg-surface)] text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]" />
                 </div>
 
                 {{-- Category Filter --}}
                 <div>
-                    <label class="block text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">Category</label>
-                    <select wire:model.live="categoryFilter"
+                    <label for="report-category-filter" class="block text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">Category</label>
+                    <select id="report-category-filter"
+                            wire:model.live="categoryFilter"
                             class="w-full px-2.5 py-1.5 rounded-[4px] border hairline-border bg-[var(--bg-surface)] text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]">
                         <option value="">All Categories</option>
                         @foreach ($categories as $cat)
@@ -137,8 +140,9 @@
 
                 {{-- Type Filter --}}
                 <div>
-                    <label class="block text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">Transaction Type</label>
-                    <select wire:model.live="typeFilter"
+                    <label for="report-type-filter" class="block text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">Transaction Type</label>
+                    <select id="report-type-filter"
+                            wire:model.live="typeFilter"
                             class="w-full px-2.5 py-1.5 rounded-[4px] border hairline-border bg-[var(--bg-surface)] text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]">
                         <option value="all">All Movements</option>
                         <option value="expense">Expenses Only</option>
@@ -215,28 +219,38 @@
         {{-- ===================================================== --}}
         {{-- REPORT TABS NAVIGATION                                 --}}
         {{-- ===================================================== --}}
-        <div class="border-b hairline-border flex items-center gap-6 overflow-x-auto text-sm">
+        <div role="tablist" aria-label="Report Views" class="border-b hairline-border flex items-center gap-6 overflow-x-auto text-sm">
             <button type="button"
+                    role="tab"
+                    aria-selected="{{ ($reportTab === 'monthly' || $reportTab === 'category') ? 'true' : 'false' }}"
                     wire:click="setTab('category')"
                     class="pb-3 border-b-2 font-medium transition-colors whitespace-nowrap {{ $reportTab === 'monthly' || $reportTab === 'category' ? 'border-[var(--accent-primary)] text-[var(--accent-primary)] font-semibold' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                 Category Spending Breakdown
             </button>
             <button type="button"
+                    role="tab"
+                    aria-selected="{{ $reportTab === 'six_month' ? 'true' : 'false' }}"
                     wire:click="setTab('six_month')"
                     class="pb-3 border-b-2 font-medium transition-colors whitespace-nowrap {{ $reportTab === 'six_month' ? 'border-[var(--accent-primary)] text-[var(--accent-primary)] font-semibold' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                 Six-Month Velocity View
             </button>
             <button type="button"
+                    role="tab"
+                    aria-selected="{{ $reportTab === 'daily' ? 'true' : 'false' }}"
                     wire:click="setTab('daily')"
                     class="pb-3 border-b-2 font-medium transition-colors whitespace-nowrap {{ $reportTab === 'daily' ? 'border-[var(--accent-primary)] text-[var(--accent-primary)] font-semibold' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                 Daily Current-Month Velocity
             </button>
             <button type="button"
+                    role="tab"
+                    aria-selected="{{ $reportTab === 'weekly' ? 'true' : 'false' }}"
                     wire:click="setTab('weekly')"
                     class="pb-3 border-b-2 font-medium transition-colors whitespace-nowrap {{ $reportTab === 'weekly' ? 'border-[var(--accent-primary)] text-[var(--accent-primary)] font-semibold' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                 Weekly Current-Month Movement
             </button>
             <button type="button"
+                    role="tab"
+                    aria-selected="{{ $reportTab === 'ledger' ? 'true' : 'false' }}"
                     wire:click="setTab('ledger')"
                     class="pb-3 border-b-2 font-medium transition-colors whitespace-nowrap {{ $reportTab === 'ledger' ? 'border-[var(--accent-primary)] text-[var(--accent-primary)] font-semibold' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                 Filtered Ledger ({{ $transactions->total() }})
@@ -273,13 +287,13 @@
                         <table class="w-full text-left text-xs">
                             <thead class="bg-[var(--bg-subtle)]/50 border-b hairline-border text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                                 <tr>
-                                    <th class="px-5 py-3">Category</th>
-                                    <th class="px-4 py-3 text-right">Total Spent</th>
-                                    <th class="px-4 py-3 text-right">% Share</th>
-                                    <th class="px-4 py-3 text-center">Entries</th>
-                                    <th class="px-4 py-3 text-right">Avg / Entry</th>
-                                    <th class="px-4 py-3 text-right">Prior Period</th>
-                                    <th class="px-5 py-3 text-right">Trend / Change</th>
+                                    <th scope="col" class="px-5 py-3">Category</th>
+                                    <th scope="col" class="px-4 py-3 text-right">Total Spent</th>
+                                    <th scope="col" class="px-4 py-3 text-right">% Share</th>
+                                    <th scope="col" class="px-4 py-3 text-center">Entries</th>
+                                    <th scope="col" class="px-4 py-3 text-right">Avg / Entry</th>
+                                    <th scope="col" class="px-4 py-3 text-right">Prior Period</th>
+                                    <th scope="col" class="px-5 py-3 text-right">Trend / Change</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y hairline-border font-mono tabular-nums">
@@ -359,12 +373,12 @@
                     <table class="w-full text-left text-xs">
                         <thead class="bg-[var(--bg-subtle)]/50 border-b hairline-border text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                             <tr>
-                                <th class="px-5 py-3">Calendar Month</th>
-                                <th class="px-4 py-3 text-right">Total Inflow</th>
-                                <th class="px-4 py-3 text-right">Total Outflow</th>
-                                <th class="px-4 py-3 text-right">Net Movement</th>
-                                <th class="px-4 py-3 text-center">Savings Rate</th>
-                                <th class="px-5 py-3 text-center">Status</th>
+                                <th scope="col" class="px-5 py-3">Calendar Month</th>
+                                <th scope="col" class="px-4 py-3 text-right">Total Inflow</th>
+                                <th scope="col" class="px-4 py-3 text-right">Total Outflow</th>
+                                <th scope="col" class="px-4 py-3 text-right">Net Movement</th>
+                                <th scope="col" class="px-4 py-3 text-center">Savings Rate</th>
+                                <th scope="col" class="px-5 py-3 text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y hairline-border font-mono tabular-nums">
@@ -447,12 +461,12 @@
                         <table class="w-full text-left text-xs">
                             <thead class="bg-[var(--bg-subtle)]/50 border-b hairline-border text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                                 <tr>
-                                    <th class="px-5 py-3">Date</th>
-                                    <th class="px-4 py-3 text-right">Daily Inflow</th>
-                                    <th class="px-4 py-3 text-right">Daily Outflow</th>
-                                    <th class="px-4 py-3 text-right">Net Daily Movement</th>
-                                    <th class="px-4 py-3 text-center">Entries</th>
-                                    <th class="px-5 py-3 text-center">Status</th>
+                                    <th scope="col" class="px-5 py-3">Date</th>
+                                    <th scope="col" class="px-4 py-3 text-right">Daily Inflow</th>
+                                    <th scope="col" class="px-4 py-3 text-right">Daily Outflow</th>
+                                    <th scope="col" class="px-4 py-3 text-right">Net Daily Movement</th>
+                                    <th scope="col" class="px-4 py-3 text-center">Entries</th>
+                                    <th scope="col" class="px-5 py-3 text-center">Status</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y hairline-border font-mono tabular-nums">
@@ -510,12 +524,12 @@
                     <table class="w-full text-left text-xs">
                         <thead class="bg-[var(--bg-subtle)]/50 border-b hairline-border text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                             <tr>
-                                <th class="px-5 py-3">Calendar Period</th>
-                                <th class="px-4 py-3 text-right">Weekly Inflow</th>
-                                <th class="px-4 py-3 text-right">Weekly Outflow</th>
-                                <th class="px-4 py-3 text-right">Net Weekly Movement</th>
-                                <th class="px-4 py-3 text-center">Entries</th>
-                                <th class="px-5 py-3 text-center">Status</th>
+                                <th scope="col" class="px-5 py-3">Calendar Period</th>
+                                <th scope="col" class="px-4 py-3 text-right">Weekly Inflow</th>
+                                <th scope="col" class="px-4 py-3 text-right">Weekly Outflow</th>
+                                <th scope="col" class="px-4 py-3 text-right">Net Weekly Movement</th>
+                                <th scope="col" class="px-4 py-3 text-center">Entries</th>
+                                <th scope="col" class="px-5 py-3 text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y hairline-border font-mono tabular-nums">
@@ -583,12 +597,12 @@
                         <table class="w-full text-left text-xs">
                             <thead class="bg-[var(--bg-subtle)]/50 border-b hairline-border text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
                                 <tr>
-                                    <th class="px-5 py-3">Date</th>
-                                    <th class="px-4 py-3">Merchant / Description</th>
-                                    <th class="px-4 py-3">Category</th>
-                                    <th class="px-4 py-3">Type</th>
-                                    <th class="px-4 py-3">Method</th>
-                                    <th class="px-5 py-3 text-right">Amount</th>
+                                    <th scope="col" class="px-5 py-3">Date</th>
+                                    <th scope="col" class="px-4 py-3">Merchant / Description</th>
+                                    <th scope="col" class="px-4 py-3">Category</th>
+                                    <th scope="col" class="px-4 py-3">Type</th>
+                                    <th scope="col" class="px-4 py-3">Method</th>
+                                    <th scope="col" class="px-5 py-3 text-right">Amount</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y hairline-border font-mono tabular-nums">

@@ -40,7 +40,7 @@
         {{-- IN-APP BUDGET ALERT BANNER (REAL-TIME NOTIFICATION)    --}}
         {{-- ===================================================== --}}
         @if ($overBudgets->isNotEmpty())
-            <div class="p-4 rounded-[6px] border border-rose-300 bg-rose-50 dark:border-rose-900 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200 flex items-start justify-between gap-3">
+            <div role="alert" aria-live="assertive" class="p-4 rounded-[6px] border border-rose-300 bg-rose-50 dark:border-rose-900 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200 flex items-start justify-between gap-3">
                 <div class="flex items-start gap-3">
                     <x-icon name="shield-alert" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
                     <div class="text-xs space-y-0.5">
@@ -57,7 +57,7 @@
                 </a>
             </div>
         @elseif ($nearLimitBudgets->isNotEmpty())
-            <div class="p-4 rounded-[6px] border border-amber-300 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 flex items-start justify-between gap-3">
+            <div role="status" aria-live="polite" class="p-4 rounded-[6px] border border-amber-300 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200 flex items-start justify-between gap-3">
                 <div class="flex items-start gap-3">
                     <x-icon name="target" class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                     <div class="text-xs space-y-0.5">
@@ -537,7 +537,7 @@
                     </div>
 
                     {{-- Period Switcher Segmented Control --}}
-                    <div class="inline-flex items-center gap-1 p-0.5 rounded-[6px] border hairline-border bg-[var(--bg-subtle)] flex-shrink-0">
+                    <div role="group" aria-label="Comparative period filter" class="inline-flex items-center gap-1 p-0.5 rounded-[6px] border hairline-border bg-[var(--bg-subtle)] flex-shrink-0">
                         <button type="button"
                                 wire:click="setTimePeriod('this_month')"
                                 class="px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors {{ $timePeriod === 'this_month' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">

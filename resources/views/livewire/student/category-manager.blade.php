@@ -29,38 +29,41 @@
 
         <!-- Feedback & Error Alerts -->
         @if ($feedbackMessage)
-            <div class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-400 flex items-center justify-between">
+            <div role="status" aria-live="polite" class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-400 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <x-icon name="check-circle-2" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     <span>{{ $feedbackMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('feedbackMessage', null)" class="text-emerald-600 hover:text-emerald-900">&times;</button>
+                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="text-emerald-600 hover:text-emerald-900">&times;</button>
             </div>
         @endif
 
         @if ($errorMessage)
-            <div class="p-4 rounded-[6px] border border-rose-200 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-900 text-xs text-rose-800 dark:text-rose-400 flex items-center justify-between">
+            <div role="alert" aria-live="assertive" class="p-4 rounded-[6px] border border-rose-200 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-900 text-xs text-rose-800 dark:text-rose-400 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <x-icon name="shield-alert" class="w-4 h-4 text-rose-600 dark:text-rose-400" />
                     <span>{{ $errorMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('errorMessage', null)" class="text-rose-600 hover:text-rose-900">&times;</button>
+                <button type="button" wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="text-rose-600 hover:text-rose-900">&times;</button>
             </div>
         @endif
 
         <!-- Filter Tabs & Search Bar -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <!-- Filter Tabs -->
-            <div class="inline-flex rounded-[6px] border hairline-border p-1 bg-[var(--bg-surface)] text-xs font-medium">
+            <div class="inline-flex rounded-[6px] border hairline-border p-1 bg-[var(--bg-surface)] text-xs font-medium" role="group" aria-label="Category classification filter">
                 <button wire:click="$set('filterType', 'all')" 
+                        aria-label="Show all categories"
                         class="px-3 py-1.5 rounded-[4px] transition-colors {{ $filterType === 'all' ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     All Categories ({{ $categories->count() }})
                 </button>
                 <button wire:click="$set('filterType', 'expense')" 
+                        aria-label="Show expense categories only"
                         class="px-3 py-1.5 rounded-[4px] transition-colors {{ $filterType === 'expense' ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     Expense
                 </button>
                 <button wire:click="$set('filterType', 'income')" 
+                        aria-label="Show income categories only"
                         class="px-3 py-1.5 rounded-[4px] transition-colors {{ $filterType === 'income' ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     Income
                 </button>
@@ -73,6 +76,7 @@
                 </span>
                 <input wire:model.live.debounce.250ms="search" 
                        type="text" 
+                       aria-label="Filter categories by name"
                        placeholder="Filter categories..." 
                        class="input-campus w-full pl-9 text-xs">
             </div>
@@ -166,15 +170,18 @@
         <!-- Create / Edit Modal (No blur, clean hairline card) -->
         @if ($showModal)
             <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="student-category-modal-title"
                  x-data
                  @keydown.escape.window="$wire.closeModal()">
                 <div class="card-campus border hairline-border w-full max-w-md p-6 bg-[var(--bg-surface)] shadow-xl relative"
                      @click.away="$wire.closeModal()">
                     <div class="flex items-center justify-between pb-4 border-b hairline-border mb-4">
-                        <h2 class="font-heading font-bold text-base text-[var(--text-primary)]">
+                        <h2 id="student-category-modal-title" class="font-heading font-bold text-base text-[var(--text-primary)]">
                             {{ $editingId ? 'Edit Personal Category' : 'Create Custom Category' }}
                         </h2>
-                        <button type="button" wire:click="closeModal" class="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-lg">&times;</button>
+                        <button type="button" wire:click="closeModal" aria-label="Close modal" class="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-lg">&times;</button>
                     </div>
 
                     <form wire:submit.prevent="saveCategory" class="space-y-4">
@@ -215,10 +222,11 @@
                             <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
                                 Symbol / Icon
                             </label>
-                            <div class="grid grid-cols-5 gap-2">
+                            <div class="grid grid-cols-5 gap-2" role="group" aria-label="Icon selection">
                                 @foreach ($availableIcons as $key => $label)
                                     <button type="button" 
                                             wire:click="$set('icon', '{{ $key }}')"
+                                            aria-label="Select icon {{ $label }}"
                                             title="{{ $label }}"
                                             class="p-2 rounded-[4px] border hairline-border flex items-center justify-center {{ $icon === $key ? 'border-[var(--accent-primary)] bg-[var(--accent-tint)] text-[var(--accent-primary)]' : 'text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]' }}">
                                         <x-icon :name="$key" class="w-4 h-4" />
@@ -232,10 +240,11 @@
                             <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
                                 Identification Color
                             </label>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2" role="group" aria-label="Color selection">
                                 @foreach ($availableColors as $hex => $label)
                                     <button type="button" 
                                             wire:click="$set('color', '{{ $hex }}')"
+                                            aria-label="Select color {{ $label }}"
                                             title="{{ $label }}"
                                             class="w-6 h-6 rounded-[4px] border {{ $color === $hex ? 'ring-2 ring-offset-2 ring-slate-800 dark:ring-slate-200' : 'border-black/10' }}"
                                             style="background-color: {{ $hex }};">

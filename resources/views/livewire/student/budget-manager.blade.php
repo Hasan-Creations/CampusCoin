@@ -28,6 +28,7 @@
                     </label>
                     <input type="month"
                            id="month-picker"
+                           aria-label="Filter budgets by month"
                            wire:model.live="selectedMonth"
                            class="input-campus py-1.5 px-3 text-xs font-mono w-40" />
                 </div>
@@ -46,24 +47,24 @@
         {{-- FLASH MESSAGES                                         --}}
         {{-- ===================================================== --}}
         @if ($feedbackMessage)
-            <div class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
+            <div role="status" aria-live="polite" class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
                 <div class="flex items-center gap-2 font-medium">
                     <x-icon name="check-circle-2" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                     <span>{{ $feedbackMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('feedbackMessage', null)" class="text-emerald-600 hover:text-emerald-800">
+                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="text-emerald-600 hover:text-emerald-800">
                     &times;
                 </button>
             </div>
         @endif
 
         @if ($errorMessage)
-            <div class="p-4 rounded-[6px] border border-rose-200 bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 text-xs flex items-center justify-between">
+            <div role="alert" aria-live="assertive" class="p-4 rounded-[6px] border border-rose-200 bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 text-xs flex items-center justify-between">
                 <div class="flex items-center gap-2 font-medium">
                     <x-icon name="shield-alert" class="w-4 h-4 text-rose-600 dark:text-rose-400 flex-shrink-0" />
                     <span>{{ $errorMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('errorMessage', null)" class="text-rose-600 hover:text-rose-800">
+                <button type="button" wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="text-rose-600 hover:text-rose-800">
                     &times;
                 </button>
             </div>
@@ -290,6 +291,9 @@
         {{-- ===================================================== --}}
         @if ($showModal)
             <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overflow-y-auto"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="modal-budget-title"
                  x-data
                  @keydown.escape.window="$wire.closeModal()">
                 <div class="card-campus border hairline-border p-6 max-w-md w-full bg-[var(--bg-surface)] shadow-xl space-y-5"
@@ -299,11 +303,11 @@
                             <div class="text-[10px] font-mono text-[var(--accent-primary)] uppercase tracking-wider">
                                 {{ $editingId ? 'Edit Configuration' : 'New Spending Cap' }}
                             </div>
-                            <h2 class="font-heading text-lg font-bold text-[var(--text-primary)]">
+                            <h2 id="modal-budget-title" class="font-heading text-lg font-bold text-[var(--text-primary)]">
                                 {{ $editingId ? 'Edit Budget Goal' : 'Set Budget Goal' }}
                             </h2>
                         </div>
-                        <button type="button" wire:click="closeModal" class="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
+                        <button type="button" wire:click="closeModal" aria-label="Close modal" class="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
                             &times;
                         </button>
                     </div>
@@ -389,13 +393,16 @@
         {{-- ===================================================== --}}
         @if ($showDeleteModal)
             <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="modal-delete-budget-title"
                  x-data
                  @keydown.escape.window="$wire.cancelDelete()">
                 <div class="card-campus border hairline-border p-6 max-w-sm w-full bg-[var(--bg-surface)] shadow-xl space-y-4"
                      @click.away="$wire.cancelDelete()">
                     <div class="flex items-center gap-3 text-rose-600">
                         <x-icon name="shield-alert" class="w-5 h-5 flex-shrink-0" />
-                        <h2 class="font-heading text-base font-bold text-[var(--text-primary)]">
+                        <h2 id="modal-delete-budget-title" class="font-heading text-base font-bold text-[var(--text-primary)]">
                             Delete Budget Goal?
                         </h2>
                     </div>

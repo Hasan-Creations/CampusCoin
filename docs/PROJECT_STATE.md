@@ -1,14 +1,15 @@
 # Campus Coin — Project State
 
 ## Current Phase
-**Phase 7 — Operational Admin Panel & Category Controls (COMPLETED & VERIFIED)**
-Transitioning to: **Phase 8 — Accessibility Controls & Final Hardening**
+**Phase 8 — Accessibility Controls & Final Hardening (COMPLETED & VERIFIED)**
+All functional, security, and accessibility milestones of Campus Coin are fully implemented and verified.
+Ready for dedicated visual redesign in subsequent cycle.
 
 ## Current Task
-Phase 7 has been fully implemented, integrated, and verified on `master`. The administrative operational control panel, category governance (global default creation, editing, active/inactive status toggle, and safe non-destructive deletion guards), student account status management (active/disabled toggling, immediate session invalidation, and inspection modal), centralized active user middleware enforcement, and comprehensive platform operational metrics service (`AdminMetricsService`) are fully operational. Full regression test suite passing at 100% (139 tests, 648 assertions). Ready to begin Phase 8.
+Phase 8 has been fully implemented, integrated, and verified on `master`. System-wide keyboard accessibility, high-contrast `:focus-visible` indicators, persistent dark/light theme switching with synchronous FOUC prevention, three-tier root font-size scaling (`normal` 100%, `large` 112.5%, `xlarge` 125%) per SRS §1.6 & §185, reduced-motion preferences, skip-to-content links, semantic modal dialogs (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`, Escape dismiss), accessible data table scopes (`<th scope="col">`), live status/error announcements (`role="status"`/`role="alert"`), input boundary validation, and XSS prevention are fully operational. Full automated regression test suite passing at 100% (151 tests, 722 assertions).
 
 ## Overall Completion
-**95%** (Phases 0–7 completed and verified: Foundation, Core Student Data, Budget Goals, Cash Flow Analytics, Monthly Reports, Saving Tips Engine, Advisory AI Categorization, Operational Admin Panel).
+**100%** (Phases 0–8 completed and verified: Foundation, Core Student Data, Budget Goals, Cash Flow Analytics, Monthly Reports, Saving Tips Engine, Advisory AI Categorization, Operational Admin Panel, Accessibility Controls & Final Hardening).
 
 ## Phase Definitions & Roadmap (Reconciled & Authoritative)
 - **Phase 0:** Project Initialization, Scaffolding & Multi-Role Authentication (COMPLETED)
@@ -19,24 +20,35 @@ Phase 7 has been fully implemented, integrated, and verified on `master`. The ad
 - **Phase 5:** Deterministic Saving Tips Engine & Bookmarks (COMPLETED & VERIFIED)
 - **Phase 6:** Advisory AI Categorization & CSV Batch Processing (COMPLETED & VERIFIED)
 - **Phase 7:** Operational Admin Panel & Category Controls (COMPLETED & VERIFIED)
-- **Phase 8:** Accessibility Controls & Final Hardening (NEXT)
+- **Phase 8:** Accessibility Controls & Final Hardening (COMPLETED & VERIFIED)
 
 ## Completed Features
 - **Environment & Framework:** PHP 8.4.23, Composer 2.10.2, Node 22.21.0, NPM 10.9.4, MariaDB 10.4.32 on port 3306, Laravel 12 application with Livewire 3 (`livewire/livewire ^4.4`), Laravel Boost installed.
 - **Database & Schemas:**
   - `users`: student profile fields (`academic_year`, `monthly_allowance`, `savings_goal`), role separation (`student`, `admin`), and account status (`active`, `disabled`).
   - `categories`: personal and system default categories with icon, hex color, type (`income`, `expense`), and operational status `is_active` (`boolean`, default `true`, indexed).
-  - `transactions`: `DECIMAL(10,2)` monetary values, category association, payment method, and recurrence flags.
+  - `transactions`: `DECIMAL(10,2)` monetary values, category association, payment method, recurrence flags, and advisory AI flags (`ai_suggested`, `ai_confidence`).
   - `budgets`: `DECIMAL(10,2)` planned spending limits by student, expense category, and `month_year` (`YYYY-MM`) with unique composite key.
   - `saving_tips`: composite unique index `(user_id, rule_key, category_id)` with status tracking (`active`, `dismissed`, `pinned`).
   - `category_learnings`: student-isolated preference mappings `(user_id, keyword)`.
 - **Authentication & Authorization:**
   - Multi-role session authentication with CSRF protection.
   - Student registration with `.edu` domain validation and cohort selection.
-  - Student login screen with 60/40 asymmetric layout and proof metrics.
+  - Student login screen with 60/40 asymmetric layout, proof metrics, and `autocomplete` fields.
   - Direct-access administrator login portal (`/admin/login`).
   - Middleware: `EnsureUserIsAdmin` (direct root role guard) and `EnsureUserIsActive` (appended to `web` middleware pipeline, terminating sessions and redirecting/aborting disabled users).
   - Multi-tenant student isolation enforcing `where('user_id', Auth::id())` across all personal data queries.
+- **Accessibility & UX Controls (Phase 8):**
+  - **FOUC Prevention & Immediate Boot:** Synchronous `<head>` boot script reads `localStorage` for theme and font-size preferences, immediately applying `.dark` and `data-font-size="..."` prior to render to eliminate layout jumps.
+  - **Font-Size Scaling Preference:** Root CSS variables scale base typography at `normal` (100%), `large` (112.5%), and `xlarge` (125%) per SRS §1.6 & §185, with accessible dropdown selectors in Student, Admin, Guest, and Welcome headers.
+  - **Keyboard Navigation & Visible Focus:** High-contrast focus indicators (`outline: 2px solid var(--accent-primary) !important`) for all interactive elements via `:focus-visible`.
+  - **Skip to Main Content:** Accessible skip navigation link on every layout with focus slide-in transition targeting `<main id="main-content" tabindex="-1">`.
+  - **Reduced Motion:** Global `@media (prefers-reduced-motion: reduce)` block nullifying transitions, animations, and smooth scrolling for users with vestibular sensitivities.
+  - **Semantic Modal Dialogs:** Full ARIA modal attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`, Escape dismiss via Alpine `@keydown.escape.window`) across Single Transaction Modal, CSV Batch Import Modal, Student Category Modal, Global Category Modal, User Inspection Modal, and Budget Modal.
+  - **Accessible Data Tables:** Complete table headers with `<th scope="col">` and dynamic `aria-sort` indicators across Transaction List, Category Breakdown, 6-Month Velocity, Daily Summary, Weekly Summary, Filtered Ledger, Most-Used Categories, and Recent Campus Accounts.
+  - **Form Accessibility:** All inputs associated with explicit `<label for="...">`, search inputs and filter selectors given descriptive `aria-label`s, and authentication inputs configured with standard browser `autocomplete` attributes.
+  - **Live Announcements:** Dynamic flash messages, budget threshold notices, and operational error banners configured with `role="status" aria-live="polite"` or `role="alert" aria-live="assertive"`.
+  - **Mobile Navigation Drawer:** Responsive slide-over drawer with Alpine state binding (`mobileNavOpen`), backdrop dismiss, and keyboard escape handling.
 - **Category Management & Governance:**
   - 12 system default categories seeded.
   - Student `CategoryManager` Livewire component (`/categories`) for personal category CRUD, type filters, and color/icon palettes.
@@ -66,14 +78,14 @@ Phase 7 has been fully implemented, integrated, and verified on `master`. The ad
     - Student Demographics & Commitments breakdown with progress distribution.
     - Recent Registered Campus Accounts table with inline status toggling and quick links.
 - **Automated Test Suite:**
-  - **139 tests with 648 assertions** passing at 100% (`php artisan test`).
-  - Includes 28 dedicated Phase 7 feature tests covering admin authorization, category controls, user status governance, session invalidation, and platform metrics.
+  - **151 tests with 722 assertions** passing at 100% (`php artisan test`).
+  - Includes 12 dedicated Phase 8 feature tests covering skip links, main landmarks, text scaling, theme persistence, form autocomplete, table scopes, modal dialog semantics, and input sanitization / XSS escaping.
 
 ## Partially Completed Features
 - None.
 
 ## Not Started Features
-- Accessibility controls & advanced UX (Phase 8)
+- Dedicated Campus Coin visual redesign (scheduled for subsequent phase).
 
 ## Known Bugs
 None.
@@ -95,8 +107,7 @@ None.
 - Sample transactions seeded for Alex Rivera.
 
 ## Current Test Status
-- 139 tests, 648 assertions passing at 100% (`php artisan test`).
+- 151 tests, 722 assertions passing at 100% (`php artisan test`).
 
 ## Immediate Next Task
-- **Phase 8 — Accessibility Controls & Final Hardening:**
-  - System-wide contrast verification, keyboard accessibility, font-size adjustments, theme preference persistence, and final production readiness.
+- Transition to dedicated visual redesign phase or production deployment.

@@ -41,22 +41,22 @@
 
         <!-- Feedback & Alerts -->
         @if ($feedbackMessage)
-            <div class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-400 flex items-center justify-between">
+            <div role="status" aria-live="polite" class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-400 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <x-icon name="check-circle-2" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     <span>{{ $feedbackMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('feedbackMessage', null)" class="text-emerald-600 hover:text-emerald-900">&times;</button>
+                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="text-emerald-600 hover:text-emerald-900">&times;</button>
             </div>
         @endif
 
         @if ($errorMessage)
-            <div class="p-4 rounded-[6px] border border-rose-200 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-900 text-xs text-rose-800 dark:text-rose-400 flex items-center justify-between">
+            <div role="alert" aria-live="assertive" class="p-4 rounded-[6px] border border-rose-200 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-900 text-xs text-rose-800 dark:text-rose-400 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <x-icon name="shield-alert" class="w-4 h-4 text-rose-600 dark:text-rose-400" />
                     <span>{{ $errorMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('errorMessage', null)" class="text-rose-600 hover:text-rose-900">&times;</button>
+                <button type="button" wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="text-rose-600 hover:text-rose-900">&times;</button>
             </div>
         @endif
 
@@ -70,22 +70,26 @@
                     </span>
                     <input wire:model.live.debounce.250ms="search" 
                            type="text" 
+                           aria-label="Search transactions by merchant or notes"
                            placeholder="Search merchant, notes..." 
                            class="input-campus w-full pl-9 text-xs">
                 </div>
 
                 <!-- Type Selector -->
                 <div class="lg:col-span-3">
-                    <div class="inline-flex w-full rounded-[4px] border hairline-border p-0.5 bg-[var(--bg-subtle)] text-xs font-medium">
+                    <div class="inline-flex w-full rounded-[4px] border hairline-border p-0.5 bg-[var(--bg-subtle)] text-xs font-medium" role="group" aria-label="Transaction type filter">
                         <button wire:click="$set('typeFilter', 'all')" 
+                                aria-label="Show all transaction types"
                                 class="flex-1 py-1.5 text-center rounded-[3px] transition-colors {{ $typeFilter === 'all' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)]' }}">
                             All
                         </button>
                         <button wire:click="$set('typeFilter', 'expense')" 
+                                aria-label="Show expenses only"
                                 class="flex-1 py-1.5 text-center rounded-[3px] transition-colors {{ $typeFilter === 'expense' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)]' }}">
                             Expense
                         </button>
                         <button wire:click="$set('typeFilter', 'income')" 
+                                aria-label="Show income only"
                                 class="flex-1 py-1.5 text-center rounded-[3px] transition-colors {{ $typeFilter === 'income' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)]' }}">
                             Income
                         </button>
@@ -94,7 +98,7 @@
 
                 <!-- Category Filter -->
                 <div class="lg:col-span-3">
-                    <select wire:model.live="categoryFilter" class="input-campus w-full text-xs bg-[var(--bg-surface)]">
+                    <select wire:model.live="categoryFilter" aria-label="Filter transactions by category" class="input-campus w-full text-xs bg-[var(--bg-surface)]">
                         <option value="">All Categories</option>
                         @foreach ($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }} ({{ ucfirst($cat->type) }})</option>
@@ -104,7 +108,7 @@
 
                 <!-- Payment Method Filter -->
                 <div class="lg:col-span-2">
-                    <select wire:model.live="methodFilter" class="input-campus w-full text-xs bg-[var(--bg-surface)]">
+                    <select wire:model.live="methodFilter" aria-label="Filter transactions by payment method" class="input-campus w-full text-xs bg-[var(--bg-surface)]">
                         <option value="">All Methods</option>
                         <option value="card">Card</option>
                         <option value="cash">Cash</option>
@@ -153,41 +157,41 @@
                     <table class="w-full text-xs text-left">
                         <thead class="border-b hairline-border font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)]">
                             <tr>
-                                <th class="p-3.5 cursor-pointer hover:text-[var(--text-primary)]" wire:click="sortByColumn('transaction_date')">
+                                <th scope="col" class="p-3.5 cursor-pointer hover:text-[var(--text-primary)]" wire:click="sortByColumn('transaction_date')" aria-sort="{{ $sortBy === 'transaction_date' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                     <div class="flex items-center gap-1.5">
                                         <span>Date</span>
                                         @if ($sortBy === 'transaction_date')
-                                            <span class="text-[10px]">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                                            <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
                                         @endif
                                     </div>
                                 </th>
-                                <th class="p-3.5 cursor-pointer hover:text-[var(--text-primary)]" wire:click="sortByColumn('merchant')">
+                                <th scope="col" class="p-3.5 cursor-pointer hover:text-[var(--text-primary)]" wire:click="sortByColumn('merchant')" aria-sort="{{ $sortBy === 'merchant' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                     <div class="flex items-center gap-1.5">
                                         <span>Merchant / Description</span>
                                         @if ($sortBy === 'merchant')
-                                            <span class="text-[10px]">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                                            <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
                                         @endif
                                     </div>
                                 </th>
-                                <th class="p-3.5">Category</th>
-                                <th class="p-3.5">Method</th>
-                                <th class="p-3.5 cursor-pointer hover:text-[var(--text-primary)]" wire:click="sortByColumn('type')">
+                                <th scope="col" class="p-3.5">Category</th>
+                                <th scope="col" class="p-3.5">Method</th>
+                                <th scope="col" class="p-3.5 cursor-pointer hover:text-[var(--text-primary)]" wire:click="sortByColumn('type')" aria-sort="{{ $sortBy === 'type' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                     <div class="flex items-center gap-1.5">
                                         <span>Type</span>
                                         @if ($sortBy === 'type')
-                                            <span class="text-[10px]">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                                            <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
                                         @endif
                                     </div>
                                 </th>
-                                <th class="p-3.5 text-right cursor-pointer hover:text-[var(--text-primary)]" wire:click="sortByColumn('amount')">
+                                <th scope="col" class="p-3.5 text-right cursor-pointer hover:text-[var(--text-primary)]" wire:click="sortByColumn('amount')" aria-sort="{{ $sortBy === 'amount' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                     <div class="flex items-center justify-end gap-1.5">
                                         <span>Amount</span>
                                         @if ($sortBy === 'amount')
-                                            <span class="text-[10px]">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                                            <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
                                         @endif
                                     </div>
                                 </th>
-                                <th class="p-3.5 text-center">Actions</th>
+                                <th scope="col" class="p-3.5 text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y hairline-border">
@@ -284,6 +288,9 @@
         <!-- Quick-Add / Edit Transaction Modal (~500px Desktop / Bottom Sheet Mobile) -->
         @if ($showModal)
             <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="modal-transaction-title"
                  x-data="{ 
                      openDatePicker: false,
                      init() {
@@ -305,7 +312,7 @@
                     <!-- Clean Borderless Header -->
                     <div class="flex items-start justify-between">
                         <div>
-                            <h2 class="font-heading font-bold text-lg text-[var(--text-primary)] tracking-tight">
+                            <h2 id="modal-transaction-title" class="font-heading font-bold text-lg text-[var(--text-primary)] tracking-tight">
                                 {{ $editingId ? 'Edit Ledger Entry' : 'Quick Add Transaction' }}
                             </h2>
                             <div class="flex items-center gap-2 mt-1">
@@ -572,6 +579,9 @@
         <!-- CSV Batch Categorization & Import Modal -->
         @if ($showImportModal)
             <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 dark:bg-black/70 backdrop-blur-xs transition-opacity duration-150"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="modal-import-title"
                  x-data
                  @keydown.escape.window="$wire.closeImportModal()">
                 <div class="card-campus border hairline-border w-full {{ $importStepReview ? 'sm:max-w-4xl' : 'sm:max-w-xl' }} p-5 sm:p-6 bg-[var(--bg-surface)] shadow-2xl relative rounded-t-[16px] sm:rounded-[10px] rounded-b-none sm:rounded-b-[10px] max-h-[92vh] flex flex-col space-y-4"
@@ -584,7 +594,7 @@
                                 <span class="p-1 rounded-[6px] bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400">
                                     <x-icon name="sparkles" class="w-4 h-4" />
                                 </span>
-                                <h2 class="font-heading font-bold text-lg text-[var(--text-primary)] tracking-tight">
+                                <h2 id="modal-import-title" class="font-heading font-bold text-lg text-[var(--text-primary)] tracking-tight">
                                     {{ $importStepReview ? 'Review AI Batch Categorization' : 'Import Transactions via CSV' }}
                                 </h2>
                             </div>

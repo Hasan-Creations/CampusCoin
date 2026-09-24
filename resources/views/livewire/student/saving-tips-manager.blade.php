@@ -34,12 +34,12 @@
         {{-- FLASH FEEDBACK ALERT                                  --}}
         {{-- ===================================================== --}}
         @if ($feedbackMessage)
-            <div class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
+            <div role="status" aria-live="polite" class="p-4 rounded-[6px] border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
                 <div class="flex items-center gap-2 font-medium">
                     <x-icon name="check-circle" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                     <span>{{ $feedbackMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('feedbackMessage', null)" class="text-emerald-600 hover:text-emerald-800 font-mono text-base leading-none">
+                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="text-emerald-600 hover:text-emerald-800 font-mono text-base leading-none">
                     &times;
                 </button>
             </div>
@@ -93,8 +93,10 @@
         {{-- SEGMENTED TAB CONTROLS                                --}}
         {{-- ===================================================== --}}
         <div class="flex items-center justify-between border-b hairline-border pb-3">
-            <div class="inline-flex items-center gap-1.5 p-1 rounded-[6px] border hairline-border bg-[var(--bg-subtle)]">
+            <div role="tablist" aria-label="Saving tip status filters" class="inline-flex items-center gap-1.5 p-1 rounded-[6px] border hairline-border bg-[var(--bg-subtle)]">
                 <button type="button"
+                        role="tab"
+                        aria-selected="{{ $activeTab === 'active' ? 'true' : 'false' }}"
                         wire:click="setTab('active')"
                         class="px-3.5 py-1.5 rounded-[4px] text-xs font-mono transition-colors flex items-center gap-2 {{ $activeTab === 'active' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     <span>Active Opportunities</span>
@@ -104,6 +106,8 @@
                 </button>
 
                 <button type="button"
+                        role="tab"
+                        aria-selected="{{ $activeTab === 'pinned' ? 'true' : 'false' }}"
                         wire:click="setTab('pinned')"
                         class="px-3.5 py-1.5 rounded-[4px] text-xs font-mono transition-colors flex items-center gap-2 {{ $activeTab === 'pinned' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     <x-icon name="bookmark" class="w-3.5 h-3.5 text-[var(--gold)]" />
@@ -114,6 +118,8 @@
                 </button>
 
                 <button type="button"
+                        role="tab"
+                        aria-selected="{{ $activeTab === 'dismissed' ? 'true' : 'false' }}"
                         wire:click="setTab('dismissed')"
                         class="px-3.5 py-1.5 rounded-[4px] text-xs font-mono transition-colors flex items-center gap-2 {{ $activeTab === 'dismissed' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     <span>Dismissed</span>
@@ -254,6 +260,7 @@
                                 @if ($tip->isActive())
                                     <button type="button"
                                             wire:click="pinTip({{ $tip->id }})"
+                                            aria-label="Pin tip: {{ $tip->title }}"
                                             class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5">
                                         <x-icon name="bookmark" class="w-3.5 h-3.5 text-[var(--gold)]" />
                                         <span>Pin Tip</span>
@@ -261,6 +268,7 @@
 
                                     <button type="button"
                                             wire:click="dismissTip({{ $tip->id }})"
+                                            aria-label="Dismiss tip: {{ $tip->title }}"
                                             class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 text-[var(--text-muted)] hover:text-rose-600 dark:hover:text-rose-400">
                                         <x-icon name="x" class="w-3.5 h-3.5" />
                                         <span>Dismiss</span>
@@ -268,6 +276,7 @@
                                 @elseif ($tip->isPinned())
                                     <button type="button"
                                             wire:click="unpinTip({{ $tip->id }})"
+                                            aria-label="Unpin tip: {{ $tip->title }}"
                                             class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5">
                                         <x-icon name="bookmark-minus" class="w-3.5 h-3.5 text-[var(--gold)]" />
                                         <span>Unpin</span>
@@ -275,6 +284,7 @@
 
                                     <button type="button"
                                             wire:click="dismissTip({{ $tip->id }})"
+                                            aria-label="Dismiss tip: {{ $tip->title }}"
                                             class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 text-[var(--text-muted)] hover:text-rose-600 dark:hover:text-rose-400">
                                         <x-icon name="x" class="w-3.5 h-3.5" />
                                         <span>Dismiss</span>
@@ -282,6 +292,7 @@
                                 @elseif ($tip->isDismissed())
                                     <button type="button"
                                             wire:click="restoreTip({{ $tip->id }})"
+                                            aria-label="Restore tip to active: {{ $tip->title }}"
                                             class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
                                         <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
                                         <span>Restore to Active</span>

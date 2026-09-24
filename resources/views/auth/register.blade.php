@@ -11,7 +11,7 @@
             </div>
 
             @if ($errors->any())
-                <div class="mb-4 p-3 rounded-[6px] border border-rose-200 bg-rose-50 dark:bg-rose-950/30 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-400">
+                <div role="alert" aria-live="assertive" class="mb-4 p-3 rounded-[6px] border border-rose-200 bg-rose-50 dark:bg-rose-950/30 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-400">
                     <ul class="list-disc pl-4 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -20,7 +20,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('register') }}" class="space-y-4" x-data="{ email: '{{ old('email') }}' }">
+            <form method="POST" action="{{ route('register') }}" class="space-y-4" aria-label="Student Registration Form" x-data="{ email: '{{ old('email') }}' }">
                 @csrf
 
                 <!-- Full Name -->
@@ -31,6 +31,7 @@
                     <input id="name" 
                            type="text" 
                            name="name" 
+                           autocomplete="name"
                            value="{{ old('name') }}" 
                            required 
                            autofocus 
@@ -53,6 +54,7 @@
                         <input id="email" 
                                type="email" 
                                name="email" 
+                               autocomplete="email"
                                value="{{ old('email') }}" 
                                required 
                                oninput="checkEduEmail(this.value)"
@@ -131,6 +133,7 @@
                         <input id="password" 
                                type="password" 
                                name="password" 
+                               autocomplete="new-password"
                                required 
                                placeholder="Minimum 8 characters"
                                class="input-campus w-full text-sm">
@@ -143,6 +146,7 @@
                         <input id="password_confirmation" 
                                type="password" 
                                name="password_confirmation" 
+                               autocomplete="new-password"
                                required 
                                placeholder="Repeat password"
                                class="input-campus w-full text-sm">

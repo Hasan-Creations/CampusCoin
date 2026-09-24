@@ -10,14 +10,35 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 
+    <!-- Immediate Theme & Font-Size Boot Script (Prevents FOUC & Text Shifts) -->
+    <script>
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                const fontSize = localStorage.getItem('font-size') || 'normal';
+                document.documentElement.setAttribute('data-font-size', fontSize);
+            } catch (e) {}
+        })();
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-full font-sans antialiased text-[var(--text-primary)] bg-[var(--bg-canvas)]">
+    <!-- Skip to Main Content Link for Keyboard & Screen Reader Users -->
+    <a href="#main-content" class="skip-to-content">
+        Skip to main content
+    </a>
+
     <!-- Navigation Bar -->
     <header class="w-full border-b hairline-border bg-[var(--bg-surface)] sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="{{ url('/') }}" class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-[4px] bg-[var(--accent-primary)] flex items-center justify-center text-white font-heading font-bold text-sm tracking-tight shadow-sm">
+            <a href="{{ url('/') }}" class="flex items-center gap-2.5" aria-label="Campus Coin Home">
+                <div class="w-8 h-8 rounded-[4px] bg-[var(--accent-primary)] flex items-center justify-center text-white font-heading font-bold text-sm tracking-tight shadow-sm" aria-hidden="true">
                     CC
                 </div>
                 <span class="font-heading font-bold text-lg text-[var(--text-primary)] tracking-tight">Campus<span class="text-[var(--accent-primary)]">Coin</span></span>
@@ -28,9 +49,70 @@
                 <a href="#architecture" class="hidden sm:inline-block text-[var(--text-muted)] hover:text-[var(--text-primary)]">Architecture</a>
                 <a href="#sitemap" class="text-[var(--text-muted)] hover:text-[var(--text-primary)]">Sitemap</a>
 
+                <!-- Font-Size Scaling Control (SRS §1.6 & §185) -->
+                <div class="relative" x-data="{
+                    open: false,
+                    fontSize: localStorage.getItem('font-size') || 'normal',
+                    setFontSize(size) {
+                        this.fontSize = size;
+                        if (window.CampusCoin && window.CampusCoin.setFontSize) {
+                            window.CampusCoin.setFontSize(size);
+                        } else {
+                            localStorage.setItem('font-size', size);
+                            document.documentElement.setAttribute('data-font-size', size);
+                        }
+                        this.open = false;
+                    }
+                }">
+                    <button type="button"
+                            @click="open = !open"
+                            @keydown.escape="open = false"
+                            aria-haspopup="true"
+                            :aria-expanded="open"
+                            aria-label="Adjust text scaling size"
+                            title="Adjust text scaling"
+                            class="p-1.5 rounded-[4px] border hairline-border hover:bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 font-mono text-xs">
+                        <span class="font-bold text-xs" aria-hidden="true">aA</span>
+                        <x-icon name="sliders" class="w-3 h-3" />
+                    </button>
+                    <div x-show="open"
+                         @click.away="open = false"
+                         x-cloak
+                         role="menu"
+                         aria-label="Text size options"
+                         class="absolute right-0 mt-1 w-40 rounded-[6px] border hairline-border bg-[var(--bg-surface)] shadow-lg p-1 z-50 text-xs font-mono">
+                        <button type="button"
+                                role="menuitem"
+                                @click="setFontSize('normal')"
+                                class="w-full text-left px-2.5 py-1.5 rounded-[4px] flex items-center justify-between transition-colors"
+                                :class="fontSize === 'normal' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'">
+                            <span>Normal (100%)</span>
+                            <span x-show="fontSize === 'normal'" aria-hidden="true">✓</span>
+                        </button>
+                        <button type="button"
+                                role="menuitem"
+                                @click="setFontSize('large')"
+                                class="w-full text-left px-2.5 py-1.5 rounded-[4px] flex items-center justify-between transition-colors"
+                                :class="fontSize === 'large' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'">
+                            <span>Large (112.5%)</span>
+                            <span x-show="fontSize === 'large'" aria-hidden="true">✓</span>
+                        </button>
+                        <button type="button"
+                                role="menuitem"
+                                @click="setFontSize('xlarge')"
+                                class="w-full text-left px-2.5 py-1.5 rounded-[4px] flex items-center justify-between transition-colors"
+                                :class="fontSize === 'xlarge' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'">
+                            <span>X-Large (125%)</span>
+                            <span x-show="fontSize === 'xlarge'" aria-hidden="true">✓</span>
+                        </button>
+                    </div>
+                </div>
+
                 <button type="button" 
-                        onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')"
-                        class="p-1.5 rounded-[4px] border hairline-border hover:bg-[var(--bg-subtle)] text-[var(--text-muted)]">
+                        onclick="window.CampusCoin ? window.CampusCoin.toggleTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))"
+                        aria-label="Toggle dark mode"
+                        title="Toggle dark mode"
+                        class="p-1.5 rounded-[4px] border hairline-border hover:bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
                     <x-icon name="sun" class="w-4 h-4 dark:hidden" />
                     <x-icon name="moon" class="w-4 h-4 hidden dark:block" />
                 </button>
@@ -49,6 +131,7 @@
         </div>
     </header>
 
+    <main id="main-content" tabindex="-1" class="focus:outline-none">
     <!-- Hero Section -->
     <section class="max-w-7xl mx-auto px-6 py-16 sm:py-24 border-b hairline-border">
         <div class="max-w-3xl space-y-6">
@@ -192,6 +275,7 @@
             </div>
         </div>
     </section>
+    </main>
 
     <!-- Footer -->
     <footer class="border-t hairline-border py-8 px-6 text-xs text-[var(--text-muted)]">
@@ -205,13 +289,5 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
 </body>
 </html>

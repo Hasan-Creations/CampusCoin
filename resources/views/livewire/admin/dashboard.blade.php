@@ -1,24 +1,24 @@
 <div class="space-y-6">
     <!-- Feedback Alerts -->
     @if ($feedbackMessage)
-        <div class="p-4 rounded-[6px] border hairline-border bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
+        <div role="status" aria-live="polite" class="p-4 rounded-[6px] border hairline-border bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <x-icon name="check-circle-2" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>{{ $feedbackMessage }}</span>
             </div>
-            <button wire:click="$set('feedbackMessage', null)" class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-200">
+            <button wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-200">
                 <x-icon name="x" class="w-3.5 h-3.5" />
             </button>
         </div>
     @endif
 
     @if ($errorMessage)
-        <div class="p-4 rounded-[6px] border hairline-border bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 text-xs flex items-center justify-between">
+        <div role="alert" aria-live="assertive" class="p-4 rounded-[6px] border hairline-border bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 text-xs flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <x-icon name="shield-alert" class="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
                 <span>{{ $errorMessage }}</span>
             </div>
-            <button wire:click="$set('errorMessage', null)" class="text-rose-600 hover:text-rose-800 dark:hover:text-rose-200">
+            <button wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="text-rose-600 hover:text-rose-800 dark:hover:text-rose-200">
                 <x-icon name="x" class="w-3.5 h-3.5" />
             </button>
         </div>
@@ -133,11 +133,11 @@
                     <table class="w-full text-xs text-left">
                         <thead class="font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)]">
                             <tr>
-                                <th class="p-2.5">Category</th>
-                                <th class="p-2.5">Type</th>
-                                <th class="p-2.5 text-right">Transactions</th>
-                                <th class="p-2.5 text-right">Volume</th>
-                                <th class="p-2.5 text-right">Share</th>
+                                <th scope="col" class="p-2.5">Category</th>
+                                <th scope="col" class="p-2.5">Type</th>
+                                <th scope="col" class="p-2.5 text-right">Transactions</th>
+                                <th scope="col" class="p-2.5 text-right">Volume</th>
+                                <th scope="col" class="p-2.5 text-right">Share</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y hairline-border">
@@ -238,14 +238,14 @@
             <table class="w-full text-xs text-left">
                 <thead class="font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)]">
                     <tr>
-                        <th class="p-3">Student</th>
-                        <th class="p-3">Cohort</th>
-                        <th class="p-3 text-right">Baseline Stipend</th>
-                        <th class="p-3 text-center">Transactions</th>
-                        <th class="p-3 text-center">Budgets</th>
-                        <th class="p-3">Status</th>
-                        <th class="p-3">Registered</th>
-                        <th class="p-3 text-right">Action</th>
+                        <th scope="col" class="p-3">Student</th>
+                        <th scope="col" class="p-3">Cohort</th>
+                        <th scope="col" class="p-3 text-right">Baseline Stipend</th>
+                        <th scope="col" class="p-3 text-center">Transactions</th>
+                        <th scope="col" class="p-3 text-center">Budgets</th>
+                        <th scope="col" class="p-3">Status</th>
+                        <th scope="col" class="p-3">Registered</th>
+                        <th scope="col" class="p-3 text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y hairline-border">
@@ -285,6 +285,7 @@
                             </td>
                             <td class="p-3 text-right">
                                 <button wire:click="toggleStudentStatus({{ $student->id }})" 
+                                        aria-label="{{ $student->isActive() ? 'Deactivate student account for ' . $student->name : 'Reactivate student account for ' . $student->name }}"
                                         wire:confirm="{{ $student->isActive() ? 'Are you sure you want to deactivate ' . $student->name . '? Their active sessions will be terminated immediately.' : 'Reactivate account for ' . $student->name . '?' }}"
                                         class="px-2.5 py-1 rounded-[4px] text-xs font-mono border hairline-border transition-colors {{ $student->isActive() ? 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40' : 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40' }}">
                                     {{ $student->isActive() ? 'Deactivate' : 'Reactivate' }}

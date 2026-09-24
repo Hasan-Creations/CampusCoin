@@ -104,3 +104,32 @@ Lucide-compatible SVG stroke icons (`stroke-width="1.75"`):
   - Status, cohort, and role filters with sorting by newest, name, or transaction activity.
   - Interactive inspection modal displaying full profile, baseline allowances, and aggregated ledger telemetry without exposing sensitive credentials.
   - One-click account deactivation/reactivation and baseline reset actions with confirmation dialogues.
+
+---
+
+## 9. Accessibility System & Controls *(Phase 8)*
+- **FOUC Prevention & Head Script:**
+  - Placed in `<head>` before CSS and DOM paint across all layouts.
+  - Immediately parses `localStorage.getItem('theme')` (with fallback to `matchMedia('(prefers-color-scheme: dark)')`) and `localStorage.getItem('font-size')`.
+  - Attaches `.dark` and `data-font-size` directly to `document.documentElement` to eliminate layout jumps.
+- **Three-Tier Font-Size Scaling (SRS §1.6 & §185):**
+  - Selectable in headers via the `aA` font size dropdown:
+    - **Normal (100%):** Standard 16px root scale (`html[data-font-size="normal"]`).
+    - **Large (112.5%):** Enlarged 18px root scale (`html[data-font-size="large"]`).
+    - **X-Large (125%):** Maximum 20px root scale (`html[data-font-size="xlarge"]`).
+  - Scales all `rem`-based typography, paddings, and card layouts proportionally without clipping.
+- **Skip to Main Content:**
+  - High-contrast `.skip-to-content` link (`position: fixed; top: 12px; left: 12px; z-index: 9999`) hidden off-screen until focused via Tab key.
+  - Slides smoothly into view on focus, linking directly to `<main id="main-content" tabindex="-1">`.
+- **Keyboard Focus Indicators:**
+  - Global `:focus-visible` styling (`outline: 2px solid var(--accent-primary) !important; outline-offset: 2px;`) ensures keyboard focus rings stand out clearly against both light and dark backgrounds.
+- **Motion Sensitivity:**
+  - Global `@media (prefers-reduced-motion: reduce)` block disables CSS transitions, keyframe animations, and smooth scrolling for users with vestibular disorders.
+- **ARIA Semantics & Screen Reader Support:**
+  - All modal dialogs implement `role="dialog"`, `aria-modal="true"`, `aria-labelledby="[id]"`, and `@keydown.escape.window` listeners.
+  - All tabular data structures feature `<th scope="col">` column headers and dynamic `aria-sort` indicators.
+  - Form controls include explicit `<label for="...">`, search and filter inputs include descriptive `aria-label`s, and authentication inputs declare standard browser `autocomplete` attributes.
+  - Dynamic banners and budget alerts declare `role="status" aria-live="polite"` or `role="alert" aria-live="assertive"`.
+- **Mobile Navigation Drawer:**
+  - Responsive slide-over drawer toggled via `mobileNavOpen` state, dismissible via backdrop click or the Escape key.
+

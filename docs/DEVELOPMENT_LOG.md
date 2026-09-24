@@ -297,5 +297,64 @@
 - Executed `php artisan test --compact` — all 139 tests passed with 648 assertions in 10.38s.
 
 ### Next
-- **Phase 8 — Accessibility Controls & Final Hardening:**
-  - Implement system-wide dark/light theme persistence, WCAG contrast verification, font size scaling, keyboard navigation, and final production readiness.
+- **Phase 8 — Accessibility Controls & Final Hardening:** (COMPLETED)
+
+---
+
+## [Phase 8] Accessibility Controls & Final Hardening — 2026-09-24
+
+### Completed
+- **CSS Architecture & Accessibility Layer (`resources/css/app.css`):**
+  - Configured three-tier root font-size scaling selectors (`html[data-font-size="normal"]` at 100%, `large` at 112.5%, `xlarge` at 125%) per SRS §1.6 & §185.
+  - Implemented high-contrast `:focus-visible` styling (`outline: 2px solid var(--accent-primary) !important; outline-offset: 2px`) for keyboard accessibility.
+  - Added `.skip-to-content` navigation styles with slide-in focus animation.
+  - Added global `@media (prefers-reduced-motion: reduce)` block disabling animations, transitions, and smooth scrolling for users with vestibular sensitivities.
+- **JavaScript Accessibility & Theme Helpers (`resources/js/app.js`):**
+  - Exported global helper object `window.CampusCoin = { toggleTheme(), setFontSize(size), getFontSize() }`.
+  - Maintained complete localStorage synchronization across browser tabs.
+- **Synchronous FOUC Prevention & Header Controls:**
+  - Added synchronous boot script in `<head>` across all layout templates (`layouts/app.blade.php`, `components/layouts/app.blade.php`, `layouts/admin.blade.php`, `components/layouts/admin.blade.php`, `layouts/guest.blade.php`, `components/layouts/guest.blade.php`, `welcome.blade.php`), immediately applying `.dark` and `data-font-size` prior to first DOM paint.
+  - Added accessible font-size scaling dropdown (`aA` button with slider icon and 3-tier selectable list) in all application headers.
+  - Enhanced theme toggle buttons with descriptive `aria-label="Toggle dark mode"` and `title` attributes.
+  - Added skip-to-content navigation links on every layout and marked the target container `<main id="main-content" tabindex="-1">`.
+  - Added responsive mobile navigation drawer with Alpine state (`mobileNavOpen`), backdrop dismiss, and keyboard `@keydown.escape.window` listener.
+- **Semantic Modal Dialogs & Keyboard Navigation:**
+  - Standardized all modal dialogs with `role="dialog"`, `aria-modal="true"`, `aria-labelledby="[id]"`, and `@keydown.escape.window` listeners across:
+    - Quick-Add / Edit Transaction Modal (`resources/views/livewire/student/transaction-list.blade.php`)
+    - CSV Batch Categorization & Import Modal (`resources/views/livewire/student/transaction-list.blade.php`)
+    - Student Category Creation & Edit Modal (`resources/views/livewire/student/category-manager.blade.php`)
+    - Admin Global Default Category Modal (`resources/views/livewire/admin/category-manager.blade.php`)
+    - Admin Student Account Inspection Modal (`resources/views/livewire/admin/user-manager.blade.php`)
+    - Set Budget Goal Modal (`resources/views/livewire/student/budget-manager.blade.php`)
+- **Accessible Data Tables & Tablists:**
+  - Added `<th scope="col">` column headers and dynamic `aria-sort` indicators across Transaction List, Monthly Report Category Breakdown, 6-Month Trajectory, Daily Summary, Weekly Summary, Filtered Ledger, Admin Most-Used Categories, and Recent Campus Accounts.
+  - Added `role="tablist"` and `role="tab"` attributes with reactive `aria-selected` state to Monthly Report view tabs and Saving Tips filter controls.
+- **Form Semantics, Live Alerts & Screen Reader Announcements:**
+  - Added explicit `for="..."` and `id="..."` associations across search inputs, filter selectors, and date pickers.
+  - Configured browser `autocomplete` attributes (`autocomplete="name"`, `autocomplete="email"`, `autocomplete="current-password"`, `autocomplete="new-password"`) on all student and administrator authentication forms.
+  - Configured `role="status" aria-live="polite"` on success banners and budget notices, and `role="alert" aria-live="assertive"` on error alerts and over-budget notifications.
+  - Provided descriptive `aria-label` attributes for icon-only action buttons (Pin, Unpin, Dismiss, Restore, Edit, Inspect, Deactivate, Reactivate).
+- **Automated Testing (`tests/Feature/AccessibilityAndHardeningTest.php`):**
+  - 12 comprehensive feature tests (74 assertions):
+    - Welcome page skip link, main content landmark, font scaling, theme toggle, and head boot script.
+    - Authentication forms accessibility, skip links, and browser `autocomplete` attributes.
+    - Student layout skip navigation, font size selector, mobile drawer, and main content landmark.
+    - Admin layout skip navigation, font size selector, mobile drawer, and main content landmark.
+    - Transaction list table `<th scope="col">` headers, dynamic `aria-sort`, and modal dialog semantics.
+    - Student and Admin Category Manager modal dialog semantics, keyboard escape handling, and labels.
+    - Budget Manager modal dialog semantics and accessibility labels.
+    - Monthly Reports tablist semantics, `aria-label="Report Views"`, and table scopes.
+    - Saving Tips Manager tablist semantics and accessible action button labels.
+    - Admin User Manager inspection modal dialog semantics and accessible table headers.
+    - Admin Dashboard accessible table scopes and telemetry alerts.
+    - Input sanitization and XSS prevention on transaction records verifying safe HTML entity encoding.
+  - Full suite passed: **151 tests, 722 assertions** (100% pass rate).
+
+### Verified
+- Executed `vendor/bin/pint --format agent` — all PHP files passed clean formatting.
+- Executed `npm run build` — compiled all frontend assets cleanly in 1.51s with 0 errors.
+- Executed `php artisan test --compact` — all 151 tests passed with 722 assertions in 9.53s.
+
+### Next
+- All 8 functional, security, operational, and accessibility phases are complete and verified. Ready for the dedicated Campus Coin visual redesign or production release.
+

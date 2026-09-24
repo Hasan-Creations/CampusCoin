@@ -130,3 +130,26 @@ app/
   - Hard deletion is protected by `canBeSafelyDeleted()`, which enforces that categories with referencing transactions, budgets, saving tips, or learned mappings cannot be hard deleted.
 - **High-Performance Telemetry Engine:**
   - `AdminMetricsService` utilizes single-pass SQL aggregate functions (`COUNT`, `SUM`, `AVG`, `GROUP BY`) to compute platform volume, student active rates, category adoption, and the SRS-mandated Most-Used Categories leaderboard without loading raw Eloquent collections into PHP memory. Zero division and empty database states are strictly guarded.
+
+---
+
+## 9. Accessibility Architecture & Production Hardening
+- **FOUC Prevention & Immediate Boot Script:**
+  - Placed in the `<head>` of all layouts before stylesheets and DOM rendering.
+  - Synchronously inspects `localStorage.getItem('theme')` (with fallback to `prefers-color-scheme: dark`) and `localStorage.getItem('font-size')`.
+  - Immediately attaches `dark` class and `data-font-size="[normal|large|xlarge]"` attribute to `document.documentElement`, ensuring zero visible theme flashing or text jumping.
+- **Three-Tier Root Font Scaling Architecture (SRS §1.6 & §185):**
+  - Configured at root level via CSS attribute selectors:
+    - `html[data-font-size="normal"] { font-size: 100%; }` (16px base)
+    - `html[data-font-size="large"] { font-size: 112.5%; }` (18px base)
+    - `html[data-font-size="xlarge"] { font-size: 125%; }` (20px base)
+  - Because all UI components, spacing, and typography scale off `rem` units, selecting a text scaling tier proportionally scales all content without layout clipping.
+- **Accessible Focus Indicator System:**
+  - Global `:focus-visible` styling (`outline: 2px solid var(--accent-primary) !important; outline-offset: 2px;`) ensures keyboard navigation is clearly visible across all browsers while avoiding distracting focus rings on pointer clicks.
+- **Screen Reader Announcements & Dynamic ARIA Semantics:**
+  - Data tables across ledger, budget, report, and admin views declare `<th scope="col">` column headers and dynamic `aria-sort="ascending|descending"` indicators.
+  - Interactive modals implement WCAG dialog semantics (`role="dialog"`, `aria-modal="true"`, `aria-labelledby="[id]"`, and Alpine `@keydown.escape.window` dismiss).
+  - Flash notices, budget warnings, and form validation alerts use `role="status" aria-live="polite"` or `role="alert" aria-live="assertive"`.
+- **Reduced Motion Support:**
+  - A global `@media (prefers-reduced-motion: reduce)` block disables CSS transitions, animations, and smooth scrolling for users who require reduced vestibular motion.
+

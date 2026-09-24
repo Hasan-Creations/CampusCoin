@@ -1,24 +1,24 @@
 <div class="space-y-6">
     <!-- Feedback Alerts -->
     @if ($feedbackMessage)
-        <div class="p-4 rounded-[6px] border hairline-border bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
+        <div role="status" aria-live="polite" class="p-4 rounded-[6px] border hairline-border bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <x-icon name="check-circle-2" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>{{ $feedbackMessage }}</span>
             </div>
-            <button wire:click="$set('feedbackMessage', null)" class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-200">
+            <button wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-200">
                 <x-icon name="x" class="w-3.5 h-3.5" />
             </button>
         </div>
     @endif
 
     @if ($errorMessage)
-        <div class="p-4 rounded-[6px] border hairline-border bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 text-xs flex items-center justify-between">
+        <div role="alert" aria-live="assertive" class="p-4 rounded-[6px] border hairline-border bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 text-xs flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <x-icon name="shield-alert" class="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
                 <span>{{ $errorMessage }}</span>
             </div>
-            <button wire:click="$set('errorMessage', null)" class="text-rose-600 hover:text-rose-800 dark:hover:text-rose-200">
+            <button wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="text-rose-600 hover:text-rose-800 dark:hover:text-rose-200">
                 <x-icon name="x" class="w-3.5 h-3.5" />
             </button>
         </div>
@@ -69,16 +69,19 @@
     <div class="card-campus border hairline-border p-4 space-y-3">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <!-- Role Selector -->
-            <div class="inline-flex p-1 rounded-[6px] bg-[var(--bg-subtle)] border hairline-border">
+            <div class="inline-flex p-1 rounded-[6px] bg-[var(--bg-subtle)] border hairline-border" role="group" aria-label="Account role filter">
                 <button wire:click="$set('filterRole', 'student')" 
+                        aria-label="Filter students only"
                         class="px-3 py-1.5 rounded-[4px] text-xs font-medium transition-colors {{ $filterRole === 'student' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     Students
                 </button>
                 <button wire:click="$set('filterRole', 'admin')" 
+                        aria-label="Filter administrators only"
                         class="px-3 py-1.5 rounded-[4px] text-xs font-medium transition-colors {{ $filterRole === 'admin' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     Administrators
                 </button>
                 <button wire:click="$set('filterRole', 'all')" 
+                        aria-label="Show all users"
                         class="px-3 py-1.5 rounded-[4px] text-xs font-medium transition-colors {{ $filterRole === 'all' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-semibold shadow-xs' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]' }}">
                     All Users
                 </button>
@@ -86,13 +89,13 @@
 
             <!-- Controls: Status, Cohort, Sort, Search -->
             <div class="flex flex-wrap items-center gap-2">
-                <select wire:model.live="filterStatus" class="px-2.5 py-1.5 rounded-[6px] text-xs border hairline-border bg-[var(--bg-surface)] text-[var(--text-primary)]">
+                <select wire:model.live="filterStatus" aria-label="Filter by account status" class="px-2.5 py-1.5 rounded-[6px] text-xs border hairline-border bg-[var(--bg-surface)] text-[var(--text-primary)]">
                     <option value="all">All Statuses</option>
                     <option value="active">Active Accounts Only</option>
                     <option value="disabled">Disabled Accounts Only</option>
                 </select>
 
-                <select wire:model.live="filterCohort" class="px-2.5 py-1.5 rounded-[6px] text-xs border hairline-border bg-[var(--bg-surface)] text-[var(--text-primary)]">
+                <select wire:model.live="filterCohort" aria-label="Filter by academic cohort" class="px-2.5 py-1.5 rounded-[6px] text-xs border hairline-border bg-[var(--bg-surface)] text-[var(--text-primary)]">
                     <option value="all">All Cohorts</option>
                     <option value="Freshman">Freshman</option>
                     <option value="Sophomore">Sophomore</option>
@@ -101,7 +104,7 @@
                     <option value="Graduate">Graduate</option>
                 </select>
 
-                <select wire:model.live="sortBy" class="px-2.5 py-1.5 rounded-[6px] text-xs border hairline-border bg-[var(--bg-surface)] text-[var(--text-primary)]">
+                <select wire:model.live="sortBy" aria-label="Sort users by" class="px-2.5 py-1.5 rounded-[6px] text-xs border hairline-border bg-[var(--bg-surface)] text-[var(--text-primary)]">
                     <option value="latest">Sort: Newest First</option>
                     <option value="name_asc">Sort: Name (A-Z)</option>
                     <option value="transactions_desc">Sort: Highest Activity</option>
@@ -111,6 +114,7 @@
                     <x-icon name="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                     <input type="text" 
                            wire:model.live.debounce.250ms="search" 
+                           aria-label="Search students by name or email"
                            placeholder="Search name or email..." 
                            class="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] border hairline-border bg-[var(--bg-surface)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:ring-1 focus:ring-[var(--accent-primary)]" />
                 </div>
@@ -124,15 +128,15 @@
             <table class="w-full text-xs text-left">
                 <thead class="font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)] border-b hairline-border">
                     <tr>
-                        <th class="p-3">User & Email</th>
-                        <th class="p-3">Role</th>
-                        <th class="p-3">Cohort</th>
-                        <th class="p-3 text-right">Monthly Stipend</th>
-                        <th class="p-3 text-right">Savings Goal</th>
-                        <th class="p-3 text-center">Ledger Activity</th>
-                        <th class="p-3">Status</th>
-                        <th class="p-3">Registered</th>
-                        <th class="p-3 text-right">Administrative Actions</th>
+                        <th scope="col" class="p-3">User & Email</th>
+                        <th scope="col" class="p-3">Role</th>
+                        <th scope="col" class="p-3">Cohort</th>
+                        <th scope="col" class="p-3 text-right">Monthly Stipend</th>
+                        <th scope="col" class="p-3 text-right">Savings Goal</th>
+                        <th scope="col" class="p-3 text-center">Ledger Activity</th>
+                        <th scope="col" class="p-3">Status</th>
+                        <th scope="col" class="p-3">Registered</th>
+                        <th scope="col" class="p-3 text-right">Administrative Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y hairline-border">
@@ -212,21 +216,27 @@
 
     <!-- Account Inspection Modal -->
     @if ($inspectedUser)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div class="w-full max-w-lg rounded-[8px] border hairline-border bg-[var(--bg-surface)] p-6 space-y-4 shadow-xl">
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="admin-inspect-user-title"
+             x-data
+             @keydown.escape.window="$wire.closeInspectionModal()">
+            <div class="w-full max-w-lg rounded-[8px] border hairline-border bg-[var(--bg-surface)] p-6 space-y-4 shadow-xl"
+                 @click.away="$wire.closeInspectionModal()">
                 <div class="flex items-center justify-between pb-3 border-b hairline-border">
                     <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-[4px] bg-[var(--bg-subtle)] flex items-center justify-center font-mono font-bold text-xs">
+                        <div class="w-8 h-8 rounded-[4px] bg-[var(--bg-subtle)] flex items-center justify-center font-mono font-bold text-xs" aria-hidden="true">
                             #{{ $inspectedUser->id }}
                         </div>
                         <div>
-                            <h3 class="font-heading text-base font-bold text-[var(--text-primary)]">
+                            <h3 id="admin-inspect-user-title" class="font-heading text-base font-bold text-[var(--text-primary)]">
                                 {{ $inspectedUser->name }}
                             </h3>
                             <div class="text-[11px] font-mono text-[var(--text-muted)]">{{ $inspectedUser->email }}</div>
                         </div>
                     </div>
-                    <button wire:click="closeInspectionModal" class="p-1 rounded-[4px] hover:bg-[var(--bg-subtle)] text-[var(--text-muted)]">
+                    <button wire:click="closeInspectionModal" aria-label="Close inspection modal" class="p-1 rounded-[4px] hover:bg-[var(--bg-subtle)] text-[var(--text-muted)]">
                         <x-icon name="x" class="w-4 h-4" />
                     </button>
                 </div>
