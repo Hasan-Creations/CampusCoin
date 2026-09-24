@@ -5,74 +5,66 @@
 
     <div class="space-y-6">
         <!-- Top Summary Banner & Quick-Add -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 rounded-[16px] border hairline-border bg-[var(--bg-surface)] shadow-tactile-sm">
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 border-b hairline-border pb-6">
             <div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] bg-[var(--accent-tint)] text-[var(--accent-primary)] text-[11px] font-mono font-semibold uppercase tracking-wider mb-2 shadow-tactile-sm">
-                    <x-icon name="wallet" class="w-3.5 h-3.5" />
-                    <span>Double-Entry Verified Ledger</span>
-                </div>
-                <h1 class="font-heading text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
+                <h1 class="font-display text-2xl sm:text-3xl font-medium text-[var(--ink)] headline-rule">
                     Transaction History
                 </h1>
-                <p class="text-xs text-[var(--text-muted)] mt-1.5">
-                    Deterministic income and expenditure records with category classification.
+                <p class="text-xs text-[var(--muted)] mt-1.5">
+                    Deterministic student financial cashbook with category accounting.
                 </p>
             </div>
 
-            <div class="flex items-center gap-2.5 flex-wrap">
-                <button wire:click="openImportModal" 
-                        title="Upload CSV spreadsheet for AI batch categorization"
-                        class="btn-secondary py-2 px-3.5 text-xs">
-                    <x-icon name="upload" class="w-4 h-4" />
-                    <span class="hidden sm:inline">Import CSV</span>
-                </button>
-                <button wire:click="exportCsv" 
-                        title="Download transactions as CSV spreadsheet"
-                        class="btn-secondary py-2 px-3.5 text-xs">
+            <div class="flex items-center gap-3 flex-wrap">
+                <x-button variant="secondary" wire:click="openImportModal" title="Upload CSV spreadsheet">
+                    <x-icon name="download" class="w-4 h-4 rotate-180" />
+                    <span>Import CSV</span>
+                </x-button>
+                <x-button variant="secondary" wire:click="exportCsv" title="Download transactions as CSV">
                     <x-icon name="download" class="w-4 h-4" />
-                    <span class="hidden sm:inline">Export CSV</span>
-                </button>
-                <button wire:click="openCreateModal" class="btn-primary py-2 px-4 text-xs">
+                    <span>Export CSV</span>
+                </x-button>
+                <x-button variant="accent" wire:click="openCreateModal">
                     <x-icon name="plus" class="w-4 h-4" />
                     <span>Add Transaction</span>
-                </button>
+                </x-button>
             </div>
         </div>
 
         <!-- Feedback & Alerts -->
         @if ($feedbackMessage)
-            <div role="status" aria-live="polite" class="p-4 rounded-[12px] border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-400 flex items-center justify-between shadow-tactile-sm">
+            <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-xs text-[var(--accent)] flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <x-icon name="check-circle-2" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    <span>{{ $feedbackMessage }}</span>
+                    <x-icon name="check-circle-2" class="w-4 h-4 text-[var(--accent)]" />
+                    <span class="font-medium">{{ $feedbackMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="btn-icon w-6 h-6 text-emerald-600 hover:text-emerald-900">&times;</button>
+                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="btn-icon w-6 h-6 border-none">&times;</button>
             </div>
         @endif
 
         @if ($errorMessage)
-            <div role="alert" aria-live="assertive" class="p-4 rounded-[12px] border border-rose-200 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-900 text-xs text-rose-800 dark:text-rose-400 flex items-center justify-between shadow-tactile-sm">
+            <div role="alert" aria-live="assertive" class="p-4 border border-[var(--expense)] bg-[var(--paper)] text-xs text-[var(--expense)] flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <x-icon name="shield-alert" class="w-4 h-4 text-rose-600 dark:text-rose-400" />
-                    <span>{{ $errorMessage }}</span>
+                    <x-icon name="shield-alert" class="w-4 h-4 text-[var(--expense)]" />
+                    <span class="font-medium">{{ $errorMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="btn-icon w-6 h-6 text-rose-600 hover:text-rose-900">&times;</button>
+                <button type="button" wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="btn-icon w-6 h-6 border-none">&times;</button>
             </div>
         @endif
 
         <!-- Filter Controls Toolbar -->
-        <div class="card-campus border hairline-border p-4 sm:p-5 rounded-[16px] space-y-4 shadow-tactile-sm">
+        <div class="bg-[var(--panel)] border hairline-border p-4 space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
                 <!-- Search input -->
                 <div class="lg:col-span-4 relative">
-                    <span class="absolute left-3.5 top-3 text-[var(--text-muted)]">
+                    <span class="absolute left-3.5 top-3 text-[var(--muted)]">
                         <x-icon name="search" class="w-4 h-4" />
                     </span>
                     <input wire:model.live.debounce.250ms="search" 
                            type="text" 
                            aria-label="Search transactions by merchant or notes"
                            placeholder="Search merchant, notes..." 
-                           class="input-campus w-full pl-9 text-xs">
+                           class="field w-full pl-10 text-xs">
                 </div>
 
                 <!-- Type Selector Segmented Bar -->
@@ -98,7 +90,7 @@
 
                 <!-- Category Filter -->
                 <div class="lg:col-span-3">
-                    <select wire:model.live="categoryFilter" aria-label="Filter transactions by category" class="input-campus w-full text-xs bg-[var(--bg-surface)]">
+                    <select wire:model.live="categoryFilter" aria-label="Filter transactions by category" class="field w-full text-xs">
                         <option value="">All Categories</option>
                         @foreach ($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }} ({{ ucfirst($cat->type) }})</option>
@@ -108,7 +100,7 @@
 
                 <!-- Payment Method Filter -->
                 <div class="lg:col-span-2">
-                    <select wire:model.live="methodFilter" aria-label="Filter transactions by payment method" class="input-campus w-full text-xs bg-[var(--bg-surface)]">
+                    <select wire:model.live="methodFilter" aria-label="Filter transactions by payment method" class="field w-full text-xs">
                         <option value="">All Methods</option>
                         <option value="card">Card</option>
                         <option value="cash">Cash</option>
@@ -123,41 +115,35 @@
 
         <!-- Ledger Table / Empty State -->
         @if ($transactions->isEmpty())
-            <div class="card-campus border hairline-border p-12 text-center space-y-3 rounded-[16px] shadow-tactile-sm">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-[10px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto shadow-tactile-sm">
-                    <x-icon name="wallet" class="w-6 h-6" />
-                </div>
+            <div class="border border-dashed hairline-border p-12 text-center space-y-3 bg-[var(--panel)]">
                 @if ($totalCount === 0)
                     <!-- SRS Exact Empty State: NO TRANSACTIONS RECORDED YET -->
-                    <h2 class="font-heading text-base font-bold text-[var(--text-primary)] uppercase tracking-wide">
+                    <h2 class="font-heading text-base font-bold text-[var(--ink)] uppercase tracking-wide">
                         NO TRANSACTIONS RECORDED YET
                     </h2>
-                    <p class="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
+                    <p class="text-xs text-[var(--muted)] max-w-sm mx-auto">
                         Start tracking your campus expenses to unlock insights.
                     </p>
-                    <button wire:click="openCreateModal" class="btn-primary py-2 px-4 text-xs mt-2">
+                    <x-button variant="accent" wire:click="openCreateModal" class="mt-2">
                         Add First Transaction
-                    </button>
+                    </x-button>
                 @else
-                    <h2 class="font-heading text-base font-bold text-[var(--text-primary)] uppercase tracking-wide">
+                    <h2 class="font-heading text-base font-bold text-[var(--ink)] uppercase tracking-wide">
                         NO TRANSACTIONS MATCHING QUERY
                     </h2>
-                    <p class="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
+                    <p class="text-xs text-[var(--muted)] max-w-sm mx-auto">
                         Clear active filters or modify search terms to view recorded entries.
                     </p>
-                    <button wire:click="$set('search', ''); $set('typeFilter', 'all'); $set('categoryFilter', ''); $set('methodFilter', '');" 
-                            class="btn-secondary py-1.5 px-3.5 text-xs mt-2">
+                    <x-button variant="secondary" wire:click="$set('search', ''); $set('typeFilter', 'all'); $set('categoryFilter', ''); $set('methodFilter', '');" class="mt-2">
                         Clear All Filters
-                    </button>
+                    </x-button>
                 @endif
             </div>
         @else
-            <div class="card-campus border hairline-border overflow-hidden p-0 rounded-[16px] shadow-tactile-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-xs text-left">
-                        <thead class="border-b hairline-border font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)]">
-                            <tr>
-                                <th scope="col" class="p-3.5 cursor-pointer hover:text-[var(--text-primary)] transition-colors select-none" wire:click="sortByColumn('transaction_date')" aria-sort="{{ $sortBy === 'transaction_date' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+            <x-ledger-table class="text-left">
+                <x-slot:head>
+                    <tr>
+                                <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('transaction_date')" aria-sort="{{ $sortBy === 'transaction_date' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                     <div class="flex items-center gap-1.5">
                                         <span>Date</span>
                                         @if ($sortBy === 'transaction_date')
@@ -165,7 +151,7 @@
                                         @endif
                                     </div>
                                 </th>
-                                <th scope="col" class="p-3.5 cursor-pointer hover:text-[var(--text-primary)] transition-colors select-none" wire:click="sortByColumn('merchant')" aria-sort="{{ $sortBy === 'merchant' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('merchant')" aria-sort="{{ $sortBy === 'merchant' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                     <div class="flex items-center gap-1.5">
                                         <span>Merchant / Description</span>
                                         @if ($sortBy === 'merchant')
@@ -173,9 +159,9 @@
                                         @endif
                                     </div>
                                 </th>
-                                <th scope="col" class="p-3.5">Category</th>
-                                <th scope="col" class="p-3.5">Method</th>
-                                <th scope="col" class="p-3.5 cursor-pointer hover:text-[var(--text-primary)] transition-colors select-none" wire:click="sortByColumn('type')" aria-sort="{{ $sortBy === 'type' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                <th scope="col">Category</th>
+                                <th scope="col">Method</th>
+                                <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('type')" aria-sort="{{ $sortBy === 'type' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                     <div class="flex items-center gap-1.5">
                                         <span>Type</span>
                                         @if ($sortBy === 'type')
@@ -183,7 +169,7 @@
                                         @endif
                                     </div>
                                 </th>
-                                <th scope="col" class="p-3.5 text-right cursor-pointer hover:text-[var(--text-primary)] transition-colors select-none" wire:click="sortByColumn('amount')" aria-sort="{{ $sortBy === 'amount' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                <th scope="col" class="text-right cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('amount')" aria-sort="{{ $sortBy === 'amount' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
                                     <div class="flex items-center justify-end gap-1.5">
                                         <span>Amount</span>
                                         @if ($sortBy === 'amount')
@@ -191,108 +177,102 @@
                                         @endif
                                     </div>
                                 </th>
-                                <th scope="col" class="p-3.5 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y hairline-border">
-                            @foreach ($transactions as $t)
-                                <tr class="table-row-tactile">
+                                <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </x-slot:head>
+                @foreach ($transactions as $t)
+                    <tr class="table-row-tactile">
                                     <!-- Date -->
-                                    <td class="p-3.5 font-mono tabular-nums text-[var(--text-muted)] whitespace-nowrap">
+                                    <td class="font-mono text-xs tabular-nums text-[var(--muted)] whitespace-nowrap">
                                         {{ $t->transaction_date->format('M d, Y') }}
                                     </td>
 
                                     <!-- Merchant / Description -->
-                                    <td class="p-3.5">
-                                        <div class="font-semibold text-[var(--text-primary)]">
+                                    <td>
+                                        <div class="font-medium text-xs text-[var(--ink)]">
                                             {{ $t->merchant }}
                                             @if ($t->is_recurring)
-                                                <span class="inline-block ml-1 text-[10px] font-mono text-[var(--gold)] font-normal">
+                                                <span class="inline-block ml-1 text-[10px] font-mono text-[var(--secondary)]">
                                                     [Recurring]
                                                 </span>
                                             @endif
                                         </div>
                                         @if ($t->description)
-                                            <div class="text-[11px] text-[var(--text-muted)] truncate max-w-xs mt-0.5">
+                                            <div class="text-[11px] text-[var(--muted)] truncate max-w-xs mt-0.5">
                                                 {{ $t->description }}
                                             </div>
                                         @endif
                                     </td>
 
                                     <!-- Category -->
-                                    <td class="p-3.5 whitespace-nowrap">
+                                    <td class="whitespace-nowrap">
                                         @if ($t->category)
-                                            <span class="inline-flex items-center gap-1.5 text-xs font-medium"
-                                                  style="color: {{ $t->category->color }};">
-                                                <x-icon :name="$t->category->icon" class="w-3.5 h-3.5" />
+                                            <span class="inline-flex items-center gap-1.5 text-xs font-sans text-[var(--ink)]">
+                                                <x-icon :name="$t->category->icon" class="w-3.5 h-3.5 text-[var(--muted)]" />
                                                 <span>{{ $t->category->name }}</span>
                                             </span>
                                             @if ($t->ai_suggested)
-                                                <span title="Categorized with AI Assistant ({{ $t->ai_confidence ? round($t->ai_confidence * 100).'%' : 'Advisory' }})"
-                                                      class="inline-flex items-center gap-0.5 ml-1.5 px-1.5 py-0.5 rounded-[4px] bg-[var(--accent-tint)] border border-[var(--accent-primary)]/20 text-[10px] font-mono text-[var(--accent-primary)]">
-                                                    ✨ AI
+                                                <span title="Categorized with AI Assistant"
+                                                      class="inline-flex items-center ml-1 px-1 py-0.5 border hairline-border text-[9px] font-caps text-[var(--accent)]">
+                                                    AI
                                                 </span>
                                             @endif
                                         @else
-                                            <span class="text-[var(--text-muted)] italic">Uncategorized</span>
+                                            <span class="text-[var(--muted)] text-xs italic">Uncategorized</span>
                                         @endif
                                     </td>
 
                                     <!-- Method -->
-                                    <td class="p-3.5 font-mono uppercase text-[11px] text-[var(--text-muted)] whitespace-nowrap">
+                                    <td class="font-caps text-xs text-[var(--muted)] whitespace-nowrap">
                                         {{ str_replace('_', ' ', $t->payment_method) }}
                                     </td>
 
                                     <!-- Type -->
-                                    <td class="p-3.5 whitespace-nowrap">
-                                        <span class="badge-campus {{ $t->isIncome() ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-400' }}">
+                                    <td class="whitespace-nowrap">
+                                        <x-badge :variant="$t->isIncome() ? 'income' : 'expense'">
                                             {{ $t->type }}
-                                        </span>
+                                        </x-badge>
                                     </td>
 
-                                    <!-- Amount -->
-                                    <td class="p-3.5 text-right font-mono font-semibold tabular-nums whitespace-nowrap {{ $t->isIncome() ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--text-primary)]' }}">
+                                    <!-- Amount (Right-aligned IBM Plex Mono per §2) -->
+                                    <td class="text-right font-mono text-xs font-medium tabular-nums whitespace-nowrap {{ $t->isIncome() ? 'text-[var(--accent)]' : 'text-[var(--ink)]' }}">
                                         {{ $t->formattedAmount() }}
                                     </td>
 
                                     <!-- Actions -->
-                                    <td class="p-3.5 text-center whitespace-nowrap">
-                                        <div class="inline-flex items-center gap-1.5">
+                                    <td class="text-center whitespace-nowrap">
+                                        <div class="inline-flex items-center gap-1">
                                             <button wire:click="openEditModal({{ $t->id }})" 
                                                     title="Edit Transaction"
-                                                    class="btn-icon w-8 h-8 rounded-[6px]">
-                                                <x-icon name="sliders" class="w-3.5 h-3.5" />
+                                                    class="btn-icon w-7 h-7">
+                                                <x-icon name="sliders" class="w-3 h-3" />
                                             </button>
                                             <button wire:click="deleteTransaction({{ $t->id }})" 
                                                     wire:confirm="Remove this transaction permanently from your ledger?"
                                                     title="Delete Transaction"
-                                                    class="btn-icon w-8 h-8 rounded-[6px] hover:text-[var(--danger)] hover:border-[var(--danger)]/30">
-                                                <x-icon name="shield-alert" class="w-3.5 h-3.5" />
+                                                    class="btn-icon w-7 h-7 hover:text-[var(--expense)] hover:border-[var(--expense)]">
+                                                <x-icon name="trash-2" class="w-3 h-3" />
                                             </button>
                                         </div>
                                     </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                    </tr>
+                @endforeach
 
                 @if ($transactions->hasPages())
-                    <div class="p-3.5 border-t hairline-border bg-[var(--bg-subtle)]/30">
+                    <div class="p-4 border-t hairline-border bg-[var(--paper)]">
                         {{ $transactions->links() }}
                     </div>
                 @endif
-            </div>
+            </x-ledger-table>
         @endif
 
-        <!-- Quick-Add / Edit Transaction Modal (~500px Desktop / Bottom Sheet Mobile) -->
+        <!-- Quick-Add / Edit Transaction Modal -->
         @if ($showModal)
-            <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60"
+            <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
                  role="dialog"
                  aria-modal="true"
                  aria-labelledby="modal-transaction-title"
                  x-data="{ 
-                     openDatePicker: false,
                      init() {
                          this.$nextTick(() => {
                              const input = this.$refs.amountInput;
@@ -306,28 +286,18 @@
                  @keydown.escape.window="$wire.closeModal()"
                  @keydown.ctrl.enter.window="$wire.saveTransaction()"
                  @keydown.meta.enter.window="$wire.saveTransaction()">
-                <div class="modal-dialog-surface border hairline-border w-full sm:max-w-[500px] p-5 sm:p-6 shadow-modal relative rounded-t-[22px] sm:rounded-[22px] rounded-b-none sm:rounded-b-[22px] max-h-[92vh] overflow-y-auto space-y-4"
+                <div class="modal-dialog-surface border hairline-border w-full sm:max-w-[500px] p-6 sm:p-8 bg-[var(--panel)] shadow-panel max-h-[92vh] overflow-y-auto space-y-6"
                      @click.away="$wire.closeModal()">
                     
-                    <!-- Clean Borderless Header -->
-                    <div class="flex items-start justify-between">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between border-b hairline-border pb-4">
                         <div>
-                            <h2 id="modal-transaction-title" class="font-heading font-bold text-lg text-[var(--text-primary)] tracking-tight">
-                                {{ $editingId ? 'Edit Ledger Entry' : 'Quick Add Transaction' }}
+                            <h2 id="modal-transaction-title" class="font-display text-xl font-medium text-[var(--ink)]">
+                                {{ $editingId ? 'Edit Ledger Entry' : 'New Ledger Entry' }}
                             </h2>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="inline-flex items-center gap-1 text-[11px] text-[var(--text-muted)] font-mono">
-                                    <kbd class="px-1.5 py-0.5 rounded-[4px] border hairline-border bg-[var(--bg-subtle)] text-[10px] font-semibold text-[var(--text-primary)] shadow-tactile-sm">Ctrl</kbd>
-                                    <span>+</span>
-                                    <kbd class="px-1.5 py-0.5 rounded-[4px] border hairline-border bg-[var(--bg-subtle)] text-[10px] font-semibold text-[var(--text-primary)] shadow-tactile-sm">Enter</kbd>
-                                    <span class="ml-0.5">to save</span>
-                                </span>
-                                <span class="text-[var(--text-muted)] text-[10px]">&bull;</span>
-                                <span class="inline-flex items-center gap-1 text-[11px] text-[var(--text-muted)] font-mono">
-                                    <kbd class="px-1.5 py-0.5 rounded-[4px] border hairline-border bg-[var(--bg-subtle)] text-[10px] font-semibold text-[var(--text-primary)] shadow-tactile-sm">Esc</kbd>
-                                    <span class="ml-0.5">to dismiss</span>
-                                </span>
-                            </div>
+                            <p class="text-xs text-[var(--muted)] mt-1 font-mono">
+                                Ctrl+Enter to save &bull; Esc to dismiss
+                            </p>
                         </div>
 
                         <button type="button" 
@@ -343,263 +313,179 @@
                           @keydown.meta.enter.prevent="$wire.saveTransaction()"
                           class="space-y-4">
                         
-                        <!-- Quick Controls: Nature Switcher & Compact Date Badge -->
-                        <div class="flex items-center justify-between gap-3 pt-1">
-                            <!-- Segmented Nature Switcher -->
-                            <div class="segmented-bar flex-1 max-w-[240px]">
+                        <!-- Controls: Type Switcher & Date -->
+                        <div class="flex items-center justify-between gap-3">
+                            <!-- Type Switcher -->
+                            <div class="segmented-bar flex-1 max-w-[200px]" role="group" aria-label="Entry nature">
                                 <button type="button" 
                                         wire:click="$set('type', 'expense')"
-                                        tabindex="7"
-                                        class="segmented-item flex-1 text-center flex items-center justify-center gap-1.5 {{ $type === 'expense' ? 'active text-rose-600 dark:text-rose-400' : '' }}">
-                                    <span class="w-2 h-2 rounded-full {{ $type === 'expense' ? 'bg-rose-500' : 'bg-transparent border border-current' }}"></span>
-                                    <span>Expense</span>
+                                        class="segmented-item flex-1 text-center {{ $type === 'expense' ? 'active' : '' }}">
+                                    Expense
                                 </button>
                                 <button type="button" 
                                         wire:click="$set('type', 'income')"
-                                        tabindex="7"
-                                        class="segmented-item flex-1 text-center flex items-center justify-center gap-1.5 {{ $type === 'income' ? 'active text-emerald-600 dark:text-emerald-400' : '' }}">
-                                    <span class="w-2 h-2 rounded-full {{ $type === 'income' ? 'bg-emerald-500' : 'bg-transparent border border-current' }}"></span>
-                                    <span>Income</span>
+                                        class="segmented-item flex-1 text-center {{ $type === 'income' ? 'active' : '' }}">
+                                    Income
                                 </button>
                             </div>
 
-                            <!-- Date Badge Button with Popover -->
-                            <div class="relative" x-data="{ openDatePicker: false }">
-                                <button type="button" 
-                                        @click="openDatePicker = !openDatePicker" 
-                                        tabindex="8"
-                                        title="Click to change date"
-                                        class="btn-secondary py-1.5 px-3 text-xs font-mono">
-                                    <span>📅</span>
-                                    <span class="font-semibold">
-                                        @if ($transaction_date === date('Y-m-d'))
-                                            Today
-                                        @else
-                                            {{ !empty($transaction_date) ? date('M d', strtotime($transaction_date)) : 'Today' }}
-                                        @endif
-                                    </span>
-                                    <x-icon name="filter" class="w-2.5 h-2.5 text-[var(--text-muted)] rotate-90 opacity-60 ml-0.5" />
-                                </button>
-
-                                <div x-show="openDatePicker" 
-                                     @click.away="openDatePicker = false" 
-                                     x-cloak 
-                                     class="absolute right-0 mt-1 z-30 p-3 rounded-[12px] shadow-modal border hairline-border bg-[var(--bg-surface)] w-60 space-y-2">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">Select Date</span>
-                                        @if ($transaction_date !== date('Y-m-d'))
-                                            <button type="button" 
-                                                    wire:click="$set('transaction_date', '{{ date('Y-m-d') }}')" 
-                                                    @click="openDatePicker = false"
-                                                    class="text-[10px] font-mono text-[var(--accent-primary)] hover:underline">
-                                                Reset to Today
-                                            </button>
-                                        @endif
-                                    </div>
-                                    <input wire:model.live="transaction_date" 
-                                           type="date" 
-                                           class="input-campus w-full text-xs font-mono py-1.5 px-2"
-                                           @change="openDatePicker = false">
-                                </div>
+                            <!-- Date Picker -->
+                            <div class="w-36">
+                                <input wire:model.live="transaction_date" 
+                                       type="date" 
+                                       aria-label="Transaction Date"
+                                       class="field w-full text-xs font-mono py-2 px-2">
                             </div>
                         </div>
 
-                        <!-- HERO Amount Field (PRIMARY FOCUS) -->
+                        <!-- Amount Field (IBM Plex Mono, right-aligned per §4b) -->
                         <div>
-                            <div class="rounded-[12px] p-4 bg-[var(--bg-subtle)] border hairline-border focus-within:border-[var(--accent-primary)] focus-within:ring-2 focus-within:ring-[var(--accent-primary)]/20 transition-all shadow-tactile-sm">
-                                <div class="flex items-center justify-between mb-1">
-                                    <label for="quick-add-amount" class="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
-                                        Amount <span class="text-rose-500">*</span>
-                                    </label>
-                                    <span class="text-[10px] font-mono text-[var(--text-muted)]">USD ($)</span>
-                                </div>
-                                <div class="relative flex items-center">
-                                    <span class="text-3xl sm:text-4xl font-mono font-bold text-[var(--text-muted)] select-none mr-2">
-                                        $
-                                    </span>
-                                    <input wire:model="amount" 
-                                           id="quick-add-amount" 
-                                           x-ref="amountInput"
-                                           autofocus
-                                           tabindex="1"
-                                           type="number" 
-                                           step="0.01" 
-                                           min="0.01"
-                                           max="999999.99"
-                                           placeholder="0.00" 
-                                           class="w-full bg-transparent text-3xl sm:text-4xl font-mono font-bold text-[var(--text-primary)] tabular-nums tracking-tight placeholder-[var(--text-muted)]/30 focus:outline-none border-none p-0">
-                                </div>
-                            </div>
-                            @error('amount') <span class="text-rose-600 dark:text-rose-400 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
+                            <label for="quick-add-amount" class="block text-xs font-caps text-[var(--muted)] mb-1">
+                                Amount (USD) <span class="text-[var(--expense)]">*</span>
+                            </label>
+                            <input wire:model="amount" 
+                                   id="quick-add-amount" 
+                                   x-ref="amountInput"
+                                   autofocus
+                                   type="number" 
+                                   step="0.01" 
+                                   min="0.01"
+                                   max="999999.99"
+                                   placeholder="0.00" 
+                                   class="field field-numeric w-full text-2xl font-mono py-2 px-3">
+                            @error('amount') <span class="text-[var(--expense)] text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
-                        <!-- Category Chips Selection (Horizontal, Clickable, No pre-fill) -->
+                        <!-- Category Selector -->
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] font-mono">
-                                    Category <span class="text-rose-500">*</span>
+                                <label class="block text-xs font-caps text-[var(--muted)]">
+                                    Category <span class="text-[var(--expense)]">*</span>
                                 </label>
                                 @if (!$category_id)
-                                    <span class="text-[10px] font-mono text-[var(--danger)]">Select one</span>
+                                    <span class="text-[10px] font-mono text-[var(--expense)]">Required</span>
                                 @endif
                             </div>
 
-                            <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Category Selection">
+                            <div class="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Category Selection">
                                 @forelse ($formCategories as $cat)
                                     <button type="button"
                                             wire:key="cat-chip-{{ $cat->id }}"
                                             wire:click="selectCategory({{ $cat->id }})"
-                                            tabindex="2"
-                                            class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-medium border transition-all duration-150 select-none {{ $category_id == $cat->id ? 'shadow-tactile-sm font-semibold' : 'hover:border-[var(--border-strong)] hover:bg-[var(--bg-surface)]' }}"
-                                            style="{{ $category_id == $cat->id 
-                                                ? 'background-color: ' . ($cat->color ?? 'var(--accent-primary)') . '; border-color: ' . ($cat->color ?? 'var(--accent-primary)') . '; color: #ffffff;' 
-                                                : 'background-color: var(--bg-subtle); border-color: var(--border-hairline); color: var(--text-muted);' }}">
-                                        <x-icon :name="$cat->icon" class="w-3.5 h-3.5 {{ $category_id == $cat->id ? 'text-white' : '' }}" />
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans border transition-colors {{ $category_id == $cat->id ? 'bg-[var(--ink)] text-[var(--paper)] border-[var(--ink)] font-medium' : 'bg-[var(--panel)] text-[var(--ink)] border-[var(--hairline)] hover:border-[var(--muted)]' }}">
+                                        <x-icon :name="$cat->icon" class="w-3.5 h-3.5" />
                                         <span>{{ $cat->name }}</span>
                                     </button>
                                 @empty
-                                    <div class="text-xs text-[var(--text-muted)] italic py-1">
-                                        No {{ $type }} categories found.
+                                    <div class="text-xs text-[var(--muted)] italic py-1">
+                                        No {{ $type }} categories available.
                                     </div>
                                 @endforelse
                             </div>
 
                             @if ($activeSuggestion && (! $category_id || ! $manualCategorySelected))
-                                <div class="mt-2.5 p-3 rounded-[10px] bg-[var(--accent-tint)] border border-[var(--accent-primary)]/20 text-xs flex items-center justify-between gap-3 shadow-tactile-sm">
-                                    <div class="flex items-center gap-2 text-[var(--text-primary)] min-w-0">
-                                        <x-icon name="sparkles" class="w-4 h-4 text-[var(--accent-primary)] shrink-0" />
-                                        <div class="truncate">
-                                            <span class="font-medium">Suggested category: <strong class="text-[var(--accent-primary)]">{{ $activeSuggestion['categoryName'] }}</strong></span>
-                                            <span class="text-[11px] font-mono text-[var(--accent-primary)] ml-1">({{ round($activeSuggestion['confidence'] * 100) }}% confidence)</span>
-                                            <div class="text-[10px] text-[var(--text-muted)] truncate">{{ $activeSuggestion['explanation'] }}</div>
-                                        </div>
+                                <div class="mt-2.5 p-3 border hairline-border bg-[var(--paper)] text-xs flex items-center justify-between gap-3">
+                                    <div class="truncate">
+                                        <span class="text-[var(--muted)]">Suggested:</span>
+                                        <strong class="text-[var(--accent)] ml-1">{{ $activeSuggestion['categoryName'] }}</strong>
+                                        <span class="font-mono text-[11px] text-[var(--muted)] ml-1">({{ round($activeSuggestion['confidence'] * 100) }}%)</span>
                                     </div>
-                                    <button type="button" 
-                                            wire:click="acceptSuggestion" 
-                                            class="btn-primary py-1 px-3 text-xs shrink-0 flex items-center gap-1">
-                                        <span>Accept</span>
-                                        <x-icon name="check" class="w-3 h-3" />
-                                    </button>
+                                    <x-button variant="accent" type="button" wire:click="acceptSuggestion" class="py-1 px-3 text-xs">
+                                        Accept
+                                    </x-button>
                                 </div>
                             @endif
 
-                            @error('category_id') <span class="text-rose-600 dark:text-rose-400 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
+                            @error('category_id') <span class="text-[var(--expense)] text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
-                        <!-- Smart Dynamic Merchant / Source Field -->
+                        <!-- Merchant / Source -->
                         <div>
-                            <label for="merchant" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
-                                {{ $type === 'income' ? 'Where is this from?' : 'Where did you spend it?' }} <span class="text-rose-500">*</span>
+                            <label for="merchant" class="block text-xs font-caps text-[var(--muted)] mb-1">
+                                {{ $type === 'income' ? 'Where is this from?' : 'Where did you spend it?' }} <span class="text-[var(--expense)]">*</span>
                             </label>
                             <input wire:model.live.debounce.300ms="merchant" 
                                    id="merchant" 
-                                   tabindex="3"
                                    type="text" 
                                    placeholder="{{ $type === 'income' ? 'e.g. Monthly Allowance, Freelance' : 'e.g. Canteen, Bookstore' }}" 
-                                   class="input-campus w-full text-sm">
-                            @error('merchant') <span class="text-rose-600 dark:text-rose-400 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
+                                   class="field w-full text-xs">
+                            @error('merchant') <span class="text-[var(--expense)] text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
-                        <!-- Collapsible + More options Details Accordion -->
-                        <details class="group border hairline-border rounded-[10px] overflow-hidden"
-                                 tabindex="6"
-                                 {{ ($editingId && ($description || $is_recurring || ($payment_method && $payment_method !== 'card'))) ? 'open' : '' }}>
-                            <summary class="flex items-center justify-between px-3.5 py-2.5 bg-[var(--bg-subtle)] hover:bg-[var(--bg-subtle-hover)] text-xs font-medium text-[var(--text-muted)] cursor-pointer select-none transition-colors">
-                                <span class="font-mono text-xs">+ More options</span>
-                                <x-icon name="sliders" class="w-3.5 h-3.5 text-[var(--text-muted)] group-open:rotate-180 transition-transform" />
-                            </summary>
+                        <!-- Payment Method -->
+                        <div>
+                            <label for="payment_method" class="block text-xs font-caps text-[var(--muted)] mb-1">
+                                Payment Method
+                            </label>
+                            <select wire:model="payment_method" 
+                                    id="payment_method" 
+                                    class="field w-full text-xs">
+                                <option value="card">Card (Debit / Credit)</option>
+                                <option value="cash">Cash</option>
+                                <option value="bank_transfer">Bank Transfer</option>
+                                <option value="digital_wallet">Digital Wallet</option>
+                                <option value="upi">UPI</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
 
-                            <div class="p-3.5 space-y-3.5 bg-[var(--bg-surface)] border-t hairline-border">
-                                <!-- Payment Method / Channel -->
-                                <div>
-                                    <label for="payment_method" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
-                                        Payment Method
-                                    </label>
-                                    <select wire:model="payment_method" 
-                                            id="payment_method" 
-                                            class="input-campus w-full text-xs bg-[var(--bg-surface)]">
-                                        <option value="card">Card (Debit/Credit)</option>
-                                        <option value="cash">Cash</option>
-                                        <option value="bank_transfer">Bank Transfer</option>
-                                        <option value="digital_wallet">Digital Wallet</option>
-                                        <option value="upi">UPI</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                    @error('payment_method') <span class="text-rose-600 dark:text-rose-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                </div>
+                        <!-- Description Notes -->
+                        <div>
+                            <label for="description" class="block text-xs font-caps text-[var(--muted)] mb-1">
+                                Notes (Optional)
+                            </label>
+                            <textarea wire:model.live.debounce.300ms="description" 
+                                      id="description" 
+                                      rows="2" 
+                                      placeholder="Add transaction memo..." 
+                                      class="field w-full text-xs"></textarea>
+                        </div>
 
-                                <!-- Notes / Description -->
-                                <div>
-                                    <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
-                                        Notes / Description <span class="text-[10px] font-normal lowercase text-[var(--text-muted)]">(optional)</span>
-                                    </label>
-                                    <textarea wire:model.live.debounce.300ms="description" 
-                                              id="description" 
-                                              rows="2" 
-                                              placeholder="Add context or notes for this transaction..." 
-                                              class="input-campus w-full text-xs"></textarea>
-                                    @error('description') <span class="text-rose-600 dark:text-rose-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                </div>
+                        <!-- Recurring Checkbox -->
+                        <div class="pt-1">
+                            <label class="flex items-center gap-2 cursor-pointer text-xs text-[var(--muted)]">
+                                <input wire:model="is_recurring" 
+                                       type="checkbox" 
+                                       class="border-[var(--hairline)] text-[var(--accent)] focus:ring-0">
+                                <span>Recurring monthly ledger entry</span>
+                            </label>
+                        </div>
 
-                                <!-- Recurring Entry -->
-                                <div class="pt-1">
-                                    <label class="flex items-center gap-2 cursor-pointer text-xs text-[var(--text-muted)]">
-                                        <input wire:model="is_recurring" 
-                                               type="checkbox" 
-                                               class="rounded-[4px] border-[var(--border-hairline)] text-[var(--accent-primary)] focus:ring-0">
-                                        <span>Recurring entry (Repeats monthly, e.g. allowance or subscription)</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </details>
-
-                        <!-- Modal Actions -->
-                        <div class="flex items-center justify-end gap-2.5 pt-2">
-                            <button type="button" 
-                                    wire:click="closeModal" 
-                                    tabindex="5"
-                                    class="btn-secondary py-2 px-3.5 text-xs">
+                        <!-- Actions -->
+                        <div class="flex items-center justify-end gap-3 pt-4 border-t hairline-border">
+                            <x-button variant="secondary" type="button" wire:click="closeModal">
                                 Cancel
-                            </button>
-                            <button type="submit" 
-                                    tabindex="4"
-                                    class="btn-primary py-2 px-4 text-xs font-semibold">
-                                <x-icon name="check-circle-2" class="w-4 h-4" />
-                                <span>{{ $editingId ? 'Update Record' : 'Record Transaction' }}</span>
-                                <kbd class="ml-1 px-1 py-0.5 rounded-[3px] bg-white/20 text-[10px] font-mono font-normal">↵</kbd>
-                            </button>
+                            </x-button>
+                            <x-button variant="accent" type="submit">
+                                {{ $editingId ? 'Update Record' : 'Record Entry' }}
+                            </x-button>
                         </div>
                     </form>
                 </div>
             </div>
         @endif
 
-        <!-- CSV Batch Categorization & Import Modal -->
+        <!-- CSV Batch Import Modal -->
         @if ($showImportModal)
-            <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60"
+            <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
                  role="dialog"
                  aria-modal="true"
                  aria-labelledby="modal-import-title"
                  x-data
                  @keydown.escape.window="$wire.closeImportModal()">
-                <div class="modal-dialog-surface border hairline-border w-full {{ $importStepReview ? 'sm:max-w-4xl' : 'sm:max-w-xl' }} p-5 sm:p-6 shadow-modal relative rounded-t-[22px] sm:rounded-[22px] rounded-b-none sm:rounded-b-[22px] max-h-[92vh] flex flex-col space-y-4"
+                <div class="modal-dialog-surface border hairline-border w-full {{ $importStepReview ? 'sm:max-w-4xl' : 'sm:max-w-xl' }} p-6 sm:p-8 bg-[var(--panel)] shadow-panel max-h-[92vh] flex flex-col space-y-6"
                      @click.away="$wire.closeImportModal()">
                     
                     <!-- Header -->
-                    <div class="flex items-start justify-between border-b hairline-border pb-3 shrink-0">
+                    <div class="flex items-start justify-between border-b hairline-border pb-4 shrink-0">
                         <div>
-                            <div class="flex items-center gap-2">
-                                <span class="p-1.5 rounded-[6px] bg-[var(--accent-tint)] border border-[var(--accent-primary)]/20 text-[var(--accent-primary)] shadow-tactile-sm">
-                                    <x-icon name="sparkles" class="w-4 h-4" />
-                                </span>
-                                <h2 id="modal-import-title" class="font-heading font-bold text-lg text-[var(--text-primary)] tracking-tight">
-                                    {{ $importStepReview ? 'Review AI Batch Categorization' : 'Import Transactions via CSV' }}
-                                </h2>
-                            </div>
-                            <p class="text-xs text-[var(--text-muted)] mt-1">
+                            <h2 id="modal-import-title" class="font-display text-xl font-medium text-[var(--ink)]">
+                                {{ $importStepReview ? 'Review AI Batch Import' : 'Import CSV Ledger' }}
+                            </h2>
+                            <p class="text-xs text-[var(--muted)] mt-1">
                                 {{ $importStepReview 
-                                    ? 'AI suggestions have been generated. Review and adjust categories before importing.' 
-                                    : 'Upload a bank or ledger CSV file to automatically categorize transactions using AI.' }}
+                                    ? 'Review and adjust pre-filled AI category classifications before confirming.' 
+                                    : 'Upload a CSV statement to parse and categorize entries automatically.' }}
                             </p>
                         </div>
                         <button type="button" 
@@ -610,9 +496,8 @@
                         </button>
                     </div>
 
-                    <!-- Error Alert -->
                     @if ($importError)
-                        <div class="p-3 rounded-[10px] bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2 shrink-0">
+                        <div class="p-3 border border-[var(--expense)] bg-[var(--paper)] text-[var(--expense)] text-xs flex items-center gap-2 shrink-0">
                             <x-icon name="alert-triangle" class="w-4 h-4 shrink-0" />
                             <span>{{ $importError }}</span>
                         </div>
@@ -621,161 +506,114 @@
                     @if (! $importStepReview)
                         <!-- STEP 1: UPLOAD FILE -->
                         <div class="space-y-4 py-2 overflow-y-auto">
-                            <div class="border-2 border-dashed hairline-border rounded-[12px] p-6 text-center hover:bg-[var(--bg-subtle)]/50 transition-colors">
-                                <div class="w-12 h-12 rounded-[10px] bg-[var(--accent-tint)] border border-[var(--accent-primary)]/20 flex items-center justify-center mx-auto mb-3 text-[var(--accent-primary)] shadow-tactile-sm">
-                                    <x-icon name="upload" class="w-6 h-6" />
-                                </div>
-                                <label for="csv-file-upload" class="cursor-pointer">
-                                    <span class="text-xs font-semibold text-[var(--accent-primary)] hover:underline">Choose CSV File</span>
-                                    <span class="text-xs text-[var(--text-muted)]"> or drag and drop</span>
+                            <div class="border border-dashed hairline-border p-8 text-center bg-[var(--paper)]">
+                                <label for="csv-file-upload" class="cursor-pointer block space-y-2">
+                                    <div class="text-xs font-medium text-[var(--accent)] hover:underline">Choose CSV File</div>
+                                    <div class="text-xs text-[var(--muted)]">Standard UTF-8 format up to 2MB (max 50 rows)</div>
                                     <input id="csv-file-upload" 
                                            wire:model="csvFile" 
                                            type="file" 
                                            accept=".csv,text/csv" 
                                            class="sr-only">
                                 </label>
-                                <p class="text-[11px] text-[var(--text-muted)] mt-1 font-mono">UTF-8 CSV format, up to 2MB (max 50 rows per batch)</p>
 
                                 @if ($csvFile)
-                                    <div class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-[8px] bg-[var(--bg-surface)] border hairline-border text-xs font-mono text-[var(--text-primary)] shadow-tactile-sm">
-                                        <x-icon name="file-text" class="w-4 h-4 text-emerald-500" />
-                                        <span>{{ $csvFile->getClientOriginalName() }}</span>
+                                    <div class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 border hairline-border bg-[var(--panel)] text-xs font-mono text-[var(--ink)]">
+                                        <span>File: {{ $csvFile->getClientOriginalName() }}</span>
                                     </div>
                                 @endif
 
-                                <div wire:loading wire:target="csvFile" class="mt-2 text-xs text-[var(--accent-primary)] font-mono animate-pulse">
-                                    Uploading file...
+                                <div wire:loading wire:target="csvFile" class="mt-2 text-xs text-[var(--accent)] font-mono animate-pulse">
+                                    Uploading statement...
                                 </div>
                             </div>
 
                             @error('csvFile') 
-                                <span class="text-rose-600 dark:text-rose-400 text-xs block font-medium">{{ $message }}</span> 
+                                <span class="text-[var(--expense)] text-xs block">{{ $message }}</span> 
                             @enderror
-
-                            <!-- Expected Columns Hint -->
-                            <div class="p-4 rounded-[10px] bg-[var(--bg-subtle)] border hairline-border space-y-1.5 text-xs text-[var(--text-muted)]">
-                                <div class="font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
-                                    <x-icon name="info" class="w-3.5 h-3.5 text-[var(--gold)]" />
-                                    <span>Supported CSV Columns</span>
-                                </div>
-                                <p class="text-[11px] leading-relaxed">
-                                    Header matching is flexible. We look for: 
-                                    <code class="font-mono text-[10px] px-1 py-0.5 rounded bg-[var(--bg-surface)] border hairline-border">Date</code>, 
-                                    <code class="font-mono text-[10px] px-1 py-0.5 rounded bg-[var(--bg-surface)] border hairline-border">Description / Merchant</code>, 
-                                    <code class="font-mono text-[10px] px-1 py-0.5 rounded bg-[var(--bg-surface)] border hairline-border">Amount</code>, and optionally 
-                                    <code class="font-mono text-[10px] px-1 py-0.5 rounded bg-[var(--bg-surface)] border hairline-border">Type</code>.
-                                </p>
-                            </div>
                         </div>
 
                         <!-- Step 1 Actions -->
-                        <div class="flex items-center justify-end gap-2.5 pt-2 border-t hairline-border shrink-0">
-                            <button type="button" 
-                                    wire:click="closeImportModal" 
-                                    class="btn-secondary py-2 px-3.5 text-xs">
+                        <div class="flex items-center justify-end gap-3 pt-4 border-t hairline-border shrink-0">
+                            <x-button variant="secondary" type="button" wire:click="closeImportModal">
                                 Cancel
-                            </button>
-                            <button type="button" 
-                                    wire:click="processCsvUpload"
-                                    wire:loading.attr="disabled"
-                                    class="btn-primary py-2 px-4 text-xs font-semibold flex items-center gap-1.5 {{ ! $csvFile ? 'opacity-50 cursor-not-allowed' : '' }}">
-                                <x-icon name="sparkles" class="w-4 h-4" />
+                            </x-button>
+                            <x-button variant="accent" type="button" wire:click="processCsvUpload" wire:loading.attr="disabled" :disabled="!$csvFile">
                                 <span wire:loading.remove wire:target="processCsvUpload">Categorize with AI</span>
                                 <span wire:loading wire:target="processCsvUpload">Analyzing Batch...</span>
-                            </button>
+                            </x-button>
                         </div>
                     @else
                         <!-- STEP 2: REVIEW BATCH SUGGESTIONS -->
-                        <div class="space-y-3 overflow-y-auto flex-1 max-h-[60vh] pr-1">
-                            <div class="flex items-center justify-between text-xs text-[var(--text-muted)]">
-                                <span>Parsed <strong>{{ count($importRows) }}</strong> transactions. AI suggestions are pre-filled below:</span>
-                                <span class="font-mono text-[11px]">Valid rows: <strong class="text-emerald-600 dark:text-emerald-400">{{ count(array_filter($importRows, fn($r) => !empty($r['is_valid']))) }}</strong></span>
-                            </div>
-
-                            <div class="border hairline-border rounded-[10px] overflow-hidden bg-[var(--bg-surface)]">
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-left border-collapse text-xs">
-                                        <thead>
-                                            <tr class="border-b hairline-border bg-[var(--bg-subtle)] text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
-                                                <th class="py-2.5 px-3">Date</th>
-                                                <th class="py-2.5 px-3">Merchant / Description</th>
-                                                <th class="py-2.5 px-3">Type</th>
-                                                <th class="py-2.5 px-3 text-right">Amount</th>
-                                                <th class="py-2.5 px-3">AI Suggestion</th>
-                                                <th class="py-2.5 px-3 min-w-[180px]">Assigned Category</th>
+                        <div class="space-y-4 overflow-y-auto flex-1 max-h-[60vh]">
+                            <div class="border hairline-border overflow-x-auto">
+                                <table class="ledger-table w-full text-xs text-left">
+                                    <thead>
+                                        <tr class="border-b hairline-border bg-[var(--panel)]">
+                                            <th>Date</th>
+                                            <th>Merchant / Description</th>
+                                            <th>Type</th>
+                                            <th class="text-right">Amount</th>
+                                            <th>AI Suggestion</th>
+                                            <th>Assigned Category</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-[var(--hairline)]">
+                                        @foreach ($importRows as $idx => $row)
+                                            <tr class="table-row-tactile">
+                                                <td class="font-mono text-xs whitespace-nowrap text-[var(--muted)]">
+                                                    {{ $row['date'] }}
+                                                </td>
+                                                <td class="font-medium text-[var(--ink)] max-w-[200px] truncate">
+                                                    {{ $row['description'] }}
+                                                    @if (! $row['is_valid'])
+                                                        <div class="text-[10px] text-[var(--expense)]">{{ $row['error'] }}</div>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <x-badge :variant="$row['type'] === 'income' ? 'income' : 'expense'">
+                                                        {{ strtoupper($row['type']) }}
+                                                    </x-badge>
+                                                </td>
+                                                <td class="text-right font-mono text-xs tabular-nums text-[var(--ink)]">
+                                                    ${{ $row['amount'] }}
+                                                </td>
+                                                <td class="whitespace-nowrap text-xs">
+                                                    @if ($row['suggested_category_id'])
+                                                        <span class="text-[var(--accent)] font-medium">{{ $row['suggested_category_name'] }}</span>
+                                                    @else
+                                                        <span class="text-[var(--muted)] italic">No match</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <select wire:model="importRows.{{ $idx }}.selected_category_id"
+                                                            class="field w-full py-1 px-2 text-xs">
+                                                        <option value="">-- Choose Category --</option>
+                                                        @foreach ($categories->where('type', $row['type']) as $c)
+                                                            <option value="{{ $c->id }}">{{ $c->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody class="divide-y hairline-border">
-                                            @foreach ($importRows as $idx => $row)
-                                                <tr class="table-row-tactile {{ ! $row['is_valid'] ? 'bg-rose-50/30 dark:bg-rose-950/20' : '' }}">
-                                                    <td class="py-2.5 px-3 font-mono text-[11px] whitespace-nowrap text-[var(--text-muted)]">
-                                                        {{ $row['date'] }}
-                                                    </td>
-                                                    <td class="py-2.5 px-3 font-medium text-[var(--text-primary)] max-w-[200px] truncate" title="{{ $row['description'] }}">
-                                                        {{ $row['description'] }}
-                                                        @if (! $row['is_valid'])
-                                                            <div class="text-[10px] text-rose-500 font-sans mt-0.5">{{ $row['error'] }}</div>
-                                                        @endif
-                                                    </td>
-                                                    <td class="py-2.5 px-3 whitespace-nowrap">
-                                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono font-semibold {{ $row['type'] === 'income' ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800' }}">
-                                                            {{ strtoupper($row['type']) }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="py-2.5 px-3 text-right font-mono font-semibold whitespace-nowrap text-[var(--text-primary)]">
-                                                        ${{ $row['amount'] }}
-                                                    </td>
-                                                    <td class="py-2.5 px-3 whitespace-nowrap">
-                                                        @if ($row['suggested_category_id'])
-                                                            <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] bg-[var(--accent-tint)] border border-[var(--accent-primary)]/20 text-[var(--accent-primary)] text-[11px]">
-                                                                <x-icon name="sparkles" class="w-3 h-3 text-[var(--accent-primary)] shrink-0" />
-                                                                <span class="font-medium truncate max-w-[100px]">{{ $row['suggested_category_name'] }}</span>
-                                                                <span class="text-[10px] font-mono text-[var(--accent-primary)] ml-0.5">({{ round(($row['confidence'] ?? 0) * 100) }}%)</span>
-                                                            </div>
-                                                        @else
-                                                            <span class="text-[var(--text-muted)] text-[11px] italic">No match</span>
-                                                        @endif
-                                                    </td>
-                                                    <td class="py-2.5 px-3">
-                                                        <select wire:model="importRows.{{ $idx }}.selected_category_id"
-                                                                class="input-campus w-full py-1 px-2 text-xs bg-[var(--bg-surface)]">
-                                                            <option value="">-- Choose Category --</option>
-                                                            @foreach ($categories->where('type', $row['type']) as $c)
-                                                                <option value="{{ $c->id }}">
-                                                                    {{ $c->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
                         <!-- Step 2 Actions -->
-                        <div class="flex items-center justify-between gap-2.5 pt-2 border-t hairline-border shrink-0">
-                            <button type="button" 
-                                    wire:click="$set('importStepReview', false)" 
-                                    class="btn-secondary py-2 px-3.5 text-xs">
-                                Back to Upload
-                            </button>
-                            <div class="flex items-center gap-2.5">
-                                <button type="button" 
-                                        wire:click="closeImportModal" 
-                                        class="btn-secondary py-2 px-3.5 text-xs">
+                        <div class="flex items-center justify-between gap-3 pt-4 border-t hairline-border shrink-0">
+                            <x-button variant="secondary" type="button" wire:click="$set('importStepReview', false)">
+                                Back
+                            </x-button>
+                            <div class="flex items-center gap-3">
+                                <x-button variant="secondary" type="button" wire:click="closeImportModal">
                                     Cancel
-                                </button>
-                                <button type="button" 
-                                        wire:click="confirmImport"
-                                        wire:loading.attr="disabled"
-                                        class="btn-primary py-2 px-4 text-xs font-semibold flex items-center gap-1.5">
-                                    <x-icon name="check-circle-2" class="w-4 h-4" />
-                                    <span wire:loading.remove wire:target="confirmImport">Confirm & Import Transactions</span>
+                                </x-button>
+                                <x-button variant="accent" type="button" wire:click="confirmImport" wire:loading.attr="disabled">
+                                    <span wire:loading.remove wire:target="confirmImport">Import Transactions</span>
                                     <span wire:loading wire:target="confirmImport">Importing...</span>
-                                </button>
+                                </x-button>
                             </div>
                         </div>
                     @endif
