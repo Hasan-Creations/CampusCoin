@@ -27,7 +27,18 @@ class CategoryFactory extends Factory
             'icon' => fake()->randomElement(['tag', 'wallet', 'activity', 'pie-chart', 'calendar', 'plus']),
             'color' => fake()->randomElement(['#059669', '#10B981', '#E11D48', '#D97706', '#6366F1']),
             'is_default' => false,
+            'is_active' => true,
         ];
+    }
+
+    /**
+     * Indicate that the category is inactive.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
     }
 
     /**

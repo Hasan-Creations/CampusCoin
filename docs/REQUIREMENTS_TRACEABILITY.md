@@ -39,6 +39,6 @@
 | **User Override of AI Suggestions** | SRS §4.8 | Phase 6 | **VERIFIED** | `TransactionList.php` (`acceptSuggestion`, `selectCategory`, manual priority) | `AiCategorizationTest.php` (manual override tests passed) |
 | **Student-Specific Learned Corrections** | SRS §4.8 | Phase 6 | **VERIFIED** | `CategoryLearning` model, `category_learnings` schema, `recordCorrection()` | `AiCategorizationTest.php` (isolation & learning tests passed) |
 | **Historical CSV Import with Batch Suggestions** | SRS §4.3, §4.8 | Phase 6 | **VERIFIED** | `TransactionList.php` (`processCsvUpload`, `confirmImport`, review modal) | `AiCategorizationTest.php` (batch & invalid row tests passed) |
-| **Operational Admin Dashboard** | SRS §4.11 | Phase 7 | `NOT_STARTED` | Admin metrics, user toggle, system categories | Base layout verified |
+| **Operational Admin Dashboard** | SRS §4.11 | Phase 7 | **VERIFIED** | `AdminDashboard.php`, `CategoryManager.php`, `UserManager.php`, `AdminMetricsService.php`, session termination on deactivation, category safe deletion | `AdminManagementTest.php` (28 tests, 107 assertions passed) |
 | **Dark Mode & Accessibility** | SRS §5.1, UI Spec | Phase 8 | `NOT_STARTED` | CSS tokens, contrast, theme toggler | Base token system verified |
 | **Full Data Isolation Guard** | Security Spec | Continuous | **VERIFIED** | Scoped queries, 403 authorization, cross-student test | Automated tests & Playwright E2E verified |

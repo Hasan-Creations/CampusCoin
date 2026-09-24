@@ -24,6 +24,7 @@ class Category extends Model
         'icon',
         'color',
         'is_default',
+        'is_active',
     ];
 
     /**
@@ -35,6 +36,7 @@ class Category extends Model
     {
         return [
             'is_default' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -143,6 +145,14 @@ class Category extends Model
     }
 
     /**
+     * Scope to only active categories.
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
      * Determine if this category can be safely deleted.
      */
     public function canBeDeletedBy(?User $user): bool
@@ -152,5 +162,16 @@ class Category extends Model
         }
 
         return $this->transactions()->count() === 0;
+    }
+
+    /**
+     * Check if category can be safely deleted system-wide without violating historical integrity.
+     */
+    public function canBeSafelyDeleted(): bool
+    {
+        return $this->transactions()->count() === 0
+            && $this->budgets()->count() === 0
+            && $this->savingTips()->count() === 0
+            && $this->categoryLearnings()->count() === 0;
     }
 }

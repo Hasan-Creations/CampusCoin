@@ -84,3 +84,23 @@ Lucide-compatible SVG stroke icons (`stroke-width="1.75"`):
 - `xl`: `>= 1200px` (Multi-column dashboard, 12-col grid)
 - `md`: `>= 768px` (Tablet 2×2 grid, collapsible sidebar)
 - `sm`: `< 768px` (Single column, horizontal scrolling KPI bar, bottom action sheet for transaction modal)
+
+---
+
+## 8. Admin Operations & Governance Interface *(Phase 7)*
+- **Layout Architecture (`resources/views/layouts/admin.blade.php`):**
+  - Dedicated admin shell with left-hand operational sidebar, root operator profile badge, and dark/light mode toggle.
+  - Active route highlighting across Overview (`admin.dashboard`), Student Accounts (`admin.users`), and Global Categories (`admin.categories`).
+- **Operational Dashboard (`livewire/admin/dashboard.blade.php`):**
+  - 4 primary telemetry KPI cards: Total Students, Tracked Ledger Volume, Logged Transactions, and Category Governance.
+  - 12-column responsive layout: 7-column Most-Used Categories leaderboard with volume shares; 5-column Student Demographics & Commitments progress card.
+  - Recent registered campus accounts table with cohort details, ledger activity counts, and inline status toggle action.
+- **Global Category Manager (`livewire/admin/category-manager.blade.php`):**
+  - Segmented scope tabs (Global Defaults vs Student Custom vs All Categories).
+  - Type filters (`income`, `expense`), status filters (`active`, `inactive`), and real-time debounced search.
+  - Modal form for creating and editing global default categories with icon palette and hex accent selectors.
+  - Safe non-destructive deletion and status toggle with visual badges.
+- **Student Account Manager (`livewire/admin/user-manager.blade.php`):**
+  - Status, cohort, and role filters with sorting by newest, name, or transaction activity.
+  - Interactive inspection modal displaying full profile, baseline allowances, and aggregated ledger telemetry without exposing sensitive credentials.
+  - One-click account deactivation/reactivation and baseline reset actions with confirmation dialogues.

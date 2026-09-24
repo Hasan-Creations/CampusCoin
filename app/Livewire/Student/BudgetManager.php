@@ -131,6 +131,7 @@ class BudgetManager extends Component
             ->toArray();
 
         $availableCategory = Category::forUser(Auth::id())
+            ->active()
             ->expense()
             ->whereNotIn('id', $existingCatIds)
             ->first();
@@ -339,6 +340,7 @@ class BudgetManager extends Component
 
         // Load available expense categories for modal dropdown
         $eligibleCategories = Category::forUser($userId)
+            ->active()
             ->expense()
             ->orderBy('name')
             ->get();

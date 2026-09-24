@@ -53,3 +53,10 @@
 - **Decision:** Implement a dual-provider architecture behind `CategorizationProviderInterface` with `HeuristicCategorizationProvider` (zero-latency semantic matching across student domains) and `OpenAiCategorizationProvider` (optional LLM integration with 3-second timeout). Precede all provider calls with student-isolated `CategoryLearning` lookups and strictly validate all suggestions against the student's available categories before rendering.
 - **Reason:** Ensures zero-cost, zero-latency instant suggestions without requiring external API keys while providing clean extensibility when keys are provided. Strictly prevents category hallucinations, protects student privacy, preserves manual override supremacy, and enables customized suggestions based on previous student choices.
 - **Status:** Accepted
+
+---
+
+## DEC-009 — Operational Admin Governance, Non-Destructive Category Archival & Session Termination
+- **Decision:** Implement dedicated operational admin controllers and Livewire components (`/admin/dashboard`, `/admin/categories`, `/admin/users`) protected by `EnsureUserIsAdmin` and component-level lifecycle guards. Extend `categories` with an indexed `is_active` boolean column allowing administrators to deactivate global or custom categories without deleting records. Strictly block hard deletion of categories referenced by transactions, budgets, saving tips, or learned mappings via `canBeSafelyDeleted()`. Append `EnsureUserIsActive` to the global `web` middleware pipeline, and purge active database session records from the `sessions` table immediately upon account deactivation.
+- **Reason:** Hard deletion of referenced categories would violate foreign-key constraints and corrupt historical transaction audits and monthly reports. Category deactivation gracefully hides obsolete categories from student creation dropdowns while maintaining 100% financial integrity. Immediate database session invalidation ensures disabled students cannot continue accessing protected endpoints through lingering cookies or concurrent tabs.
+- **Status:** Accepted

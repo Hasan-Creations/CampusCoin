@@ -138,6 +138,7 @@ class TransactionList extends Component
 
         $userId = (int) Auth::id();
         $availableCategories = Category::forUser($userId)
+            ->active()
             ->where('type', $this->type)
             ->get();
 
@@ -497,7 +498,7 @@ class TransactionList extends Component
 
         $userId = (int) Auth::id();
         $user = Auth::user();
-        $availableCategories = Category::forUser($userId)->get();
+        $availableCategories = Category::forUser($userId)->active()->get();
 
         /** @var AiCategorizationService $aiService */
         $aiService = app(AiCategorizationService::class);
@@ -725,7 +726,7 @@ class TransactionList extends Component
             ->orderBy('name')
             ->get();
 
-        $formCategories = $categories->where('type', $this->type);
+        $formCategories = $categories->where('is_active', true)->where('type', $this->type);
 
         return view('livewire.student.transaction-list', [
             'transactions' => $transactions,

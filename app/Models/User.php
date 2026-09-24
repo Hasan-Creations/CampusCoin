@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 #[Fillable([
     'name',
@@ -64,6 +66,26 @@ class User extends Authenticatable
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    /**
+     * Deactivate this user account and terminate all active database sessions.
+     */
+    public function deactivate(): void
+    {
+        $this->update(['status' => 'disabled']);
+
+        if (Schema::hasTable('sessions')) {
+            DB::table('sessions')->where('user_id', $this->id)->delete();
+        }
+    }
+
+    /**
+     * Reactivate this user account.
+     */
+    public function activate(): void
+    {
+        $this->update(['status' => 'active']);
     }
 
     /**

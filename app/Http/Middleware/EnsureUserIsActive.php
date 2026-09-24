@@ -21,6 +21,10 @@ class EnsureUserIsActive
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
+            if ($request->expectsJson() || $request->hasHeader('X-Livewire')) {
+                abort(403, 'This account has been disabled by an administrator.');
+            }
+
             return redirect()->route('login')->withErrors([
                 'email' => 'This account has been disabled by an administrator.',
             ]);

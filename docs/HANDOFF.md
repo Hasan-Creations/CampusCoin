@@ -120,15 +120,25 @@ php artisan serve
   - Live advisory suggestions during single transaction entry/edit in `TransactionList.php` with one-click acceptance and manual override guarantee.
   - Interactive CSV batch categorization and import modal: parses CSV files up to 50 rows, runs batch suggestions, renders review table with category dropdown overrides, and confirms batch ledger imports.
   - 15 automated feature tests (70 assertions).
-- **Immediate Next Action (Phase 7 — Operational Admin Panel & Category Controls):**
-  - Implement system-wide category CRUD, user account toggle (active/disabled), and platform operational statistics.
+- **Phase 7 (Operational Admin Panel & Category Controls):** COMPLETED & VERIFIED.
+  - Multi-tier administrative authorization: `EnsureUserIsAdmin` middleware, `EnsureUserIsActive` registered in global web pipeline, and server-side authorization in all admin Livewire components.
+  - Operational Admin Dashboard (`/admin/dashboard`, `Dashboard.php`) presenting 4 primary telemetry cards, SRS-mandated Most-Used Categories leaderboard, cohort distribution, and recent student account actions.
+  - Global Category Governance (`/admin/categories`, `CategoryManager.php`): create global defaults, edit title/type/icon/color, toggle operational status (`is_active`), and safe deletion barrier blocking destructive deletion of referenced categories.
+  - Student Account Status Governance (`/admin/users`, `UserManager.php`): status toggling (active/disabled), automated termination of active database sessions on deactivation, inspection drawer, and financial baseline reset.
+  - Platform Telemetry Engine (`AdminMetricsService`): high-performance SQL aggregate calculations with zero-state safety and privacy preservation.
+  - 28 automated feature tests (107 assertions).
+- **Immediate Next Action (Phase 8 — Accessibility Controls & Final Hardening):**
+  - Implement system-wide dark/light theme persistence, WCAG contrast verification, font size scaling, keyboard navigation, and final production hardening.
 
 ---
 
 ## 6. Tests to Run
 ```powershell
-# Run full integrated test suite (111 tests / 541 assertions)
+# Run full integrated test suite (139 tests / 648 assertions)
 php artisan test --compact
+
+# Run admin management test suite (28 tests / 107 assertions)
+php artisan test tests/Feature/AdminManagementTest.php
 
 # Run saving tips test suite (19 tests / 82 assertions)
 php artisan test tests/Feature/SavingTipsTest.php
@@ -137,7 +147,7 @@ php artisan test tests/Feature/SavingTipsTest.php
 php artisan test tests/Feature/AiCategorizationTest.php
 
 # Run code styling check
-php vendor/bin/pint --format agent
+php vendor/bin/pint --dirty --format agent
 
 # Build frontend assets
 npm run build

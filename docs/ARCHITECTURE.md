@@ -55,6 +55,9 @@ app/
 │   │   ├── MonthlyReports.php
 │   │   └── SavingTipsManager.php
 │   └── Admin/
+│       ├── Dashboard.php
+│       ├── CategoryManager.php
+│       └── UserManager.php
 ├── Models/
 │   ├── User.php
 │   ├── Category.php
@@ -64,6 +67,7 @@ app/
 │   ├── SavingTip.php
 │   └── MonthlyInsight.php
 ├── Services/
+│   ├── AdminMetricsService.php
 │   ├── FinancialCalculationService.php
 │   ├── SavingTipsService.php
 │   ├── AiCategorizationService.php
@@ -111,3 +115,18 @@ app/
 - **Deterministic Fallback:** If `OpenAiCategorizationProvider` fails, times out (3-second strict network limit), is unconfigured, or returns an invalid/hallucinated category, it seamlessly falls back to `HeuristicCategorizationProvider`.
 - **Validation Shield:** All suggestions are checked against the student's available categories (`Category::forUser($userId)`). External models can never invent or assign non-existent categories.
 - **Zero Secret Leakage:** AI API keys are stored server-side via `config/services.php` and `.env`; no secrets are ever exposed to the client browser.
+
+---
+
+## 8. Operational Admin Panel & Category Governance Architecture
+- **Multi-Layered Admin Guard:**
+  - Route Layer: `EnsureUserIsAdmin` restricts all `/admin/*` routes to accounts where `$user->isAdmin()` is true.
+  - Component Lifecycle Layer: `mount()` and `boot()` guards in all admin Livewire components guarantee that mutations cannot be invoked even if route middleware was bypassed.
+- **Centralized Account Status Enforcement:**
+  - `EnsureUserIsActive` is registered in the global `web` middleware pipeline. Any authenticated student whose account is marked `disabled` is immediately logged out, their session is invalidated, and requests are aborted/redirected to login.
+  - Deactivating an account via `User::deactivate()` directly purges corresponding session records from the `sessions` database table, terminating any concurrent active browser sessions.
+- **Non-Destructive Category Archival & Safe Deletion:**
+  - Categories feature an `is_active` boolean column. Deactivated categories are immediately hidden from student creation/budget dropdowns, but remain intact in the database so historical transactions, reports, and ledger entries remain fully interpretable.
+  - Hard deletion is protected by `canBeSafelyDeleted()`, which enforces that categories with referencing transactions, budgets, saving tips, or learned mappings cannot be hard deleted.
+- **High-Performance Telemetry Engine:**
+  - `AdminMetricsService` utilizes single-pass SQL aggregate functions (`COUNT`, `SUM`, `AVG`, `GROUP BY`) to compute platform volume, student active rates, category adoption, and the SRS-mandated Most-Used Categories leaderboard without loading raw Eloquent collections into PHP memory. Zero division and empty database states are strictly guarded.

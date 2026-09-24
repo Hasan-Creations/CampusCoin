@@ -48,12 +48,14 @@ Classification tags for transactions and budgets.
 | `icon` | `VARCHAR(50)` | No | `'tag'` | Lucide icon identifier |
 | `color` | `VARCHAR(7)` | No | `'#059669'` | Hex color code |
 | `is_default` | `BOOLEAN` | No | `FALSE` | Flag for global default categories |
+| `is_active` | `BOOLEAN` | No | `TRUE` | Operational activation status *(Phase 7)* |
 | `created_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
 | `updated_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
 
 **Foreign Keys & Constraints:**
 - `FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE`
 - `INDEX categories_user_id_index (user_id)`
+- `INDEX categories_is_active_index (is_active)`
 
 ---
 

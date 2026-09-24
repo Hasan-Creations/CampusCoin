@@ -5,6 +5,9 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ReportExportController;
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Livewire\Admin\CategoryManager as AdminCategoryManager;
+use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\UserManager as AdminUserManager;
 use App\Livewire\Student\BudgetManager;
 use App\Livewire\Student\CategoryManager;
 use App\Livewire\Student\Dashboard;
@@ -66,7 +69,7 @@ Route::middleware(['auth', EnsureUserIsActive::class])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->middleware(['auth', EnsureUserIsActive::class, EnsureUserIsAdmin::class])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
+    Route::get('/categories', AdminCategoryManager::class)->name('admin.categories');
+    Route::get('/users', AdminUserManager::class)->name('admin.users');
 });

@@ -36,31 +36,19 @@
                 <a href="{{ route('admin.dashboard') }}" 
                    class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
                     <x-icon name="activity" class="w-4 h-4" />
-                    Overview
+                    Overview & Telemetry
                 </a>
 
-                <a href="{{ url('/admin/users') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->is('admin/users*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
+                <a href="{{ route('admin.users') }}" 
+                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.users*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
                     <x-icon name="users" class="w-4 h-4" />
-                    User Management
+                    Student Accounts
                 </a>
 
-                <a href="{{ url('/admin/categories') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->is('admin/categories*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
+                <a href="{{ route('admin.categories') }}" 
+                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->routeIs('admin.categories*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
                     <x-icon name="tag" class="w-4 h-4" />
                     Global Categories
-                </a>
-
-                <a href="{{ url('/admin/templates') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->is('admin/templates*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
-                    <x-icon name="lightbulb" class="w-4 h-4" />
-                    Tip Templates
-                </a>
-
-                <a href="{{ url('/admin/system') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm font-medium transition-colors {{ request()->is('admin/system*') ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]' }}">
-                    <x-icon name="database" class="w-4 h-4" />
-                    System & Metrics
                 </a>
             </nav>
 

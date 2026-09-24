@@ -1,14 +1,14 @@
 # Campus Coin — Project State
 
 ## Current Phase
-**Phases 0–6 Integrated (COMPLETED & VERIFIED)**
-Transitioning to: **Phase 7 — Operational Admin Panel & Category Controls**
+**Phase 7 — Operational Admin Panel & Category Controls (COMPLETED & VERIFIED)**
+Transitioning to: **Phase 8 — Accessibility Controls & Final Hardening**
 
 ## Current Task
-Phases 0–6 fully implemented, integrated, and verified on `master`. Both parallel tracks (Phase 5: Saving Tips Engine & Intelligent Rule Evaluator; Phase 6: Advisory AI Categorization Assistant & CSV Batch Processing) have been reconciled and merged. Complete deterministic saving tips engine, impact ranking, pin/dismiss persistence, live advisory category suggestions, student learned preferences, CSV batch categorization & import review, and all prior ledger/budget/report features are operational. Ready to begin Phase 7.
+Phase 7 has been fully implemented, integrated, and verified on `master`. The administrative operational control panel, category governance (global default creation, editing, active/inactive status toggle, and safe non-destructive deletion guards), student account status management (active/disabled toggling, immediate session invalidation, and inspection modal), centralized active user middleware enforcement, and comprehensive platform operational metrics service (`AdminMetricsService`) are fully operational. Full regression test suite passing at 100% (139 tests, 648 assertions). Ready to begin Phase 8.
 
 ## Overall Completion
-**85%** (Phase 0: Foundation, Phase 1: Core Student Data, Phase 2: Budget Goals & Alerts, Phase 3: Cash Flow Trends, Phase 4: Monthly Reports, Phase 5: Saving Tips Engine, Phase 6: Advisory AI Categorization & CSV Batch complete).
+**95%** (Phases 0–7 completed and verified: Foundation, Core Student Data, Budget Goals, Cash Flow Analytics, Monthly Reports, Saving Tips Engine, Advisory AI Categorization, Operational Admin Panel).
 
 ## Phase Definitions & Roadmap (Reconciled & Authoritative)
 - **Phase 0:** Project Initialization, Scaffolding & Multi-Role Authentication (COMPLETED)
@@ -18,102 +18,61 @@ Phases 0–6 fully implemented, integrated, and verified on `master`. Both paral
 - **Phase 4:** Monthly Financial Reports & Multi-Format Exports (CSV/PDF) (COMPLETED & VERIFIED)
 - **Phase 5:** Deterministic Saving Tips Engine & Bookmarks (COMPLETED & VERIFIED)
 - **Phase 6:** Advisory AI Categorization & CSV Batch Processing (COMPLETED & VERIFIED)
-- **Phase 7:** Operational Admin Panel & Category Controls (NEXT)
-- **Phase 8:** Accessibility Controls & Final Hardening
+- **Phase 7:** Operational Admin Panel & Category Controls (COMPLETED & VERIFIED)
+- **Phase 8:** Accessibility Controls & Final Hardening (NEXT)
 
 ## Completed Features
 - **Environment & Framework:** PHP 8.4.23, Composer 2.10.2, Node 22.21.0, NPM 10.9.4, MariaDB 10.4.32 on port 3306, Laravel 12 application with Livewire 3 (`livewire/livewire ^4.4`), Laravel Boost installed.
 - **Database & Schemas:**
   - `users`: student profile fields (`academic_year`, `monthly_allowance`, `savings_goal`), role separation (`student`, `admin`), and account status (`active`, `disabled`).
-  - `categories`: personal and system default categories with icon, hex color, and type (`income`, `expense`).
+  - `categories`: personal and system default categories with icon, hex color, type (`income`, `expense`), and operational status `is_active` (`boolean`, default `true`, indexed).
   - `transactions`: `DECIMAL(10,2)` monetary values, category association, payment method, and recurrence flags.
   - `budgets`: `DECIMAL(10,2)` planned spending limits by student, expense category, and `month_year` (`YYYY-MM`) with unique composite key.
+  - `saving_tips`: composite unique index `(user_id, rule_key, category_id)` with status tracking (`active`, `dismissed`, `pinned`).
+  - `category_learnings`: student-isolated preference mappings `(user_id, keyword)`.
 - **Authentication & Authorization:**
   - Multi-role session authentication with CSRF protection.
   - Student registration with `.edu` domain validation and cohort selection.
   - Student login screen with 60/40 asymmetric layout and proof metrics.
   - Direct-access administrator login portal (`/admin/login`).
-  - Middleware: `EnsureUserIsAdmin` and `EnsureUserIsActive`.
+  - Middleware: `EnsureUserIsAdmin` (direct root role guard) and `EnsureUserIsActive` (appended to `web` middleware pipeline, terminating sessions and redirecting/aborting disabled users).
   - Multi-tenant student isolation enforcing `where('user_id', Auth::id())` across all personal data queries.
-- **Category Management:**
+- **Category Management & Governance:**
   - 12 system default categories seeded.
-  - `CategoryManager` Livewire component for personal category CRUD, type filters, and color/icon palettes.
-- **Transaction Ledger:**
-  - `TransactionList` Livewire component with modal creation/editing, keyboard shortcuts (Ctrl+Enter / Esc), merchant search, category filters, payment method filters, and CSV export.
-- **Budget Goals & Alerts (Phase 2):**
-  - `budgets` database table with foreign keys, index, and unique constraint on `(user_id, category_id, month_year)`.
-  - `Budget` model with decimal precision casting, Eloquent relations, and deterministic BCMath financial routines (`getSpentAmount()`, `getRemainingAmount()`, `getPercentageConsumed()`, `isOverBudget()`, `isNearLimit()`, `isOnTrack()`, `getStatus()`, `getStatusLabel()`).
-  - Pre-aggregated ledger consumption calculations preventing N+1 queries.
-  - Strict domain validation: budgets only permitted for `expense` categories owned by the student or system defaults.
-  - `BudgetManager` Livewire component (`/budgets`) with monthly filtering, 4 summary KPI cards (Total Budgeted, Total Spent, Net Remaining, Health Status), category card grid, progress bars, and accessible create/edit/delete modals.
-  - In-app notification alert banners when categories reach near-limit (75%–100%) or over-budget (>100%).
-  - Dashboard integration: "Budget Goals & Spending Caps" widget with real-time progress bars, top-level alert banners, and Safe-to-Spend KPI budget limits.
-- **Cash Flow Trends & Advanced Analytics (Phase 3):**
-  - Dedicated `FinancialCalculationService` (`app/Services/FinancialCalculationService.php`) calculating 6-month historical cash flow trends and multi-period category spending comparisons directly from the `transactions` ledger.
-  - BCMath financial precision (`bcsub`, `bcadd`, `bccomp`) with complete divide-by-zero guards.
-  - Responsive native SVG dual-bar chart showing side-by-side monthly Income and Expenses, baseline grid lines, and net flow indicators across 6 calendar months.
-  - Interactive multi-period selector (`This Month`, `3 Months`, `6 Months`, `This Year`) updating Livewire state without full-page reloads.
-  - Comparative category spending breakdown with absolute dollar deltas, percentage changes, "New" badges, and period share visual progress bars.
-  - Strict student multi-tenant data isolation enforced across all aggregation routines.
-- **Monthly Financial Reports & Exports (Phase 4):**
-  - Dedicated student reports interface at `/reports` with Livewire component `MonthlyReports` (`app/Livewire/Student/MonthlyReports.php`).
-  - Extended `FinancialCalculationService` with `getReportSummary`, `getCategoryWiseReport`, `getCurrentMonthDailySummary`, and `getCurrentMonthWeeklySummary`.
-  - Multi-period preset switching (`This Month`, `Last Month`, `3 Months`, `6 Months`, `This Year`, `Custom Range`) with Livewire reactivity.
-  - Category and transaction type/source filtering working together seamlessly.
-  - Tab navigation across: Category Spending Breakdown, Six-Month Velocity View, Daily Current-Month Velocity, Weekly Current-Month Movement, and Filtered Audit Ledger.
-  - Executive financial summary KPI cards: Total Inflow, Total Outflow, Net Movement, and Savings Efficiency rate.
-  - Server-side branded PDF statement generation via `barryvdh/laravel-dompdf` (`/reports/export/pdf`), print-ready layout (`?preview=1`), and structured CSV streaming export (`/reports/export/csv`).
-  - Strict student tenant isolation enforced across all reporting queries and export endpoints.
-<<<<<<< HEAD
-- **Saving Tips Engine & Intelligent Rule Evaluator (Phase 5):**
-  - Database table `saving_tips` with composite unique constraint on `(user_id, rule_key, category_id)` ensuring persistent state across tip re-evaluations.
-  - Eloquent `SavingTip` model with relationships, scopes (`forUser`, `active`, `pinned`, `dismissed`), and mutation helpers (`pin()`, `unpin()`, `dismiss()`, `unDismiss()`).
-  - Deterministic `SavingTipsService` (`app/Services/SavingTipsService.php`) evaluating 5 data-driven financial rules:
-    1. Category spending significantly above historical 3-month average (>20% with >=$15 minimum delta).
-    2. Category approaching (>=80%) or exceeding (>100%) monthly category budget.
-    3. High spending share where a single category accounts for >40% of total monthly expenses.
-    4. Month-over-month overall spending growth exceeding 25% with >=$50 delta.
-    5. Savings goal lagging where student's net balance falls behind their monthly savings goal.
-  - BCMath decimal calculations for all estimated potential savings figures.
-  - Deterministic ranking of tips by calculated potential savings impact descending.
-  - Idempotent `syncTips()` method inserting newly triggered tips, updating live metrics, removing obsolete unpinned/active tips, and strictly preserving student `pinned` and `dismissed` states.
-  - Dedicated student hub at `/tips` with Livewire `SavingTipsManager` (`app/Livewire/Student/SavingTipsManager.php`) supporting tabbed views (`active`, `pinned`, `dismissed`), live metrics header (Total Potential Savings, Active Opportunities, Pinned Strategies), and pin/dismiss/restore actions.
-  - Dashboard integration: "Personalized Saving Opportunities" widget presenting the top 3 prioritized active/pinned tips with quick pin/dismiss controls and direct links to `/tips`.
-  - Multi-tenant student isolation strictly enforced across all database queries and actions.
-- **Saving Tips Engine & Intelligent Rule Evaluator (Phase 5):**
-  - Database table `saving_tips` with composite unique constraint on `(user_id, rule_key, category_id)` ensuring persistent state across tip re-evaluations.
-  - Eloquent `SavingTip` model with relationships, scopes (`forUser`, `active`, `pinned`, `dismissed`), and mutation helpers (`pin()`, `unpin()`, `dismiss()`, `unDismiss()`).
-  - Deterministic `SavingTipsService` (`app/Services/SavingTipsService.php`) evaluating 5 data-driven financial rules:
-    1. Category spending significantly above historical 3-month average (>20% with >=$15 minimum delta).
-    2. Category approaching (>=80%) or exceeding (>100%) monthly category budget.
-    3. High spending share where a single category accounts for >40% of total monthly expenses.
-    4. Month-over-month overall spending growth exceeding 25% with >=$50 delta.
-    5. Savings goal lagging where student's net balance falls behind their monthly savings goal.
-  - BCMath decimal calculations for all estimated potential savings figures.
-  - Deterministic ranking of tips by calculated potential savings impact descending.
-  - Idempotent `syncTips()` method inserting newly triggered tips, updating live metrics, removing obsolete unpinned/active tips, and strictly preserving student `pinned` and `dismissed` states.
-  - Dedicated student hub at `/tips` with Livewire `SavingTipsManager` (`app/Livewire/Student/SavingTipsManager.php`) supporting tabbed views (`active`, `pinned`, `dismissed`), live metrics header (Total Potential Savings, Active Opportunities, Pinned Strategies), and pin/dismiss/restore actions.
-  - Dashboard integration: "Personalized Saving Opportunities" widget presenting the top 3 prioritized active/pinned tips with quick pin/dismiss controls and direct links to `/tips`.
-  - Multi-tenant student isolation strictly enforced across all database queries and actions.
-- **Advisory AI Categorization & CSV Batch Processing (Phase 6):**
-  - Configurable categorization provider architecture (`CategorizationProviderInterface`) registered in `AppServiceProvider`.
-  - Deterministic `HeuristicCategorizationProvider` with semantic keyword and alias pattern matching across all core student categories (food, academics, transport, housing, utilities, subscriptions, entertainment, personal, etc.).
-  - External `OpenAiCategorizationProvider` integration (configurable via `AI_API_KEY` / `AI_MODEL`) with 3-second network timeout, strict schema instructions, backtick cleaning, invalid/hallucinated category rejection, and automatic fallback to heuristic provider.
-  - Central `AiCategorizationService` coordinating student-specific learned corrections, provider suggestions, and accessible category validation.
-  - Student learning persistence via `category_learnings` table (`user_id`, `keyword`, `category_id`, `usage_count`, `last_used_at`) with strict multi-tenant isolation.
-  - Real-time debounced transaction entry/edit modal suggestions with confidence scores and one-click acceptance.
-  - Explicit manual override guarantee: user's manual category selection is always authoritative and updates learned mappings.
-  - Interactive CSV Batch Categorization modal in `TransactionList`: bounded up to 50 rows, parses date/merchant/amount/type, generates suggestions, displays review table with category dropdown overrides, and confirms batch import with ledger creation and learning persistence.
+  - Student `CategoryManager` Livewire component (`/categories`) for personal category CRUD, type filters, and color/icon palettes.
+  - Admin `CategoryManager` Livewire component (`/admin/categories`):
+    - System default category creation (`is_default = true`, `user_id = null`).
+    - Global category editing (name, cash-flow type, icon, color).
+    - Status toggle (Active / Inactive) preventing inactive categories from being selected for new entries while preserving historical ledger records.
+    - Safe non-destructive deletion guard blocking hard deletion when referenced by transactions, budgets, tips, or learned mappings, recommending archival/deactivation instead.
+    - Scope filters: Global System Defaults vs Student Custom Categories vs All.
+- **Student Account Status Governance:**
+  - Admin `UserManager` Livewire component (`/admin/users`):
+    - Search by name or email, filter by cohort, status (`active`, `disabled`), role (`student`, `admin`), and sort by activity/name/date.
+    - Server-side status toggle (`toggleStatus(int $userId)`): deactivating an account updates status and terminates active database session records in `sessions` table.
+    - Root account protection: administrators cannot deactivate their own root accounts or alter admin status from student manager.
+    - Inspection modal: provides student profile details, academic cohort, financial baselines, and aggregated ledger activity counts without exposing sensitive credentials or passwords.
+    - Financial baseline reset: allows administrators to reset student baseline stipend and target savings goal to zero.
+- **Operational Platform Metrics & Telemetry:**
+  - Dedicated `AdminMetricsService` (`app/Services/AdminMetricsService.php`):
+    - High-performance SQL aggregates (`COUNT`, `SUM`, `AVG`, `GROUP BY`) with zero memory bloat and zero-state protection.
+    - Student metrics: total students, active vs disabled count, active percentage (%), 30-day signup velocity, cohort distribution, total committed monthly stipends and savings goals.
+    - Transaction metrics: total transactions, gross ledger volume, expense volume vs income volume, average transaction ticket size, 30-day transaction count.
+    - Category metrics: global default vs personal category breakdown, active vs inactive counts, and top 5 most-used categories by transaction frequency and volume share.
+    - Budget metrics: total active budget goals, aggregate budgeted limit, and participating student count.
+  - Admin `Dashboard` Livewire component (`/admin/dashboard`):
+    - 4 operational KPI cards adhering to fintech aesthetic.
+    - Most-Used Categories leaderboard with direct links to category administration.
+    - Student Demographics & Commitments breakdown with progress distribution.
+    - Recent Registered Campus Accounts table with inline status toggling and quick links.
 - **Automated Test Suite:**
-  - **111 tests with 541 assertions** passing at 100% (`php artisan test`).
-- **End-to-End Browser Verification:**
-  - Playwright browser test verifying budget creation, edit, ledger expense logging, consumption update, near-limit alert, over-budget trigger, dashboard display, student data isolation, and budget deletion.
+  - **139 tests with 648 assertions** passing at 100% (`php artisan test`).
+  - Includes 28 dedicated Phase 7 feature tests covering admin authorization, category controls, user status governance, session invalidation, and platform metrics.
 
 ## Partially Completed Features
 - None.
 
 ## Not Started Features
-- Operational Admin Panel user toggle & category controls (Phase 7)
 - Accessibility controls & advanced UX (Phase 8)
 
 ## Known Bugs
@@ -123,10 +82,10 @@ None.
 - Real banking integrations are intentionally absent per SRS (strictly manual entry / CSV imports).
 - Financial values are stored as `DECIMAL(10,2)` and manipulated with BCMath to prevent floating-point inaccuracies.
 - Spending data is calculated directly from actual ledger expenses rather than cached in the budget table.
-- AI categorization is purely advisory; manual category selection is always authoritative. External AI calls require `AI_API_KEY`, otherwise automatic deterministic heuristic fallback applies seamlessly with 0 configuration.
+- AI categorization is purely advisory; manual category selection is always authoritative.
 
 ## Current Database State
-- Database `campus_coin` active on MySQL/MariaDB `127.0.0.1:3306`.
+- Database `campus_coin` active on MySQL/MariaDB `127.0.0.1:3306` (SQLite in-memory for testing).
 - Tables migrated: `users`, `password_reset_tokens`, `sessions`, `cache`, `jobs`, `categories`, `transactions`, `budgets`, `saving_tips`, `category_learnings`.
 - Default credentials active:
   - Admin: `admin@campuscoin.edu` / `AdminSecure123!`
@@ -136,8 +95,8 @@ None.
 - Sample transactions seeded for Alex Rivera.
 
 ## Current Test Status
-- 111 tests, 541 assertions passing at 100% (`php artisan test`).
+- 139 tests, 648 assertions passing at 100% (`php artisan test`).
 
 ## Immediate Next Task
-- **Phase 7 — Operational Admin Panel & Category Controls:**
-  - Implement system-wide category CRUD, student account management (status active/disabled), and platform telemetry metrics.
+- **Phase 8 — Accessibility Controls & Final Hardening:**
+  - System-wide contrast verification, keyboard accessibility, font-size adjustments, theme preference persistence, and final production readiness.

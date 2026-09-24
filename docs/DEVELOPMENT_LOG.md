@@ -256,5 +256,46 @@
 - Executed `php artisan test` — all 92 tests passed with 459 assertions in 17.43s.
 
 ### Next
-- **Phase 7 — Operational Admin Panel & Category Controls:**
-  - Build administrative views for managing global categories, reviewing system usage statistics, and toggling user account status.
+- **Phase 7 — Operational Admin Panel & Category Controls:** (COMPLETED)
+
+---
+
+## [Phase 7] Operational Admin Panel & Category Controls — 2026-09-24
+
+### Completed
+- **Database Schema Enhancements:**
+  - Created migration `2026_09_24_080511_add_is_active_to_categories_table.php` adding indexed `is_active` (`boolean`, default `true`) to `categories` table.
+  - Updated `Category` model with `$fillable`, `$casts`, `scopeActive()`, and `canBeSafelyDeleted()` helper preventing destruction of referenced categories.
+  - Updated `CategoryFactory` with `inactive()` state method.
+- **Security & Authorization Hardening:**
+  - Registered `EnsureUserIsActive::class` in the global `web` middleware pipeline in `bootstrap/app.php`.
+  - Updated `EnsureUserIsActive` to invalidate session, regenerate CSRF token, and return 403 on JSON/Livewire or redirect on web requests.
+  - Implemented `User::deactivate()` with automated purging of active user records in the `sessions` database table, terminating concurrent sessions immediately.
+  - Implemented component-level lifecycle guards in `boot()` across all admin Livewire components.
+  - Restricted admin status toggling so administrators cannot deactivate their own root accounts or alter root roles.
+- **Operational Platform Telemetry Engine (`AdminMetricsService`):**
+  - High-performance, single-pass SQL aggregates calculating student counts, active rate (%), gross ledger volume, expense vs income flows, average transaction ticket size, global vs personal category distribution, and active budget totals.
+  - Implemented the SRS-mandated Most-Used Categories leaderboard grouping transactions by category with frequency and volume share.
+  - Implemented student demographic cohort distribution and 30-day activity velocity metrics.
+  - Strictly protected student financial privacy by restricting telemetry to aggregates without exposing private personal notes.
+- **Admin Livewire Components & Interface:**
+  - `App\Livewire\Admin\Dashboard` (`/admin/dashboard`): 4 primary telemetry KPI cards, Most-Used Categories leaderboard, cohort distribution, and recent registrations table with inline status toggles.
+  - `App\Livewire\Admin\CategoryManager` (`/admin/categories`): Global system default category creation, category editing, status toggles (active/inactive), safe deletion guards, and segmented scope tabs (Global Defaults vs Student Custom vs All).
+  - `App\Livewire\Admin\UserManager` (`/admin/users`): Student account list, search by name/email, cohort and status filtering, activity sorting, account status toggling (deactivate/reactivate), inspection drawer, and financial baseline reset.
+- **Navigation & Layout Updates:**
+  - Updated `resources/views/layouts/admin.blade.php` and `resources/views/components/layouts/admin.blade.php` with named route navigation (`admin.dashboard`, `admin.users`, `admin.categories`) and active state styling.
+  - Added missing Lucide line icons (`edit`, `trash-2`, `x`, `check`, `info`, `alert-triangle`, `power`, `eye`, `user-x`, `user-check`) to `resources/views/components/icon.blade.php`.
+- **Student Dropdown Protection:**
+  - Updated student `TransactionList.php` and `BudgetManager.php` to filter by `active()` categories for new entries, preventing selection of deactivated categories while maintaining full historical ledger readability.
+- **Automated Testing (`tests/Feature/AdminManagementTest.php`):**
+  - 28 comprehensive feature tests covering unauthenticated guest redirection, student 403 authorization guards, Livewire mutation protection, admin access, category listing, global category creation & uniqueness, category editing, active/inactive toggling, student dropdown hiding, historical transaction integrity, safe deletion blocking referenced categories, safe deletion permitting unreferenced categories, student account search and cohort filtering, account inspection drawer, account deactivation/reactivation, session record termination on deactivation, middleware logout of disabled students, self-deactivation prevention, student baseline resetting, operational metrics accuracy, zero-state crash safety, and most-used categories ranking.
+  - Full suite passed: **139 tests, 648 assertions** (100% pass rate).
+
+### Verified
+- Executed `vendor/bin/pint --dirty --format agent` — all modified PHP files passed clean formatting.
+- Executed `npm run build` — compiled all frontend assets cleanly in 1.81s with 0 errors.
+- Executed `php artisan test --compact` — all 139 tests passed with 648 assertions in 10.38s.
+
+### Next
+- **Phase 8 — Accessibility Controls & Final Hardening:**
+  - Implement system-wide dark/light theme persistence, WCAG contrast verification, font size scaling, keyboard navigation, and final production readiness.
