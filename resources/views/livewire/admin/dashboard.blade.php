@@ -1,24 +1,24 @@
 <div class="space-y-6">
     <!-- Feedback Alerts -->
     @if ($feedbackMessage)
-        <div role="status" aria-live="polite" class="p-4 rounded-[10px] border hairline-border bg-[var(--success-tint)] text-[var(--success)] text-xs flex items-center justify-between shadow-tactile-sm">
+        <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-[var(--accent)] text-xs flex items-center justify-between">
             <div class="flex items-center gap-2.5">
-                <x-icon name="check-circle-2" class="w-4 h-4 text-[var(--success)] shrink-0" />
+                <x-icon name="check-circle-2" class="w-4 h-4 text-[var(--accent)] shrink-0" />
                 <span class="font-medium">{{ $feedbackMessage }}</span>
             </div>
-            <button wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="btn-icon !w-6 !h-6 text-[var(--success)] hover:bg-[var(--success-hover)] hover:text-white transition-colors">
+            <button wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="btn-icon w-6 h-6 border-none">
                 <x-icon name="x" class="w-3.5 h-3.5" />
             </button>
         </div>
     @endif
 
     @if ($errorMessage)
-        <div role="alert" aria-live="assertive" class="p-4 rounded-[10px] border hairline-border bg-[var(--danger-tint)] text-[var(--danger)] text-xs flex items-center justify-between shadow-tactile-sm">
+        <div role="alert" aria-live="assertive" class="p-4 border border-[var(--expense)] bg-[var(--paper)] text-[var(--expense)] text-xs flex items-center justify-between">
             <div class="flex items-center gap-2.5">
-                <x-icon name="shield-alert" class="w-4 h-4 text-[var(--danger)] shrink-0" />
+                <x-icon name="shield-alert" class="w-4 h-4 text-[var(--expense)] shrink-0" />
                 <span class="font-medium">{{ $errorMessage }}</span>
             </div>
-            <button wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="btn-icon !w-6 !h-6 text-[var(--danger)] hover:bg-[var(--danger-hover)] hover:text-white transition-colors">
+            <button wire:click="$set('errorMessage', null)" aria-label="Dismiss error message" class="btn-icon w-6 h-6 border-none">
                 <x-icon name="x" class="w-3.5 h-3.5" />
             </button>
         </div>
@@ -27,18 +27,18 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b hairline-border">
         <div>
-            <h1 class="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">System Operations & Metric Telemetry</h1>
-            <p class="text-xs sm:text-sm text-[var(--text-muted)] mt-1">Platform-level student governance, global category administration, and operational metrics</p>
+            <h1 class="font-display text-2xl sm:text-3xl font-medium tracking-tight text-[var(--ink)] headline-rule">System Operations & Metric Telemetry</h1>
+            <p class="text-xs sm:text-sm text-[var(--muted)] mt-1.5">Platform-level student governance, global category administration, and operational metrics</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-            <a href="{{ route('admin.categories') }}" class="btn-secondary !text-xs !min-h-[38px] !py-2 !px-3.5 inline-flex items-center gap-1.5">
-                <x-icon name="tag" class="w-3.5 h-3.5 text-[var(--gold)]" />
-                Manage Categories
-            </a>
-            <a href="{{ route('admin.users') }}" class="btn-primary !text-xs !min-h-[38px] !py-2 !px-3.5 inline-flex items-center gap-1.5">
-                <x-icon name="users" class="w-3.5 h-3.5 text-white" />
-                Student Governance
-            </a>
+            <x-button variant="secondary" href="{{ route('admin.categories') }}">
+                <x-icon name="tag" class="w-3.5 h-3.5" />
+                <span>Manage Categories</span>
+            </x-button>
+            <x-button variant="accent" href="{{ route('admin.users') }}">
+                <x-icon name="users" class="w-3.5 h-3.5" />
+                <span>Student Governance</span>
+            </x-button>
         </div>
     </div>
 
@@ -46,61 +46,61 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border hairline-border bg-[var(--panel)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--hairline)]">
         <!-- Students Metric -->
         <div class="p-5 space-y-3">
-            <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+            <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Total Students</span>
             </div>
-            <div class="font-mono text-3xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">
+            <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--ink)] tabular-nums tracking-tight">
                 {{ number_format($metrics['students']['total']) }}
             </div>
-            <div class="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2 border-t hairline-border">
-                <span>{{ $metrics['students']['active'] }} active <span class="text-[11px] opacity-80">({{ $metrics['students']['active_percentage'] }}%)</span></span>
+            <div class="flex items-center justify-between text-[11px] font-mono text-[var(--muted)] pt-2 border-t hairline-border">
+                <span>{{ $metrics['students']['active'] }} active <span class="opacity-80">({{ $metrics['students']['active_percentage'] }}%)</span></span>
                 @if($metrics['students']['disabled'] > 0)
-                    <span class="text-[var(--danger)] font-mono font-semibold">{{ $metrics['students']['disabled'] }} disabled</span>
+                    <span class="text-[var(--expense)] font-medium">{{ $metrics['students']['disabled'] }} disabled</span>
                 @else
-                    <span class="text-[var(--success)] font-mono">0 disabled</span>
+                    <span class="text-[var(--accent)]">0 disabled</span>
                 @endif
             </div>
         </div>
 
         <!-- Platform Ledger Volume -->
         <div class="p-5 space-y-3">
-            <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+            <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Tracked Ledger Volume</span>
             </div>
-            <div class="font-mono text-3xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">
+            <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--ink)] tabular-nums tracking-tight">
                 ${{ number_format((float) $metrics['transactions']['total_volume'], 2) }}
             </div>
-            <div class="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2 border-t hairline-border">
-                <span class="text-[var(--danger)] font-mono font-medium">-${{ number_format((float) $metrics['transactions']['expense_volume'], 2) }} Out</span>
-                <span class="text-[var(--success)] font-mono font-medium">+${{ number_format((float) $metrics['transactions']['income_volume'], 2) }} In</span>
+            <div class="flex items-center justify-between text-[11px] font-mono text-[var(--muted)] pt-2 border-t hairline-border">
+                <span class="text-[var(--expense)] font-medium">-${{ number_format((float) $metrics['transactions']['expense_volume'], 2) }} Out</span>
+                <span class="text-[var(--accent)] font-medium">+${{ number_format((float) $metrics['transactions']['income_volume'], 2) }} In</span>
             </div>
         </div>
 
         <!-- Ledger Transactions Count -->
         <div class="p-5 space-y-3">
-            <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+            <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Logged Transactions</span>
             </div>
-            <div class="font-mono text-3xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">
+            <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--ink)] tabular-nums tracking-tight">
                 {{ number_format($metrics['transactions']['total_count']) }}
             </div>
-            <div class="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2 border-t hairline-border">
+            <div class="flex items-center justify-between text-[11px] font-mono text-[var(--muted)] pt-2 border-t hairline-border">
                 <span>Avg: ${{ $metrics['transactions']['avg_amount'] }}</span>
-                <span class="font-mono text-[var(--accent-primary)] font-medium">{{ $metrics['transactions']['recent_30d_count'] }} in 30d</span>
+                <span class="text-[var(--accent)] font-medium">{{ $metrics['transactions']['recent_30d_count'] }} in 30d</span>
             </div>
         </div>
 
         <!-- Category & Budget Coverage -->
         <div class="p-5 space-y-3">
-            <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+            <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Category Governance</span>
             </div>
-            <div class="font-mono text-3xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">
-                {{ $metrics['categories']['global'] }} <span class="text-sm font-normal text-[var(--text-muted)]">Global / {{ $metrics['categories']['personal'] }} Pers.</span>
+            <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--ink)] tabular-nums tracking-tight">
+                {{ $metrics['categories']['global'] }} <span class="text-sm font-normal text-[var(--muted)]">Global / {{ $metrics['categories']['personal'] }} Pers.</span>
             </div>
-            <div class="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2 border-t hairline-border">
+            <div class="flex items-center justify-between text-[11px] font-mono text-[var(--muted)] pt-2 border-t hairline-border">
                 <span>{{ $metrics['categories']['active'] }} active</span>
-                <span class="font-mono text-[var(--text-primary)]">{{ $metrics['budgets']['total_budgets'] }} budgets set</span>
+                <span class="text-[var(--ink)]">{{ $metrics['budgets']['total_budgets'] }} budgets set</span>
             </div>
         </div>
     </div>
@@ -111,51 +111,50 @@
         <div class="lg:col-span-7 card-campus p-6 space-y-4">
             <div class="flex items-center justify-between pb-3 border-b hairline-border">
                 <div>
-                    <h2 class="font-heading text-base font-bold text-[var(--text-primary)]">Most-Used Categories</h2>
-                    <p class="text-xs text-[var(--text-muted)]">System-wide transaction frequency and volume distribution</p>
+                    <h2 class="font-display text-base font-medium text-[var(--ink)]">Most-Used Categories</h2>
+                    <p class="text-xs text-[var(--muted)] mt-0.5">System-wide transaction frequency and volume distribution</p>
                 </div>
-                <a href="{{ route('admin.categories') }}" class="text-xs font-mono text-[var(--accent-primary)] hover:underline inline-flex items-center gap-1 font-medium">
-                    Manage All
-                    <x-icon name="arrow-right" class="w-3.5 h-3.5" />
+                <a href="{{ route('admin.categories') }}" class="text-xs font-sans text-[var(--accent)] hover:underline inline-flex items-center gap-1 font-medium">
+                    Manage All &rarr;
                 </a>
             </div>
 
             @if(count($metrics['categories']['most_used']) > 0)
                 <div class="overflow-x-auto border hairline-border">
-                    <table class="w-full text-xs text-left">
-                        <thead class="font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)] border-b hairline-border">
+                    <table class="ledger-table w-full text-xs text-left">
+                        <thead>
                             <tr>
-                                <th scope="col" class="p-3">Category</th>
-                                <th scope="col" class="p-3">Type</th>
-                                <th scope="col" class="p-3 text-right">Transactions</th>
-                                <th scope="col" class="p-3 text-right">Volume</th>
-                                <th scope="col" class="p-3 text-right">Share</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Type</th>
+                                <th scope="col" class="text-right">Transactions</th>
+                                <th scope="col" class="text-right">Volume</th>
+                                <th scope="col" class="text-right">Share</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y hairline-border bg-[var(--bg-surface)]">
+                        <tbody>
                             @foreach($metrics['categories']['most_used'] as $cat)
                                 <tr class="table-row-tactile">
-                                    <td class="p-3">
+                                    <td>
                                         <div class="flex items-center gap-2.5">
-                                            <span class="status-dot w-3 h-3 shrink-0" style="background-color: {{ $cat['color'] }}"></span>
-                                            <span class="font-medium text-[var(--text-primary)]">{{ $cat['name'] }}</span>
+                                            <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $cat['color'] }}"></span>
+                                            <span class="font-medium text-[var(--ink)]">{{ $cat['name'] }}</span>
                                             @if($cat['is_default'])
-                                                <span class="px-1.5 py-0.5 text-[10px] font-mono bg-[var(--bg-subtle)] text-[var(--accent-primary)] font-medium">Default</span>
+                                                <span class="px-1.5 py-0.5 text-[10px] font-caps border hairline-border text-[var(--accent)]">Default</span>
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="p-3">
-                                        <span class="badge-campus {{ $cat['type'] === 'income' ? 'bg-[var(--success-tint)] text-[var(--success)]' : 'bg-[var(--danger-tint)] text-[var(--danger)]' }}">
+                                    <td>
+                                        <x-badge :variant="$cat['type'] === 'income' ? 'income' : 'expense'">
                                             {{ ucfirst($cat['type']) }}
-                                        </span>
+                                        </x-badge>
                                     </td>
-                                    <td class="p-3 text-right font-mono tabular-nums text-[var(--text-primary)] font-medium">
+                                    <td class="text-right font-mono tabular-nums text-[var(--ink)] font-medium">
                                         {{ number_format($cat['count']) }}
                                     </td>
-                                    <td class="p-3 text-right font-mono tabular-nums text-[var(--text-primary)] font-bold">
+                                    <td class="text-right font-mono tabular-nums text-[var(--ink)] font-medium">
                                         ${{ number_format((float) $cat['volume'], 2) }}
                                     </td>
-                                    <td class="p-3 text-right font-mono tabular-nums text-[var(--text-muted)]">
+                                    <td class="text-right font-mono tabular-nums text-[var(--muted)]">
                                         {{ $cat['percentage'] }}%
                                     </td>
                                 </tr>
@@ -164,8 +163,8 @@
                     </table>
                 </div>
             @else
-                <div class="py-12 text-center text-xs text-[var(--text-muted)] metric-tile">
-                    <x-icon name="tag" class="w-6 h-6 mx-auto mb-2 opacity-50" />
+                <div class="py-12 text-center text-xs text-[var(--muted)] border border-dashed hairline-border">
+                    <x-icon name="tag" class="w-6 h-6 mx-auto mb-2 text-[var(--muted)]" />
                     No transactions recorded across the platform yet.
                 </div>
             @endif
@@ -174,46 +173,46 @@
         <!-- Student Cohorts & Allowance Baseline -->
         <div class="lg:col-span-5 card-campus p-6 space-y-4">
             <div class="pb-3 border-b hairline-border">
-                <h2 class="font-heading text-base font-bold text-[var(--text-primary)]">Student Demographics & Commitments</h2>
-                <p class="text-xs text-[var(--text-muted)]">Cohort representation and baseline stipends</p>
+                <h2 class="font-display text-base font-medium text-[var(--ink)]">Student Demographics & Commitments</h2>
+                <p class="text-xs text-[var(--muted)] mt-0.5">Cohort representation and baseline stipends</p>
             </div>
 
             <div class="space-y-3">
-                <div class="metric-tile flex items-center justify-between p-3.5">
+                <div class="border hairline-border bg-[var(--paper)] flex items-center justify-between p-3.5">
                     <div>
-                        <div class="text-[11px] font-mono uppercase text-[var(--text-muted)]">Total Monthly Baseline Stipend</div>
-                        <div class="text-[11px] text-[var(--text-muted)]">Aggregated student allowance</div>
+                        <div class="text-[11px] font-caps text-[var(--muted)]">Total Monthly Baseline Stipend</div>
+                        <div class="text-[11px] text-[var(--muted)]">Aggregated student allowance</div>
                     </div>
-                    <span class="font-mono font-bold text-base text-[var(--text-primary)] tabular-nums">
+                    <span class="font-mono font-medium text-base text-[var(--ink)] tabular-nums">
                         ${{ number_format((float) $metrics['students']['total_monthly_allowance'], 2) }}
                     </span>
                 </div>
-                <div class="metric-tile flex items-center justify-between p-3.5">
+                <div class="border hairline-border bg-[var(--paper)] flex items-center justify-between p-3.5">
                     <div>
-                        <div class="text-[11px] font-mono uppercase text-[var(--text-muted)]">Total Monthly Savings Targets</div>
-                        <div class="text-[11px] text-[var(--text-muted)]">Aggregated goals commit</div>
+                        <div class="text-[11px] font-caps text-[var(--muted)]">Total Monthly Savings Targets</div>
+                        <div class="text-[11px] text-[var(--muted)]">Aggregated goals commit</div>
                     </div>
-                    <span class="font-mono font-bold text-base text-[var(--success)] tabular-nums">
+                    <span class="font-mono font-medium text-base text-[var(--accent)] tabular-nums">
                         ${{ number_format((float) $metrics['students']['total_savings_goal'], 2) }}
                     </span>
                 </div>
             </div>
 
             <div class="pt-2">
-                <h3 class="text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-3">Cohort Enrollment Distribution</h3>
+                <h3 class="text-xs font-caps text-[var(--muted)] mb-3">Cohort Enrollment Distribution</h3>
                 <div class="space-y-2.5">
                     @forelse($metrics['students']['cohort_distribution'] as $cohort => $count)
-                        <div class="p-2.5 bg-[var(--bg-subtle)] border-b hairline-border flex items-center justify-between text-xs">
-                            <span class="font-medium text-[var(--text-primary)]">{{ $cohort }}</span>
+                        <div class="p-2.5 bg-[var(--paper)] border hairline-border flex items-center justify-between text-xs">
+                            <span class="font-medium text-[var(--ink)]">{{ $cohort }}</span>
                             <div class="flex items-center gap-3">
-                                <span class="font-mono tabular-nums text-[var(--text-muted)]">{{ $count }} student{{ $count > 1 ? 's' : '' }}</span>
-                                <div class="w-20 h-2 bg-[var(--bg-surface)] overflow-hidden">
-                                    <div class="h-full bg-[var(--accent-primary)] transition-all" style="width: {{ $metrics['students']['total'] > 0 ? ($count / $metrics['students']['total']) * 100 : 0 }}%"></div>
+                                <span class="font-mono tabular-nums text-[var(--muted)]">{{ $count }} student{{ $count > 1 ? 's' : '' }}</span>
+                                <div class="w-20 h-2 bg-[var(--panel)] border hairline-border overflow-hidden">
+                                    <div class="h-full bg-[var(--accent)] transition-all" style="width: {{ $metrics['students']['total'] > 0 ? ($count / $metrics['students']['total']) * 100 : 0 }}%"></div>
                                 </div>
                             </div>
                         </div>
                     @empty
-                        <div class="text-xs text-[var(--text-muted)] py-4 text-center">No cohort data available.</div>
+                        <div class="text-xs text-[var(--muted)] py-4 text-center">No cohort data available.</div>
                     @endforelse
                 </div>
             </div>
@@ -224,76 +223,68 @@
     <div class="card-campus p-6 space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b hairline-border">
             <div>
-                <h2 class="font-heading text-base font-bold text-[var(--text-primary)]">Recent Registered Campus Accounts</h2>
-                <p class="text-xs text-[var(--text-muted)]">Latest student signups with active status and quick administrative actions</p>
+                <h2 class="font-display text-base font-medium text-[var(--ink)]">Recent Registered Campus Accounts</h2>
+                <p class="text-xs text-[var(--muted)] mt-0.5">Latest student signups with active status and quick administrative actions</p>
             </div>
-            <a href="{{ route('admin.users') }}" class="text-xs font-mono text-[var(--accent-primary)] hover:underline inline-flex items-center gap-1 font-medium">
-                View All Accounts
-                <x-icon name="arrow-right" class="w-3.5 h-3.5" />
+            <a href="{{ route('admin.users') }}" class="text-xs font-sans text-[var(--accent)] hover:underline inline-flex items-center gap-1 font-medium">
+                View All Accounts &rarr;
             </a>
         </div>
 
         <div class="overflow-x-auto border hairline-border">
-            <table class="w-full text-xs text-left">
-                <thead class="font-mono uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-subtle)] border-b hairline-border">
+            <table class="ledger-table w-full text-xs text-left">
+                <thead>
                     <tr>
-                        <th scope="col" class="p-3">Student</th>
-                        <th scope="col" class="p-3">Cohort</th>
-                        <th scope="col" class="p-3 text-right">Baseline Stipend</th>
-                        <th scope="col" class="p-3 text-center">Transactions</th>
-                        <th scope="col" class="p-3 text-center">Budgets</th>
-                        <th scope="col" class="p-3">Status</th>
-                        <th scope="col" class="p-3">Registered</th>
-                        <th scope="col" class="p-3 text-right">Action</th>
+                        <th scope="col">Student</th>
+                        <th scope="col">Cohort</th>
+                        <th scope="col" class="text-right">Baseline Stipend</th>
+                        <th scope="col" class="text-center">Transactions</th>
+                        <th scope="col" class="text-center">Budgets</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Registered</th>
+                        <th scope="col" class="text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y hairline-border bg-[var(--bg-surface)]">
+                <tbody>
                     @forelse($recentStudents as $student)
                         <tr class="table-row-tactile">
-                            <td class="p-3">
-                                <div class="font-medium text-[var(--text-primary)]">{{ $student->name }}</div>
-                                <div class="font-mono text-[11px] text-[var(--text-muted)]">{{ $student->email }}</div>
+                            <td>
+                                <div class="font-medium text-[var(--ink)]">{{ $student->name }}</div>
+                                <div class="font-mono text-[11px] text-[var(--muted)]">{{ $student->email }}</div>
                             </td>
-                            <td class="p-3 font-mono text-[var(--text-muted)]">
+                            <td class="font-mono text-[var(--muted)]">
                                 {{ $student->academic_year ?? 'Unspecified' }}
                             </td>
-                            <td class="p-3 font-mono tabular-nums text-right text-[var(--text-primary)] font-semibold">
+                            <td class="font-mono tabular-nums text-right text-[var(--ink)] font-medium">
                                 ${{ number_format($student->monthly_allowance, 2) }}
                             </td>
-                            <td class="p-3 font-mono tabular-nums text-center text-[var(--text-muted)]">
+                            <td class="font-mono tabular-nums text-center text-[var(--muted)]">
                                 {{ $student->transactions_count }}
                             </td>
-                            <td class="p-3 font-mono tabular-nums text-center text-[var(--text-muted)]">
+                            <td class="font-mono tabular-nums text-center text-[var(--muted)]">
                                 {{ $student->budgets_count }}
                             </td>
-                            <td class="p-3">
-                                @if($student->isActive())
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono bg-[var(--success-tint)] text-[var(--success)] font-medium">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[var(--success)]"></span>
-                                        Active
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono bg-[var(--danger-tint)] text-[var(--danger)] font-medium">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[var(--danger)]"></span>
-                                        Disabled
-                                    </span>
-                                @endif
+                            <td>
+                                <x-badge :variant="$student->isActive() ? 'income' : 'expense'">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $student->isActive() ? 'bg-[var(--accent)]' : 'bg-[var(--expense)]' }}"></span>
+                                    <span>{{ $student->isActive() ? 'Active' : 'Disabled' }}</span>
+                                </x-badge>
                             </td>
-                            <td class="p-3 font-mono text-[var(--text-muted)]">
+                            <td class="font-mono text-[var(--muted)]">
                                 {{ $student->created_at->format('Y-m-d') }}
                             </td>
-                            <td class="p-3 text-right">
+                            <td class="text-right">
                                 <button wire:click="toggleStudentStatus({{ $student->id }})" 
                                         aria-label="{{ $student->isActive() ? 'Deactivate student account for ' . $student->name : 'Reactivate student account for ' . $student->name }}"
                                         wire:confirm="{{ $student->isActive() ? 'Are you sure you want to deactivate ' . $student->name . '? Their active sessions will be terminated immediately.' : 'Reactivate account for ' . $student->name . '?' }}"
-                                        class="px-2.5 py-1 rounded-[6px] text-xs font-mono border hairline-border transition-colors {{ $student->isActive() ? 'text-[var(--danger)] hover:bg-[var(--danger-tint)]' : 'text-[var(--success)] hover:bg-[var(--success-tint)]' }}">
+                                        class="px-2.5 py-1 text-xs font-mono border hairline-border transition-colors {{ $student->isActive() ? 'text-[var(--expense)] border-[var(--hairline)] hover:border-[var(--expense)]' : 'text-[var(--accent)] border-[var(--hairline)] hover:border-[var(--accent)]' }}">
                                     {{ $student->isActive() ? 'Deactivate' : 'Reactivate' }}
                                 </button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="p-8 text-center text-xs text-[var(--text-muted)]">
+                            <td colspan="8" class="p-8 text-center text-xs text-[var(--muted)]">
                                 No registered students found in the database.
                             </td>
                         </tr>
