@@ -39,7 +39,7 @@
 
     <div class="min-h-full flex" x-data="{ mobileNavOpen: false }">
         <!-- Sidebar for Desktop (Fixed 240px dark sidebar per §3) -->
-        <aside class="sidebar-shell hidden md:flex md:w-[240px] md:flex-col border-r hairline-border bg-[var(--ink)] text-[var(--paper)] shrink-0" aria-label="Student Sidebar Navigation">
+        <aside class="sidebar-shell hidden md:sticky md:top-0 md:h-screen md:flex md:w-[240px] md:flex-col border-r hairline-border bg-[var(--ink)] text-[var(--paper)] shrink-0" aria-label="Student Sidebar Navigation">
             <div class="p-6 border-b border-[#3A362C] flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-[var(--accent)] flex items-center justify-center text-[var(--paper)] font-display font-medium text-sm" aria-hidden="true">
@@ -96,7 +96,7 @@
                 <div class="flex items-center justify-between mb-3">
                     <div class="min-w-0 pr-2">
                         <div class="text-xs font-medium text-[var(--paper)] truncate">{{ Auth::user()->name }}</div>
-                        <div class="text-[11px] font-mono text-[#8F8D80]">{{ Auth::user()->academic_year ?? 'Student' }} &bull; Active</div>
+                        <div class="text-[11px] font-mono text-[#8F8D80]">{{ Auth::user()->academic_year ?? 'Student' }} Cohort &bull; Active</div>
                     </div>
                     <span class="badge badge-secondary shrink-0 text-[10px]">
                         {{ Auth::user()->role }}
@@ -200,7 +200,7 @@
                     <div class="flex items-center justify-between mb-3">
                         <div class="min-w-0 pr-2">
                             <div class="text-xs font-medium text-[var(--paper)] truncate">{{ Auth::user()->name }}</div>
-                            <div class="text-[11px] font-mono text-[#8F8D80]">{{ Auth::user()->academic_year ?? 'Student' }} &bull; Active</div>
+                            <div class="text-[11px] font-mono text-[#8F8D80]">{{ Auth::user()->academic_year ?? 'Student' }} Cohort &bull; Active</div>
                         </div>
                         <span class="badge badge-secondary text-[10px]">
                             {{ Auth::user()->role }}
