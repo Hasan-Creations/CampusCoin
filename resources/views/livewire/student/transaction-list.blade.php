@@ -118,7 +118,7 @@
             <div class="border border-dashed hairline-border p-12 text-center space-y-3 bg-[var(--panel)]">
                 @if ($totalCount === 0)
                     <!-- SRS Exact Empty State: NO TRANSACTIONS RECORDED YET -->
-                    <h2 class="font-heading text-base font-bold text-[var(--ink)] uppercase tracking-wide">
+                    <h2 class="font-display text-base font-medium text-[var(--ink)] uppercase tracking-wide">
                         NO TRANSACTIONS RECORDED YET
                     </h2>
                     <p class="text-xs text-[var(--muted)] max-w-sm mx-auto">
@@ -128,7 +128,7 @@
                         Add First Transaction
                     </x-button>
                 @else
-                    <h2 class="font-heading text-base font-bold text-[var(--ink)] uppercase tracking-wide">
+                    <h2 class="font-display text-base font-medium text-[var(--ink)] uppercase tracking-wide">
                         NO TRANSACTIONS MATCHING QUERY
                     </h2>
                     <p class="text-xs text-[var(--muted)] max-w-sm mx-auto">
@@ -140,173 +140,222 @@
                 @endif
             </div>
         @else
-            <x-ledger-table class="text-left">
-                <x-slot:head>
-                    <tr>
-                                <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('transaction_date')" aria-sort="{{ $sortBy === 'transaction_date' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                                    <div class="flex items-center gap-1.5">
-                                        <span>Date</span>
-                                        @if ($sortBy === 'transaction_date')
-                                            <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
-                                        @endif
-                                    </div>
-                                </th>
-                                <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('merchant')" aria-sort="{{ $sortBy === 'merchant' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                                    <div class="flex items-center gap-1.5">
-                                        <span>Merchant / Description</span>
-                                        @if ($sortBy === 'merchant')
-                                            <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
-                                        @endif
-                                    </div>
-                                </th>
-                                <th scope="col">Category</th>
-                                <th scope="col">Method</th>
-                                <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('type')" aria-sort="{{ $sortBy === 'type' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                                    <div class="flex items-center gap-1.5">
-                                        <span>Type</span>
-                                        @if ($sortBy === 'type')
-                                            <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
-                                        @endif
-                                    </div>
-                                </th>
-                                <th scope="col" class="text-right cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('amount')" aria-sort="{{ $sortBy === 'amount' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                                    <div class="flex items-center justify-end gap-1.5">
-                                        <span>Amount</span>
-                                        @if ($sortBy === 'amount')
-                                            <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
-                                        @endif
-                                    </div>
-                                </th>
-                                <th scope="col" class="text-center">Actions</th>
-                    </tr>
-                </x-slot:head>
+            <!-- Mobile view (< 640px) -->
+            <div class="sm:hidden space-y-3">
                 @foreach ($transactions as $t)
-                    <tr class="table-row-tactile">
-                                    <!-- Date -->
-                                    <td class="font-mono text-xs tabular-nums text-[var(--muted)] whitespace-nowrap">
-                                        {{ $t->transaction_date->format('M d, Y') }}
-                                    </td>
+                    <div class="bg-[var(--panel)] border hairline-border p-4 space-y-3">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0 flex-1">
+                                <div class="font-medium text-xs text-[var(--ink)] truncate">
+                                    {{ $t->merchant }}
+                                    @if ($t->is_recurring)
+                                        <span class="inline-block ml-1 text-[10px] font-mono text-[var(--secondary)]">
+                                            [Recurring]
+                                        </span>
+                                    @endif
+                                </div>
+                                @if ($t->description)
+                                    <div class="text-[11px] text-[var(--muted)] truncate mt-0.5">
+                                        {{ $t->description }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="text-right font-mono text-xs font-medium tabular-nums whitespace-nowrap {{ $t->isIncome() ? 'text-[var(--accent)]' : 'text-[var(--ink)]' }}">
+                                {{ $t->formattedAmount() }}
+                            </div>
+                        </div>
 
-                                    <!-- Merchant / Description -->
-                                    <td>
-                                        <div class="font-medium text-xs text-[var(--ink)]">
-                                            {{ $t->merchant }}
-                                            @if ($t->is_recurring)
-                                                <span class="inline-block ml-1 text-[10px] font-mono text-[var(--secondary)]">
-                                                    [Recurring]
-                                                </span>
-                                            @endif
-                                        </div>
-                                        @if ($t->description)
-                                            <div class="text-[11px] text-[var(--muted)] truncate max-w-xs mt-0.5">
-                                                {{ $t->description }}
-                                            </div>
-                                        @endif
-                                    </td>
+                        <div class="flex items-center justify-between pt-2.5 border-t hairline-border text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-[11px] text-[var(--muted)]">
+                                    {{ $t->transaction_date->format('M d, Y') }}
+                                </span>
+                                <span class="text-[var(--muted)]">&bull;</span>
+                                @if ($t->category)
+                                    <span class="inline-flex items-center gap-1 text-[11px] text-[var(--ink)]">
+                                        <x-icon :name="$t->category->icon" class="w-3 h-3 text-[var(--muted)]" />
+                                        <span>{{ $t->category->name }}</span>
+                                    </span>
+                                @else
+                                    <span class="text-[var(--muted)] text-[11px] italic">Uncategorized</span>
+                                @endif
+                            </div>
 
-                                    <!-- Category -->
-                                    <td class="whitespace-nowrap">
-                                        @if ($t->category)
-                                            <span class="inline-flex items-center gap-1.5 text-xs font-sans text-[var(--ink)]">
-                                                <x-icon :name="$t->category->icon" class="w-3.5 h-3.5 text-[var(--muted)]" />
-                                                <span>{{ $t->category->name }}</span>
-                                            </span>
-                                            @if ($t->ai_suggested)
-                                                <span title="Categorized with AI Assistant"
-                                                      class="inline-flex items-center ml-1 px-1 py-0.5 border hairline-border text-[9px] font-caps text-[var(--accent)]">
-                                                    AI
-                                                </span>
-                                            @endif
-                                        @else
-                                            <span class="text-[var(--muted)] text-xs italic">Uncategorized</span>
-                                        @endif
-                                    </td>
-
-                                    <!-- Method -->
-                                    <td class="font-caps text-xs text-[var(--muted)] whitespace-nowrap">
-                                        {{ str_replace('_', ' ', $t->payment_method) }}
-                                    </td>
-
-                                    <!-- Type -->
-                                    <td class="whitespace-nowrap">
-                                        <x-badge :variant="$t->isIncome() ? 'income' : 'expense'">
-                                            {{ $t->type }}
-                                        </x-badge>
-                                    </td>
-
-                                    <!-- Amount (Right-aligned IBM Plex Mono per §2) -->
-                                    <td class="text-right font-mono text-xs font-medium tabular-nums whitespace-nowrap {{ $t->isIncome() ? 'text-[var(--accent)]' : 'text-[var(--ink)]' }}">
-                                        {{ $t->formattedAmount() }}
-                                    </td>
-
-                                    <!-- Actions -->
-                                    <td class="text-center whitespace-nowrap">
-                                        <div class="inline-flex items-center gap-1">
-                                            <button wire:click="openEditModal({{ $t->id }})" 
-                                                    title="Edit Transaction"
-                                                    class="btn-icon w-7 h-7">
-                                                <x-icon name="sliders" class="w-3 h-3" />
-                                            </button>
-                                            <button wire:click="deleteTransaction({{ $t->id }})" 
-                                                    wire:confirm="Remove this transaction permanently from your ledger?"
-                                                    title="Delete Transaction"
-                                                    class="btn-icon w-7 h-7 hover:text-[var(--expense)] hover:border-[var(--expense)]">
-                                                <x-icon name="trash-2" class="w-3 h-3" />
-                                            </button>
-                                        </div>
-                                    </td>
-                    </tr>
-                @endforeach
-
-                @if ($transactions->hasPages())
-                    <div class="p-4 border-t hairline-border bg-[var(--paper)]">
-                        {{ $transactions->links() }}
+                            <div class="flex items-center gap-2">
+                                <x-badge :variant="$t->isIncome() ? 'income' : 'expense'">
+                                    {{ $t->type }}
+                                </x-badge>
+                                <button wire:click="openEditModal({{ $t->id }})" 
+                                        title="Edit Transaction"
+                                        class="btn-icon w-6 h-6">
+                                    <x-icon name="sliders" class="w-3 h-3" />
+                                </button>
+                                <button wire:click="deleteTransaction({{ $t->id }})" 
+                                        wire:confirm="Remove this transaction permanently from your ledger?"
+                                        title="Delete Transaction"
+                                        class="btn-icon w-6 h-6 hover:text-[var(--expense)] hover:border-[var(--expense)]">
+                                    <x-icon name="trash-2" class="w-3 h-3" />
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                @endif
-            </x-ledger-table>
+                @endforeach
+            </div>
+
+            <!-- Desktop / Tablet Table (>= 640px) -->
+            <div class="hidden sm:block">
+                <x-ledger-table class="text-left">
+                    <x-slot:head>
+                        <tr>
+                            <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('transaction_date')" aria-sort="{{ $sortBy === 'transaction_date' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                <div class="flex items-center gap-1.5">
+                                    <span>Date</span>
+                                    @if ($sortBy === 'transaction_date')
+                                        <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                                    @endif
+                                </div>
+                            </th>
+                            <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('merchant')" aria-sort="{{ $sortBy === 'merchant' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                <div class="flex items-center gap-1.5">
+                                    <span>Merchant / Description</span>
+                                    @if ($sortBy === 'merchant')
+                                        <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                                    @endif
+                                </div>
+                            </th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Method</th>
+                            <th scope="col" class="cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('type')" aria-sort="{{ $sortBy === 'type' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                <div class="flex items-center gap-1.5">
+                                    <span>Type</span>
+                                    @if ($sortBy === 'type')
+                                        <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                                    @endif
+                                </div>
+                            </th>
+                            <th scope="col" class="text-right cursor-pointer hover:text-[var(--ink)] transition-colors select-none" wire:click="sortByColumn('amount')" aria-sort="{{ $sortBy === 'amount' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <span>Amount</span>
+                                    @if ($sortBy === 'amount')
+                                        <span class="text-[10px]" aria-hidden="true">{{ $sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                                    @endif
+                                </div>
+                            </th>
+                            <th scope="col" class="text-center">Actions</th>
+                        </tr>
+                    </x-slot:head>
+                    @foreach ($transactions as $t)
+                        <tr class="table-row-tactile">
+                            <!-- Date -->
+                            <td class="font-mono text-xs tabular-nums text-[var(--muted)] whitespace-nowrap">
+                                {{ $t->transaction_date->format('M d, Y') }}
+                            </td>
+
+                            <!-- Merchant / Description -->
+                            <td>
+                                <div class="font-medium text-xs text-[var(--ink)]">
+                                    {{ $t->merchant }}
+                                    @if ($t->is_recurring)
+                                        <span class="inline-block ml-1 text-[10px] font-mono text-[var(--secondary)]">
+                                            [Recurring]
+                                        </span>
+                                    @endif
+                                </div>
+                                @if ($t->description)
+                                    <div class="text-[11px] text-[var(--muted)] truncate max-w-xs mt-0.5">
+                                        {{ $t->description }}
+                                    </div>
+                                @endif
+                            </td>
+
+                            <!-- Category -->
+                            <td class="whitespace-nowrap">
+                                @if ($t->category)
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-sans text-[var(--ink)]">
+                                        <x-icon :name="$t->category->icon" class="w-3.5 h-3.5 text-[var(--muted)]" />
+                                        <span>{{ $t->category->name }}</span>
+                                    </span>
+                                    @if ($t->ai_suggested)
+                                        <span title="Categorized with AI Assistant"
+                                              class="inline-flex items-center ml-1 px-1 py-0.5 border hairline-border text-[9px] font-caps text-[var(--accent)]">
+                                            AI
+                                        </span>
+                                    @endif
+                                @else
+                                    <span class="text-[var(--muted)] text-xs italic">Uncategorized</span>
+                                @endif
+                            </td>
+
+                            <!-- Method -->
+                            <td class="font-caps text-xs text-[var(--muted)] whitespace-nowrap">
+                                {{ str_replace('_', ' ', $t->payment_method) }}
+                            </td>
+
+                            <!-- Type -->
+                            <td class="whitespace-nowrap">
+                                <x-badge :variant="$t->isIncome() ? 'income' : 'expense'">
+                                    {{ $t->type }}
+                                </x-badge>
+                            </td>
+
+                            <!-- Amount (Right-aligned IBM Plex Mono per §2) -->
+                            <td class="text-right font-mono text-xs font-medium tabular-nums whitespace-nowrap {{ $t->isIncome() ? 'text-[var(--accent)]' : 'text-[var(--ink)]' }}">
+                                {{ $t->formattedAmount() }}
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="text-center whitespace-nowrap">
+                                <div class="inline-flex items-center gap-1">
+                                    <button wire:click="openEditModal({{ $t->id }})" 
+                                            title="Edit Transaction"
+                                            class="btn-icon w-7 h-7">
+                                        <x-icon name="sliders" class="w-3 h-3" />
+                                    </button>
+                                    <button wire:click="deleteTransaction({{ $t->id }})" 
+                                            wire:confirm="Remove this transaction permanently from your ledger?"
+                                            title="Delete Transaction"
+                                            class="btn-icon w-7 h-7 hover:text-[var(--expense)] hover:border-[var(--expense)]">
+                                        <x-icon name="trash-2" class="w-3 h-3" />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </x-ledger-table>
+            </div>
+
+            @if ($transactions->hasPages())
+                <div class="p-4 border hairline-border bg-[var(--panel)]">
+                    {{ $transactions->links() }}
+                </div>
+            @endif
         @endif
 
         <!-- Quick-Add / Edit Transaction Modal -->
         @if ($showModal)
-            <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
-                 role="dialog"
-                 aria-modal="true"
-                 aria-labelledby="modal-transaction-title"
-                 x-data="{ 
-                     init() {
-                         this.$nextTick(() => {
-                             const input = this.$refs.amountInput;
-                             if (input) {
-                                 input.focus();
-                                 input.select();
-                             }
-                         });
-                     }
-                 }"
-                 @keydown.escape.window="$wire.closeModal()"
-                 @keydown.ctrl.enter.window="$wire.saveTransaction()"
-                 @keydown.meta.enter.window="$wire.saveTransaction()">
-                <div class="modal-dialog-surface border hairline-border w-full sm:max-w-[500px] p-6 sm:p-8 bg-[var(--panel)] shadow-panel max-h-[92vh] overflow-y-auto space-y-6"
-                     @click.away="$wire.closeModal()">
+            <x-modal :show="true" 
+                     :title="$editingId ? 'Edit Ledger Entry' : 'New Ledger Entry'" 
+                     titleId="modal-transaction-title" 
+                     maxWidth="md" 
+                     onClose="$wire.closeModal()">
+                <div x-data="{ 
+                         init() {
+                             this.$nextTick(() => {
+                                 const input = document.getElementById('quick-add-amount');
+                                 if (input) {
+                                     input.focus();
+                                     input.select();
+                                 }
+                             });
+                         }
+                     }"
+                     @keydown.ctrl.enter.window="$wire.saveTransaction()"
+                     @keydown.meta.enter.window="$wire.saveTransaction()"
+                     class="space-y-4">
                     
-                    <!-- Header -->
-                    <div class="flex items-start justify-between border-b hairline-border pb-4">
-                        <div>
-                            <h2 id="modal-transaction-title" class="font-display text-xl font-medium text-[var(--ink)]">
-                                {{ $editingId ? 'Edit Ledger Entry' : 'New Ledger Entry' }}
-                            </h2>
-                            <p class="text-xs text-[var(--muted)] mt-1 font-mono">
-                                Ctrl+Enter to save &bull; Esc to dismiss
-                            </p>
-                        </div>
-
-                        <button type="button" 
-                                wire:click="closeModal" 
-                                class="btn-icon"
-                                aria-label="Close modal">
-                            <x-icon name="x" class="w-4 h-4" />
-                        </button>
-                    </div>
+                    <p class="text-xs text-[var(--muted)] font-mono -mt-2 mb-2">
+                        Ctrl+Enter to save &bull; Esc to dismiss
+                    </p>
 
                     <form wire:submit.prevent="saveTransaction" 
                           @keydown.ctrl.enter.prevent="$wire.saveTransaction()"
@@ -331,10 +380,10 @@
 
                             <!-- Date Picker -->
                             <div class="w-36">
-                                <input wire:model.live="transaction_date" 
-                                       type="date" 
-                                       aria-label="Transaction Date"
-                                       class="field w-full text-xs font-mono py-2 px-2">
+                                <x-field wire:model.live="transaction_date" 
+                                         type="date" 
+                                         aria-label="Transaction Date"
+                                         class="text-xs font-mono py-2 px-2" />
                             </div>
                         </div>
 
@@ -343,16 +392,16 @@
                             <label for="quick-add-amount" class="block text-xs font-caps text-[var(--muted)] mb-1">
                                 Amount (USD) <span class="text-[var(--expense)]">*</span>
                             </label>
-                            <input wire:model="amount" 
-                                   id="quick-add-amount" 
-                                   x-ref="amountInput"
-                                   autofocus
-                                   type="number" 
-                                   step="0.01" 
-                                   min="0.01"
-                                   max="999999.99"
-                                   placeholder="0.00" 
-                                   class="field field-numeric w-full text-2xl font-mono py-2 px-3">
+                            <x-field wire:model="amount" 
+                                     id="quick-add-amount" 
+                                     type="number" 
+                                     numeric
+                                     step="0.01" 
+                                     min="0.01" 
+                                     max="999999.99" 
+                                     placeholder="0.00" 
+                                     class="text-2xl font-mono py-2 px-3"
+                                     :hasError="$errors->has('amount')" />
                             @error('amount') <span class="text-[var(--expense)] text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -404,11 +453,12 @@
                             <label for="merchant" class="block text-xs font-caps text-[var(--muted)] mb-1">
                                 {{ $type === 'income' ? 'Where is this from?' : 'Where did you spend it?' }} <span class="text-[var(--expense)]">*</span>
                             </label>
-                            <input wire:model.live.debounce.300ms="merchant" 
-                                   id="merchant" 
-                                   type="text" 
-                                   placeholder="{{ $type === 'income' ? 'e.g. Monthly Allowance, Freelance' : 'e.g. Canteen, Bookstore' }}" 
-                                   class="field w-full text-xs">
+                            <x-field wire:model.live.debounce.300ms="merchant" 
+                                     id="merchant" 
+                                     type="text" 
+                                     placeholder="{{ $type === 'income' ? 'e.g. Monthly Allowance, Freelance' : 'e.g. Canteen, Bookstore' }}" 
+                                     class="text-xs"
+                                     :hasError="$errors->has('merchant')" />
                             @error('merchant') <span class="text-[var(--expense)] text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -417,16 +467,17 @@
                             <label for="payment_method" class="block text-xs font-caps text-[var(--muted)] mb-1">
                                 Payment Method
                             </label>
-                            <select wire:model="payment_method" 
-                                    id="payment_method" 
-                                    class="field w-full text-xs">
+                            <x-field type="select" 
+                                     wire:model="payment_method" 
+                                     id="payment_method" 
+                                     class="text-xs">
                                 <option value="card">Card (Debit / Credit)</option>
                                 <option value="cash">Cash</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                                 <option value="digital_wallet">Digital Wallet</option>
                                 <option value="upi">UPI</option>
                                 <option value="other">Other</option>
-                            </select>
+                            </x-field>
                         </div>
 
                         <!-- Description Notes -->
@@ -434,11 +485,12 @@
                             <label for="description" class="block text-xs font-caps text-[var(--muted)] mb-1">
                                 Notes (Optional)
                             </label>
-                            <textarea wire:model.live.debounce.300ms="description" 
-                                      id="description" 
-                                      rows="2" 
-                                      placeholder="Add transaction memo..." 
-                                      class="field w-full text-xs"></textarea>
+                            <x-field type="textarea" 
+                                     wire:model.live.debounce.300ms="description" 
+                                     id="description" 
+                                     rows="2" 
+                                     placeholder="Add transaction memo..." 
+                                     class="text-xs"></x-field>
                         </div>
 
                         <!-- Recurring Checkbox -->
@@ -462,39 +514,22 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </x-modal>
         @endif
 
         <!-- CSV Batch Import Modal -->
         @if ($showImportModal)
-            <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
-                 role="dialog"
-                 aria-modal="true"
-                 aria-labelledby="modal-import-title"
-                 x-data
-                 @keydown.escape.window="$wire.closeImportModal()">
-                <div class="modal-dialog-surface border hairline-border w-full {{ $importStepReview ? 'sm:max-w-4xl' : 'sm:max-w-xl' }} p-6 sm:p-8 bg-[var(--panel)] shadow-panel max-h-[92vh] flex flex-col space-y-6"
-                     @click.away="$wire.closeImportModal()">
-                    
-                    <!-- Header -->
-                    <div class="flex items-start justify-between border-b hairline-border pb-4 shrink-0">
-                        <div>
-                            <h2 id="modal-import-title" class="font-display text-xl font-medium text-[var(--ink)]">
-                                {{ $importStepReview ? 'Review AI Batch Import' : 'Import CSV Ledger' }}
-                            </h2>
-                            <p class="text-xs text-[var(--muted)] mt-1">
-                                {{ $importStepReview 
-                                    ? 'Review and adjust pre-filled AI category classifications before confirming.' 
-                                    : 'Upload a CSV statement to parse and categorize entries automatically.' }}
-                            </p>
-                        </div>
-                        <button type="button" 
-                                wire:click="closeImportModal" 
-                                class="btn-icon"
-                                aria-label="Close modal">
-                            <x-icon name="x" class="w-4 h-4" />
-                        </button>
-                    </div>
+            <x-modal :show="true"
+                     :title="$importStepReview ? 'Review AI Batch Import' : 'Import CSV Ledger'"
+                     titleId="modal-import-title"
+                     :maxWidth="$importStepReview ? '4xl' : 'xl'"
+                     onClose="$wire.closeImportModal()">
+                <div class="space-y-6">
+                    <p class="text-xs text-[var(--muted)] -mt-2 mb-4">
+                        {{ $importStepReview 
+                            ? 'Review and adjust pre-filled AI category classifications before confirming.' 
+                            : 'Upload a CSV statement to parse and categorize entries automatically.' }}
+                    </p>
 
                     @if ($importError)
                         <div class="p-3 border border-[var(--expense)] bg-[var(--paper)] text-[var(--expense)] text-xs flex items-center gap-2 shrink-0">
@@ -505,7 +540,7 @@
 
                     @if (! $importStepReview)
                         <!-- STEP 1: UPLOAD FILE -->
-                        <div class="space-y-4 py-2 overflow-y-auto">
+                        <div class="space-y-4 py-2">
                             <div class="border border-dashed hairline-border p-8 text-center bg-[var(--paper)]">
                                 <label for="csv-file-upload" class="cursor-pointer block space-y-2">
                                     <div class="text-xs font-medium text-[var(--accent)] hover:underline">Choose CSV File</div>
@@ -586,13 +621,14 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <select wire:model="importRows.{{ $idx }}.selected_category_id"
-                                                            class="field w-full py-1 px-2 text-xs">
+                                                    <x-field type="select" 
+                                                             wire:model="importRows.{{ $idx }}.selected_category_id"
+                                                             class="py-1 px-2 text-xs">
                                                         <option value="">-- Choose Category --</option>
                                                         @foreach ($categories->where('type', $row['type']) as $c)
                                                             <option value="{{ $c->id }}">{{ $c->name }}</option>
                                                         @endforeach
-                                                    </select>
+                                                    </x-field>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -618,7 +654,7 @@
                         </div>
                     @endif
                 </div>
-            </div>
+            </x-modal>
         @endif
     </div>
 </div>
