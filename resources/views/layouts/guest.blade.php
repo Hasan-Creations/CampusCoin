@@ -22,6 +22,8 @@
                 } else {
                     document.documentElement.classList.remove('dark');
                 }
+                const fontSize = localStorage.getItem('font-size') || 'normal';
+                document.documentElement.setAttribute('data-font-size', fontSize);
             } catch (e) {}
         })();
     </script>
@@ -47,6 +49,65 @@
                 </a>
 
                 <div class="flex items-center gap-4 text-xs font-mono text-[var(--muted)]">
+                    <!-- Font-Size Scaling Control (SRS §1.6 & §185) -->
+                    <div class="relative" x-data="{
+                        open: false,
+                        fontSize: localStorage.getItem('font-size') || 'normal',
+                        setFontSize(size) {
+                            this.fontSize = size;
+                            if (window.CampusCoin && window.CampusCoin.setFontSize) {
+                                window.CampusCoin.setFontSize(size);
+                            } else {
+                                localStorage.setItem('font-size', size);
+                                document.documentElement.setAttribute('data-font-size', size);
+                            }
+                            this.open = false;
+                        }
+                    }">
+                        <button type="button"
+                                @click="open = !open"
+                                @keydown.escape="open = false"
+                                aria-haspopup="true"
+                                :aria-expanded="open"
+                                aria-label="Adjust text scaling size"
+                                title="Adjust text scaling"
+                                class="btn-icon text-xs font-mono gap-1 w-auto px-2.5">
+                            <span class="font-bold text-xs" aria-hidden="true">aA</span>
+                            <x-icon name="sliders" class="w-3 h-3" />
+                        </button>
+                        <div x-show="open"
+                             @click.away="open = false"
+                             x-cloak
+                             role="menu"
+                             aria-label="Text size options"
+                             class="absolute right-0 mt-2 w-44 border hairline-border bg-[var(--panel)] shadow-panel p-1.5 z-50 text-xs font-mono">
+                            <button type="button"
+                                    role="menuitem"
+                                    @click="setFontSize('normal')"
+                                    class="w-full text-left px-3 py-2 flex items-center justify-between transition-colors"
+                                    :class="fontSize === 'normal' ? 'bg-[var(--accent)] text-[var(--paper)] font-medium' : 'text-[var(--ink)] hover:bg-[var(--paper)]'">
+                                <span>Normal (100%)</span>
+                                <span x-show="fontSize === 'normal'" aria-hidden="true">✓</span>
+                            </button>
+                            <button type="button"
+                                    role="menuitem"
+                                    @click="setFontSize('large')"
+                                    class="w-full text-left px-3 py-2 flex items-center justify-between transition-colors"
+                                    :class="fontSize === 'large' ? 'bg-[var(--accent)] text-[var(--paper)] font-medium' : 'text-[var(--ink)] hover:bg-[var(--paper)]'">
+                                <span>Large (112.5%)</span>
+                                <span x-show="fontSize === 'large'" aria-hidden="true">✓</span>
+                            </button>
+                            <button type="button"
+                                    role="menuitem"
+                                    @click="setFontSize('xlarge')"
+                                    class="w-full text-left px-3 py-2 flex items-center justify-between transition-colors"
+                                    :class="fontSize === 'xlarge' ? 'bg-[var(--accent)] text-[var(--paper)] font-medium' : 'text-[var(--ink)] hover:bg-[var(--paper)]'">
+                                <span>X-Large (125%)</span>
+                                <span x-show="fontSize === 'xlarge'" aria-hidden="true">✓</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Theme Toggle -->
                     <button type="button" 
                             onclick="window.CampusCoin ? window.CampusCoin.toggleTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))"

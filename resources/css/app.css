@@ -144,6 +144,25 @@
 }
 
 /* ==========================================================================
+   Root Font Scaling (SRS §1.6 & §185 — Preserved as mandatory functionality)
+   ========================================================================== */
+html {
+  font-size: 100%;
+}
+
+html[data-font-size="normal"] {
+  font-size: 100%;
+}
+
+html[data-font-size="large"] {
+  font-size: 112.5%;
+}
+
+html[data-font-size="xlarge"] {
+  font-size: 125%;
+}
+
+/* ==========================================================================
    Accessibility: Reduced Motion Mandate
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
