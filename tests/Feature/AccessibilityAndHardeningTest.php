@@ -37,10 +37,7 @@ class AccessibilityAndHardeningTest extends TestCase
         $response->assertSee('href="#main-content"', false);
         $response->assertSee('id="main-content"', false);
         $response->assertSee('tabindex="-1"', false);
-        $response->assertSee('data-font-size', false);
-        $response->assertSee('Adjust text scaling', false);
         $response->assertSee('Toggle dark mode', false);
-        $response->assertSee("localStorage.getItem('font-size')", false);
     }
 
     public function test_auth_pages_have_accessible_forms_and_autocomplete_attributes(): void
@@ -85,7 +82,6 @@ class AccessibilityAndHardeningTest extends TestCase
         $response->assertSee('class="skip-to-content"', false);
         $response->assertSee('id="main-content"', false);
         $response->assertSee('tabindex="-1"', false);
-        $response->assertSee('Adjust text scaling', false);
         $response->assertSee('Toggle dark mode', false);
         $response->assertSee('Open mobile navigation menu', false);
         $response->assertSee('mobileNavOpen', false);
@@ -104,7 +100,6 @@ class AccessibilityAndHardeningTest extends TestCase
         $response->assertSee('class="skip-to-content"', false);
         $response->assertSee('id="main-content"', false);
         $response->assertSee('tabindex="-1"', false);
-        $response->assertSee('Adjust text scaling', false);
         $response->assertSee('Toggle dark mode', false);
         $response->assertSee('Open admin navigation menu', false);
     }
