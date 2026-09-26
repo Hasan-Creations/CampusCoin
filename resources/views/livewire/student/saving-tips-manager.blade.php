@@ -5,93 +5,75 @@
 
     <div class="space-y-6">
         {{-- ===================================================== --}}
-        {{-- HEADER BAR: TITLE, KPI SUMMARY & RE-EVALUATE ACTION    --}}
+        {{-- HEADER BAR: TITLE & RE-EVALUATE ACTION                  --}}
         {{-- ===================================================== --}}
-        <div class="p-6 rounded-[16px] border hairline-border bg-[var(--bg-surface)] shadow-tactile-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b hairline-border pb-6">
             <div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] bg-[var(--accent-tint)] text-[var(--accent-primary)] text-[11px] font-mono font-semibold uppercase tracking-wider mb-2 shadow-tactile-sm">
-                    <x-icon name="lightbulb" class="w-3.5 h-3.5" />
-                    <span>Deterministic Financial Intelligence &bull; Active Analysis</span>
-                </div>
-                <h1 class="font-heading text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
+                <span class="text-xs font-caps text-[var(--muted)]">
+                    Deterministic Financial Intelligence &bull; Active Analysis
+                </span>
+                <h1 class="font-display text-2xl sm:text-3xl font-medium text-[var(--ink)] mt-1 headline-rule">
                     Saving Opportunities
                 </h1>
-                <p class="text-xs text-[var(--text-muted)] mt-1.5">
+                <p class="text-xs text-[var(--muted)] mt-1.5">
                     Actionable, data-driven saving tips evaluated directly from your spending ledger, category budgets, and savings targets.
                 </p>
             </div>
 
-            <div class="flex items-center gap-3 flex-shrink-0">
-                <button type="button"
-                        wire:click="refreshTips"
-                        class="btn-secondary py-2 px-4 text-xs inline-flex items-center gap-2">
-                    <x-icon name="refresh-cw" class="w-3.5 h-3.5" wire:loading.class="animate-spin" wire:target="refreshTips" />
-                    <span>Re-evaluate Ledger</span>
-                </button>
-            </div>
+            <x-button variant="secondary" wire:click="refreshTips">
+                <x-icon name="refresh-cw" class="w-3.5 h-3.5" wire:loading.class="animate-spin" wire:target="refreshTips" />
+                <span>Re-evaluate Ledger</span>
+            </x-button>
         </div>
 
         {{-- ===================================================== --}}
-        {{-- FLASH FEEDBACK ALERT                                  --}}
+        {{-- FLASH FEEDBACK ALERT                                   --}}
         {{-- ===================================================== --}}
         @if ($feedbackMessage)
-            <div role="status" aria-live="polite" class="p-4 rounded-[12px] border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between shadow-tactile-sm">
+            <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-xs text-[var(--accent)] flex items-center justify-between">
                 <div class="flex items-center gap-2 font-medium">
-                    <x-icon name="check-circle" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <x-icon name="check-circle" class="w-4 h-4 flex-shrink-0" />
                     <span>{{ $feedbackMessage }}</span>
                 </div>
-                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="btn-icon w-6 h-6 text-emerald-600 hover:text-emerald-800">
-                    &times;
-                </button>
+                <button type="button" wire:click="$set('feedbackMessage', null)" aria-label="Dismiss feedback message" class="btn-icon w-6 h-6 border-none">&times;</button>
             </div>
         @endif
 
         {{-- ===================================================== --}}
-        {{-- KPI STRIP: TOTAL POTENTIAL SAVINGS & METRICS          --}}
+        {{-- KPI STRIP: TOTAL POTENTIAL SAVINGS & METRICS           --}}
         {{-- ===================================================== --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="card-campus border hairline-border p-5 space-y-1 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
-                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
-                    <span>Identified Potential Savings</span>
-                    <x-icon name="trending-up" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <div class="font-mono text-2xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+        <div class="stat-strip">
+            <div>
+                <div class="text-xs font-caps text-[var(--muted)]">Identified Potential Savings</div>
+                <div class="font-mono text-2xl font-medium text-[var(--accent)] tabular-nums mt-1">
                     ${{ number_format($totalPotentialSavings, 2) }}
                 </div>
-                <div class="text-[11px] text-[var(--text-muted)]">
+                <div class="text-[11px] text-[var(--muted)] mt-0.5">
                     Estimated monthly reduction if active tips are applied
                 </div>
             </div>
-
-            <div class="card-campus border hairline-border p-5 space-y-1 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
-                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
-                    <span>Active Opportunities</span>
-                    <x-icon name="lightbulb" class="w-4 h-4 text-[var(--accent-primary)]" />
-                </div>
-                <div class="font-mono text-2xl font-bold text-[var(--text-primary)] tabular-nums">
+            <div>
+                <div class="text-xs font-caps text-[var(--muted)]">Active Opportunities</div>
+                <div class="font-mono text-2xl font-medium text-[var(--ink)] tabular-nums mt-1">
                     {{ $activeCount }}
                 </div>
-                <div class="text-[11px] text-[var(--text-muted)]">
+                <div class="text-[11px] text-[var(--muted)] mt-0.5">
                     Immediate ledger-derived spending optimizations
                 </div>
             </div>
-
-            <div class="card-campus border hairline-border p-5 space-y-1 rounded-[16px] hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm">
-                <div class="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
-                    <span>Pinned Strategies</span>
-                    <x-icon name="bookmark" class="w-4 h-4 text-[var(--gold)]" />
-                </div>
-                <div class="font-mono text-2xl font-bold text-[var(--gold)] tabular-nums">
+            <div>
+                <div class="text-xs font-caps text-[var(--muted)]">Pinned Strategies</div>
+                <div class="font-mono text-2xl font-medium text-[var(--secondary)] tabular-nums mt-1">
                     {{ $pinnedCount }}
                 </div>
-                <div class="text-[11px] text-[var(--text-muted)]">
+                <div class="text-[11px] text-[var(--muted)] mt-0.5">
                     Bookmarked rules saved for student review
                 </div>
             </div>
         </div>
 
         {{-- ===================================================== --}}
-        {{-- SEGMENTED TAB CONTROLS                                --}}
+        {{-- SEGMENTED TAB CONTROLS                                 --}}
         {{-- ===================================================== --}}
         <div class="flex items-center justify-between border-b hairline-border pb-3">
             <div role="tablist" aria-label="Saving tip status filters" class="segmented-bar">
@@ -101,7 +83,7 @@
                         wire:click="setTab('active')"
                         class="segmented-item flex items-center gap-2 {{ $activeTab === 'active' ? 'active' : '' }}">
                     <span>Active Opportunities</span>
-                    <span class="px-1.5 py-0.2 rounded-[3px] text-[10px] {{ $activeTab === 'active' ? 'bg-[var(--accent-tint)] text-[var(--accent-primary)] font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
+                    <span class="px-1.5 text-[10px] border hairline-border {{ $activeTab === 'active' ? 'bg-[var(--paper)] text-[var(--ink)]' : 'bg-[var(--paper)] text-[var(--muted)]' }}">
                         {{ $activeCount }}
                     </span>
                 </button>
@@ -111,9 +93,9 @@
                         aria-selected="{{ $activeTab === 'pinned' ? 'true' : 'false' }}"
                         wire:click="setTab('pinned')"
                         class="segmented-item flex items-center gap-2 {{ $activeTab === 'pinned' ? 'active' : '' }}">
-                    <x-icon name="bookmark" class="w-3.5 h-3.5 text-[var(--gold)]" />
+                    <x-icon name="bookmark" class="w-3.5 h-3.5 text-[var(--secondary)]" />
                     <span>Pinned</span>
-                    <span class="px-1.5 py-0.2 rounded-[3px] text-[10px] {{ $activeTab === 'pinned' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
+                    <span class="px-1.5 text-[10px] border hairline-border {{ $activeTab === 'pinned' ? 'bg-[var(--paper)] text-[var(--ink)]' : 'bg-[var(--paper)] text-[var(--muted)]' }}">
                         {{ $pinnedCount }}
                     </span>
                 </button>
@@ -124,34 +106,32 @@
                         wire:click="setTab('dismissed')"
                         class="segmented-item flex items-center gap-2 {{ $activeTab === 'dismissed' ? 'active' : '' }}">
                     <span>Dismissed</span>
-                    <span class="px-1.5 py-0.2 rounded-[3px] text-[10px] {{ $activeTab === 'dismissed' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] font-bold' : 'bg-[var(--bg-canvas)] text-[var(--text-muted)]' }}">
+                    <span class="px-1.5 text-[10px] border hairline-border {{ $activeTab === 'dismissed' ? 'bg-[var(--paper)] text-[var(--ink)]' : 'bg-[var(--paper)] text-[var(--muted)]' }}">
                         {{ $dismissedCount }}
                     </span>
                 </button>
             </div>
 
-            <div class="hidden sm:flex items-center gap-1.5 text-xs font-mono text-[var(--text-muted)]">
+            <div class="hidden sm:flex items-center gap-1.5 text-xs font-mono text-[var(--muted)]">
                 <span>Ranked by estimated savings impact</span>
                 <x-icon name="arrow-down" class="w-3.5 h-3.5" />
             </div>
         </div>
 
         {{-- ===================================================== --}}
-        {{-- TIPS LISTING                                          --}}
+        {{-- TIPS LISTING                                           --}}
         {{-- ===================================================== --}}
         @if ($tips->isEmpty())
-            <div class="card-campus border hairline-border p-12 text-center space-y-3 rounded-[16px] shadow-tactile-sm">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-[10px] bg-[var(--bg-subtle)] text-[var(--text-muted)] mx-auto shadow-tactile-sm">
-                    @if ($activeTab === 'pinned')
-                        <x-icon name="bookmark" class="w-6 h-6" />
-                    @elseif ($activeTab === 'dismissed')
-                        <x-icon name="archive" class="w-6 h-6" />
-                    @else
-                        <x-icon name="check-circle" class="w-6 h-6 text-emerald-500" />
-                    @endif
-                </div>
+            <div class="empty-state space-y-3">
+                @if ($activeTab === 'pinned')
+                    <x-icon name="bookmark" class="w-6 h-6 mx-auto text-[var(--muted)]" />
+                @elseif ($activeTab === 'dismissed')
+                    <x-icon name="archive" class="w-6 h-6 mx-auto text-[var(--muted)]" />
+                @else
+                    <x-icon name="check-circle" class="w-6 h-6 mx-auto text-[var(--accent)]" />
+                @endif
 
-                <div class="font-heading font-bold text-base text-[var(--text-primary)]">
+                <div class="font-display font-medium text-base text-[var(--ink)]">
                     @if ($activeTab === 'pinned')
                         No Pinned Strategies
                     @elseif ($activeTab === 'dismissed')
@@ -161,7 +141,7 @@
                     @endif
                 </div>
 
-                <p class="text-xs text-[var(--text-muted)] max-w-md mx-auto">
+                <p class="text-xs text-[var(--muted)] max-w-md mx-auto">
                     @if ($activeTab === 'pinned')
                         You haven't bookmarked any tips yet. Pin critical tips from the Active Opportunities tab to monitor them continuously.
                     @elseif ($activeTab === 'dismissed')
@@ -173,52 +153,52 @@
 
                 @if ($activeTab === 'active')
                     <div class="pt-2">
-                        <a href="{{ route('transactions') }}" class="btn-primary py-2 px-4 text-xs inline-flex items-center gap-2">
+                        <x-button variant="accent" href="{{ route('transactions') }}">
                             <x-icon name="plus" class="w-3.5 h-3.5" />
                             <span>Log Transaction</span>
-                        </a>
+                        </x-button>
                     </div>
                 @endif
             </div>
         @else
             <div class="space-y-4">
                 @foreach ($tips as $tip)
-                    <div class="card-campus border hairline-border p-5 rounded-[16px] space-y-4 hover:-translate-y-0.5 transition-all duration-200 shadow-tactile-sm" wire:key="tip-card-{{ $tip->id }}">
+                    <div class="card-campus p-5 space-y-4" wire:key="tip-card-{{ $tip->id }}">
                         {{-- Top Metadata Strip --}}
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div class="flex items-center gap-2.5 flex-wrap">
                                 {{-- Category Badge or Ledger Badge --}}
                                 @if ($tip->category)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-medium text-white shadow-tactile-sm"
-                                          style="background-color: {{ $tip->category->color ?? '#64748B' }};">
+                                    <span class="badge text-white text-xs"
+                                          style="background-color: {{ $tip->category->color ?? '#64748B' }}; border-color: {{ $tip->category->color ?? '#64748B' }};">
                                         <x-icon :name="$tip->category->icon ?? 'tag'" class="w-3.5 h-3.5" />
                                         <span>{{ $tip->category->name }}</span>
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-mono font-medium border hairline-border bg-[var(--bg-subtle)] text-[var(--text-primary)] shadow-tactile-sm">
-                                        <x-icon name="activity" class="w-3.5 h-3.5 text-[var(--accent-primary)]" />
+                                    <span class="badge">
+                                        <x-icon name="activity" class="w-3.5 h-3.5 text-[var(--accent)]" />
                                         <span>Overall Ledger</span>
                                     </span>
                                 @endif
 
-                                {{-- Rule Key Pill --}}
-                                <span class="badge-campus text-[10px] font-mono uppercase tracking-wider bg-[var(--bg-subtle)] text-[var(--text-muted)] border hairline-border">
+                                {{-- Rule Key Badge --}}
+                                <span class="badge font-mono uppercase tracking-wider">
                                     {{ str_replace('_', ' ', $tip->rule_key) }}
                                 </span>
 
                                 @if ($tip->isPinned())
-                                    <span class="badge-campus text-[10px] font-mono uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                                    <span class="badge badge-secondary flex items-center gap-1">
                                         <x-icon name="bookmark" class="w-3 h-3" />
                                         <span>Pinned</span>
                                     </span>
                                 @endif
                             </div>
 
-                            {{-- Potential Savings Badge --}}
+                            {{-- Potential Savings --}}
                             <div class="flex items-center gap-2">
-                                <div class="px-3 py-1.5 rounded-[8px] border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 flex items-center gap-2 shadow-tactile-sm">
-                                    <span class="text-[10px] font-mono uppercase tracking-wider font-semibold">Est. Potential Savings:</span>
-                                    <span class="font-mono font-bold text-sm tabular-nums">
+                                <div class="border border-[var(--accent)] bg-[var(--paper)] px-3 py-1.5 flex items-center gap-2">
+                                    <span class="text-[10px] font-caps text-[var(--muted)]">Est. Potential Savings:</span>
+                                    <span class="font-mono font-medium text-sm text-[var(--accent)] tabular-nums">
                                         {{ $tip->formattedEstimatedSavings() }}
                                     </span>
                                 </div>
@@ -227,28 +207,28 @@
 
                         {{-- Title & Trigger Explanation --}}
                         <div class="space-y-1.5">
-                            <h2 class="font-heading font-bold text-base text-[var(--text-primary)]">
+                            <h2 class="font-display font-medium text-base text-[var(--ink)]">
                                 {{ $tip->title }}
                             </h2>
-                            <p class="text-xs text-[var(--text-muted)] leading-relaxed">
+                            <p class="text-xs text-[var(--muted)] leading-relaxed">
                                 {{ $tip->message }}
                             </p>
                         </div>
 
                         {{-- Actionable Suggestion Box --}}
-                        <div class="p-3.5 rounded-[10px] border hairline-border bg-[var(--bg-subtle)]/60 space-y-1">
-                            <div class="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[var(--accent-primary)] font-semibold">
+                        <div class="p-3.5 border hairline-border bg-[var(--paper)] space-y-1">
+                            <div class="flex items-center gap-1.5 text-[11px] font-caps text-[var(--accent)]">
                                 <x-icon name="compass" class="w-3.5 h-3.5" />
                                 <span>Actionable Recommendation</span>
                             </div>
-                            <p class="text-xs font-medium text-[var(--text-primary)] leading-normal">
+                            <p class="text-xs font-medium text-[var(--ink)] leading-normal">
                                 {{ $tip->suggestion }}
                             </p>
                         </div>
 
                         {{-- Action Buttons Footer --}}
                         <div class="flex items-center justify-between pt-2.5 border-t hairline-border">
-                            <div class="text-[10px] font-mono text-[var(--text-muted)]">
+                            <div class="text-[10px] font-mono text-[var(--muted)]">
                                 Evaluated: {{ $tip->updated_at->diffForHumans() }}
                                 @if ($tip->pinned_at)
                                     &bull; Pinned {{ $tip->pinned_at->format('M d') }}
@@ -259,45 +239,28 @@
 
                             <div class="flex items-center gap-2">
                                 @if ($tip->isActive())
-                                    <button type="button"
-                                            wire:click="pinTip({{ $tip->id }})"
-                                            aria-label="Pin tip: {{ $tip->title }}"
-                                            class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5">
-                                        <x-icon name="bookmark" class="w-3.5 h-3.5 text-[var(--gold)]" />
+                                    <x-button variant="secondary" wire:click="pinTip({{ $tip->id }})" aria-label="Pin tip: {{ $tip->title }}">
+                                        <x-icon name="bookmark" class="w-3.5 h-3.5" />
                                         <span>Pin Tip</span>
-                                    </button>
-
-                                    <button type="button"
-                                            wire:click="dismissTip({{ $tip->id }})"
-                                            aria-label="Dismiss tip: {{ $tip->title }}"
-                                            class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 text-[var(--text-muted)] hover:text-rose-600 dark:hover:text-rose-400">
+                                    </x-button>
+                                    <x-button variant="primary" wire:click="dismissTip({{ $tip->id }})" aria-label="Dismiss tip: {{ $tip->title }}">
                                         <x-icon name="x" class="w-3.5 h-3.5" />
                                         <span>Dismiss</span>
-                                    </button>
+                                    </x-button>
                                 @elseif ($tip->isPinned())
-                                    <button type="button"
-                                            wire:click="unpinTip({{ $tip->id }})"
-                                            aria-label="Unpin tip: {{ $tip->title }}"
-                                            class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5">
-                                        <x-icon name="bookmark-minus" class="w-3.5 h-3.5 text-[var(--gold)]" />
+                                    <x-button variant="secondary" wire:click="unpinTip({{ $tip->id }})" aria-label="Unpin tip: {{ $tip->title }}">
+                                        <x-icon name="bookmark-minus" class="w-3.5 h-3.5" />
                                         <span>Unpin</span>
-                                    </button>
-
-                                    <button type="button"
-                                            wire:click="dismissTip({{ $tip->id }})"
-                                            aria-label="Dismiss tip: {{ $tip->title }}"
-                                            class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 text-[var(--text-muted)] hover:text-rose-600 dark:hover:text-rose-400">
+                                    </x-button>
+                                    <x-button variant="primary" wire:click="dismissTip({{ $tip->id }})" aria-label="Dismiss tip: {{ $tip->title }}">
                                         <x-icon name="x" class="w-3.5 h-3.5" />
                                         <span>Dismiss</span>
-                                    </button>
+                                    </x-button>
                                 @elseif ($tip->isDismissed())
-                                    <button type="button"
-                                            wire:click="restoreTip({{ $tip->id }})"
-                                            aria-label="Restore tip to active: {{ $tip->title }}"
-                                            class="btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                                    <x-button variant="accent" wire:click="restoreTip({{ $tip->id }})" aria-label="Restore tip to active: {{ $tip->title }}">
                                         <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
                                         <span>Restore to Active</span>
-                                    </button>
+                                    </x-button>
                                 @endif
                             </div>
                         </div>
