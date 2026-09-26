@@ -1,17 +1,14 @@
 <x-layouts.guest title="Student Profile Setup">
     <div class="w-full max-w-xl mx-auto">
-        <div class="card-campus border hairline-border shadow-modal p-6 sm:p-8 rounded-[16px]">
-            <div class="mb-6">
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-[var(--accent-tint)] text-[var(--accent-primary)] text-[11px] font-mono font-semibold uppercase tracking-wider mb-2 shadow-tactile-sm">
-                    <x-icon name="graduation-cap" class="w-3.5 h-3.5" />
-                    <span>New Student Onboarding</span>
-                </div>
-                <h1 class="font-heading text-2xl font-bold text-[var(--text-primary)]">Setup Your Campus Coin Ledger</h1>
-                <p class="text-xs text-[var(--text-muted)] mt-1">Configure your academic cohort and spending baselines to unlock tailored budgeting</p>
+        <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
+            <div class="border-b hairline-border pb-4">
+                <span class="text-xs font-caps text-[var(--muted)]">Student Onboarding</span>
+                <h1 class="font-display text-2xl font-medium text-[var(--ink)] mt-1">Setup Your Campus Coin Ledger</h1>
+                <p class="text-xs text-[var(--muted)] mt-1">Configure your academic cohort and spending baselines to unlock tailored budgeting</p>
             </div>
 
             @if ($errors->any())
-                <div role="alert" aria-live="assertive" class="mb-4 p-3.5 rounded-[10px] border border-rose-200 bg-rose-50 dark:bg-rose-950/30 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-400">
+                <div role="alert" aria-live="assertive" class="p-3.5 border border-[var(--expense)] bg-[var(--paper)] text-xs text-[var(--expense)]">
                     <ul class="list-disc pl-4 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -25,143 +22,144 @@
 
                 <!-- Full Name -->
                 <div>
-                    <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
+                    <label for="name" class="block text-xs font-caps text-[var(--muted)] mb-1">
                         Full Name
                     </label>
-                    <input id="name" 
-                           type="text" 
-                           name="name" 
-                           autocomplete="name"
-                           value="{{ old('name') }}" 
-                           required 
-                           autofocus 
-                           placeholder="Alex Rivera"
-                           class="input-campus w-full text-sm">
+                    <x-field id="name" 
+                             type="text" 
+                             name="name" 
+                             autocomplete="name" 
+                             value="{{ old('name') }}" 
+                             required 
+                             autofocus 
+                             placeholder="Alex Rivera" 
+                             class="text-xs" 
+                             :hasError="$errors->has('name')" />
                 </div>
 
                 <!-- Campus Email with .edu indicator -->
                 <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] font-mono">
+                    <div class="flex items-center justify-between mb-1">
+                        <label for="email" class="block text-xs font-caps text-[var(--muted)]">
                             Campus Email (.edu)
                         </label>
                         <span id="edu-indicator" 
-                              class="text-[11px] font-mono font-medium text-[var(--text-muted)]">
+                              class="text-[11px] font-mono text-[var(--muted)]">
                             Institutional email recommended
                         </span>
                     </div>
-                    <div class="relative">
-                        <input id="email" 
-                               type="email" 
-                               name="email" 
-                               autocomplete="email"
-                               value="{{ old('email') }}" 
-                               required 
-                               oninput="checkEduEmail(this.value)"
-                               placeholder="alex.rivera@university.edu"
-                               class="input-campus w-full text-sm font-mono">
-                    </div>
+                    <x-field id="email" 
+                             type="email" 
+                             name="email" 
+                             autocomplete="email" 
+                             value="{{ old('email') }}" 
+                             required 
+                             oninput="checkEduEmail(this.value)" 
+                             placeholder="alex.rivera@university.edu" 
+                             class="text-xs font-mono" 
+                             :hasError="$errors->has('email')" />
                 </div>
 
                 <!-- Academic Year Cohort -->
                 <div>
-                    <label for="academic_year" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
+                    <label for="academic_year" class="block text-xs font-caps text-[var(--muted)] mb-1">
                         Academic Standing / Cohort
                     </label>
-                    <select id="academic_year" 
-                            name="academic_year" 
-                            required 
-                            class="input-campus w-full text-sm bg-[var(--bg-surface)]">
+                    <x-field type="select" 
+                             id="academic_year" 
+                             name="academic_year" 
+                             required 
+                             class="text-xs"
+                             :hasError="$errors->has('academic_year')">
                         <option value="" disabled {{ old('academic_year') ? '' : 'selected' }}>Select standing</option>
                         <option value="Freshman" {{ old('academic_year') === 'Freshman' ? 'selected' : '' }}>Freshman (1st Year)</option>
                         <option value="Sophomore" {{ old('academic_year') === 'Sophomore' ? 'selected' : '' }}>Sophomore (2nd Year)</option>
                         <option value="Junior" {{ old('academic_year') === 'Junior' ? 'selected' : '' }}>Junior (3rd Year)</option>
                         <option value="Senior" {{ old('academic_year') === 'Senior' ? 'selected' : '' }}>Senior (4th Year)</option>
                         <option value="Graduate" {{ old('academic_year') === 'Graduate' ? 'selected' : '' }}>Graduate / Master's / PhD</option>
-                    </select>
+                    </x-field>
                 </div>
 
                 <!-- Financial Baselines Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <!-- Monthly Allowance -->
                     <div>
-                        <label for="monthly_allowance" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
+                        <label for="monthly_allowance" class="block text-xs font-caps text-[var(--muted)] mb-1">
                             Monthly Allowance / Inflow ($)
                         </label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-2.5 text-xs font-mono text-[var(--text-muted)]">$</span>
-                            <input id="monthly_allowance" 
-                                   type="number" 
-                                   step="0.01" 
-                                   min="0"
-                                   name="monthly_allowance" 
-                                   value="{{ old('monthly_allowance', '1000.00') }}" 
-                                   required 
-                                   placeholder="1000.00"
-                                   class="input-campus w-full text-sm font-mono pl-7 tabular-nums">
-                        </div>
-                        <span class="text-[10px] text-[var(--text-muted)] mt-1 block font-mono">Stipends, parents, or job baseline</span>
+                        <x-field id="monthly_allowance" 
+                                 type="number" 
+                                 numeric
+                                 step="0.01" 
+                                 min="0" 
+                                 name="monthly_allowance" 
+                                 value="{{ old('monthly_allowance', '1000.00') }}" 
+                                 required 
+                                 placeholder="1000.00" 
+                                 class="text-xs font-mono tabular-nums"
+                                 :hasError="$errors->has('monthly_allowance')" />
+                        <span class="text-[11px] text-[var(--muted)] mt-1 block">Baseline family living allowance</span>
                     </div>
 
                     <!-- Target Monthly Savings Goal -->
                     <div>
-                        <label for="savings_goal" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
+                        <label for="savings_goal" class="block text-xs font-caps text-[var(--muted)] mb-1">
                             Monthly Savings Target ($)
                         </label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-2.5 text-xs font-mono text-[var(--text-muted)]">$</span>
-                            <input id="savings_goal" 
-                                   type="number" 
-                                   step="0.01" 
-                                   min="0"
-                                   name="savings_goal" 
-                                   value="{{ old('savings_goal', '200.00') }}" 
-                                   required 
-                                   placeholder="200.00"
-                                   class="input-campus w-full text-sm font-mono pl-7 tabular-nums">
-                        </div>
-                        <span class="text-[10px] text-[var(--text-muted)] mt-1 block font-mono">Target reserve to build monthly</span>
+                        <x-field id="savings_goal" 
+                                 type="number" 
+                                 numeric
+                                 step="0.01" 
+                                 min="0" 
+                                 name="savings_goal" 
+                                 value="{{ old('savings_goal', '200.00') }}" 
+                                 required 
+                                 placeholder="200.00" 
+                                 class="text-xs font-mono tabular-nums"
+                                 :hasError="$errors->has('savings_goal')" />
+                        <span class="text-[11px] text-[var(--muted)] mt-1 block">Target reserve to build monthly</span>
                     </div>
                 </div>
 
                 <!-- Password and Confirmation -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div>
-                        <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
+                        <label for="password" class="block text-xs font-caps text-[var(--muted)] mb-1">
                             Password
                         </label>
-                        <input id="password" 
-                               type="password" 
-                               name="password" 
-                               autocomplete="new-password"
-                               required 
-                               placeholder="Minimum 8 characters"
-                               class="input-campus w-full text-sm">
+                        <x-field id="password" 
+                                 type="password" 
+                                 name="password" 
+                                 autocomplete="new-password" 
+                                 required 
+                                 placeholder="Min. 8 characters" 
+                                 class="text-xs"
+                                 :hasError="$errors->has('password')" />
                     </div>
 
                     <div>
-                        <label for="password_confirmation" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
+                        <label for="password_confirmation" class="block text-xs font-caps text-[var(--muted)] mb-1">
                             Confirm Password
                         </label>
-                        <input id="password_confirmation" 
-                               type="password" 
-                               name="password_confirmation" 
-                               autocomplete="new-password"
-                               required 
-                               placeholder="Repeat password"
-                               class="input-campus w-full text-sm">
+                        <x-field id="password_confirmation" 
+                                 type="password" 
+                                 name="password_confirmation" 
+                                 autocomplete="new-password" 
+                                 required 
+                                 placeholder="Repeat password" 
+                                 class="text-xs" />
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary w-full py-2.5 mt-4">
+                <x-button variant="accent" type="submit" class="w-full py-3 mt-4">
                     <span>Create Profile & Launch Ledger</span>
                     <x-icon name="arrow-right" class="w-4 h-4" />
-                </button>
+                </x-button>
             </form>
 
-            <div class="mt-6 pt-6 border-t hairline-border text-center text-xs text-[var(--text-muted)]">
+            <div class="pt-4 border-t hairline-border text-center text-xs text-[var(--muted)]">
                 Already registered? 
-                <a href="{{ route('login') }}" class="text-[var(--accent-primary)] font-semibold hover:underline">
+                <a href="{{ route('login') }}" class="text-[var(--accent)] font-medium hover:underline">
                     Sign in to existing account
                 </a>
             </div>
@@ -173,15 +171,15 @@
             const el = document.getElementById('edu-indicator');
             if (!val) {
                 el.innerText = 'Institutional email recommended';
-                el.className = 'text-[11px] font-mono font-medium text-[var(--text-muted)]';
+                el.className = 'text-[11px] font-mono text-[var(--muted)]';
                 return;
             }
             if (val.toLowerCase().endsWith('.edu') || val.toLowerCase().includes('.edu.')) {
                 el.innerText = '✓ Verified Campus Domain';
-                el.className = 'text-[11px] font-mono font-medium text-emerald-600 dark:text-emerald-400';
+                el.className = 'text-[11px] font-mono text-[var(--accent)]';
             } else {
                 el.innerText = 'Standard domain (non-edu)';
-                el.className = 'text-[11px] font-mono font-medium text-[var(--gold)]';
+                el.className = 'text-[11px] font-mono text-[var(--secondary)]';
             }
         }
     </script>

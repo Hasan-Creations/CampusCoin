@@ -1,16 +1,16 @@
 <x-layouts.guest title="Administrator Direct Access">
     <div class="w-full max-w-md mx-auto">
-        <div class="card-campus border hairline-border shadow-modal p-6 sm:p-8 rounded-[16px]">
-            <div class="mb-6 text-center">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-[10px] bg-[var(--text-primary)] text-[var(--bg-surface)] mb-3 shadow-tactile-sm">
-                    <x-icon name="lock" class="w-5 h-5 text-[var(--gold)]" />
+        <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
+            <div class="border-b hairline-border pb-4 text-center">
+                <div class="w-10 h-10 bg-[var(--ink)] text-[var(--paper)] mx-auto mb-3 flex items-center justify-center">
+                    <x-icon name="lock" class="w-5 h-5 text-[var(--secondary)]" />
                 </div>
-                <h1 class="font-heading text-xl font-bold text-[var(--text-primary)]">Administrator Direct Access</h1>
-                <p class="text-xs text-[var(--text-muted)] mt-1">Authorized personnel only &bull; Multi-factor audit enabled</p>
+                <h1 class="font-display text-xl font-medium text-[var(--ink)]">Administrator Direct Access</h1>
+                <p class="text-xs text-[var(--muted)] mt-1">Authorized personnel only &bull; Multi-factor audit enabled</p>
             </div>
 
             @if ($errors->any())
-                <div role="alert" aria-live="assertive" class="mb-4 p-3.5 rounded-[10px] border border-rose-200 bg-rose-50 dark:bg-rose-950/30 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-400">
+                <div role="alert" aria-live="assertive" class="p-3.5 border border-[var(--expense)] bg-[var(--paper)] text-xs text-[var(--expense)]">
                     <ul class="list-disc pl-4 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -23,50 +23,52 @@
                 @csrf
 
                 <div>
-                    <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
+                    <label for="email" class="block text-xs font-caps text-[var(--muted)] mb-1">
                         Admin Email
                     </label>
-                    <input id="email" 
-                           type="email" 
-                           name="email" 
-                           autocomplete="email"
-                           value="{{ old('email') }}" 
-                           required 
-                           autofocus 
-                           placeholder="admin@campuscoin.edu"
-                           class="input-campus w-full text-sm">
+                    <x-field id="email" 
+                             type="email" 
+                             name="email" 
+                             autocomplete="email" 
+                             value="{{ old('email') }}" 
+                             required 
+                             autofocus 
+                             placeholder="admin@campuscoin.edu" 
+                             class="text-xs font-mono" 
+                             :hasError="$errors->has('email')" />
                 </div>
 
                 <div>
-                    <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 font-mono">
+                    <label for="password" class="block text-xs font-caps text-[var(--muted)] mb-1">
                         Root Key / Password
                     </label>
-                    <input id="password" 
-                           type="password" 
-                           name="password" 
-                           autocomplete="current-password"
-                           required 
-                           placeholder="••••••••••••"
-                           class="input-campus w-full text-sm">
+                    <x-field id="password" 
+                             type="password" 
+                             name="password" 
+                             autocomplete="current-password" 
+                             required 
+                             placeholder="••••••••••••" 
+                             class="text-xs" 
+                             :hasError="$errors->has('password')" />
                 </div>
 
-                <button type="submit" class="btn-primary w-full py-2.5 mt-2 bg-[var(--text-primary)] text-[var(--bg-surface)] hover:bg-[var(--text-muted)]">
-                    <x-icon name="shield-check" class="w-4 h-4 text-[var(--gold)]" />
+                <x-button variant="primary" type="submit" class="w-full py-3 mt-2">
+                    <x-icon name="shield-check" class="w-4 h-4 text-[var(--secondary)]" />
                     <span>Authorize Console Access</span>
-                </button>
+                </x-button>
             </form>
 
-            <div class="mt-6 pt-6 border-t hairline-border text-center text-xs text-[var(--text-muted)]">
-                <a href="{{ route('login') }}" class="hover:text-[var(--text-primary)] inline-flex items-center gap-1.5 font-mono transition-colors">
+            <div class="pt-4 border-t hairline-border text-center text-xs text-[var(--muted)]">
+                <a href="{{ route('login') }}" class="hover:text-[var(--ink)] inline-flex items-center gap-1.5 font-mono transition-colors">
                     &larr; Return to Student Portal
                 </a>
             </div>
 
             <!-- Credentials Hint -->
-            <div class="mt-4 p-3 rounded-[10px] bg-[var(--bg-subtle)] text-[11px] font-mono text-[var(--text-muted)] space-y-0.5 border hairline-border">
-                <div class="font-semibold text-[var(--text-primary)]">Admin Credentials:</div>
-                <div>User: <span class="text-[var(--gold)] font-medium">admin@campuscoin.edu</span></div>
-                <div>Pass: <span class="text-[var(--gold)] font-medium">AdminSecure123!</span></div>
+            <div class="p-3 bg-[var(--paper)] border hairline-border text-[11px] font-mono text-[var(--muted)] space-y-0.5">
+                <div class="font-medium text-[var(--ink)]">Admin Credentials:</div>
+                <div>User: <span class="text-[var(--secondary)] font-medium">admin@campuscoin.edu</span></div>
+                <div>Pass: <span class="text-[var(--secondary)] font-medium">AdminSecure123!</span></div>
             </div>
         </div>
     </div>
