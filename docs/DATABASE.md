@@ -1,9 +1,8 @@
 # Campus Coin — Database Design & Schema Specification
 
 ## 1. Engine & Character Set
-- **Database Engine:** MySQL / MariaDB (InnoDB)
-- **Character Set:** `utf8mb4`
-- **Collation:** `utf8mb4_unicode_ci`
+- **Default database:** SQLite through `.env.example`; the current local `.env` may select another Laravel-supported relational driver.
+- **MySQL/MariaDB:** Supported through Laravel configuration; InnoDB with `utf8mb4` is suitable when that driver is selected.
 
 ---
 
@@ -73,6 +72,9 @@ Financial cash-flow ledger.
 | `transaction_date` | `DATE` | No | — | Occurrence date |
 | `payment_method` | `ENUM('cash','card','bank_transfer','upi','digital_wallet','other')` | No | `'card'` | Payment channel |
 | `is_recurring` | `BOOLEAN` | No | `FALSE` | Recurring transaction flag |
+| `recurrence_frequency` | `VARCHAR` | Yes | `NULL` | Currently `monthly` for recurring source rows |
+| `next_occurrence_date` | `DATE` | Yes | `NULL` | Next monthly date due for generation |
+| `recurring_source_id` | `BIGINT UNSIGNED` | Yes | `NULL` | Self-reference to the recurring source, set null if source is deleted |
 | `ai_suggested` | `BOOLEAN` | No | `FALSE` | Categorization was suggested by AI |
 | `ai_confidence` | `DECIMAL(3,2)` | Yes | `NULL` | Advisory confidence score (0.00-1.00) |
 | `created_at` | `TIMESTAMP` | Yes | `NULL` | Timestamp |
@@ -80,7 +82,33 @@ Financial cash-flow ledger.
 
 ---
 
-### 2.4 `budgets` *(Phase 2 — Implemented & Verified)*
+### 2.4 `transaction_histories`
+Prior transaction values retained before an edit or deletion.
+
+| Column | Type | Nullable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `BIGINT UNSIGNED` | No | AUTO_INCREMENT | Primary Key |
+| `user_id` | `BIGINT UNSIGNED` | No | — | Owner; cascades with user deletion |
+| `transaction_id` | `BIGINT UNSIGNED` | No | — | Original identifier; intentionally has no transaction FK |
+| `action` | `VARCHAR(20)` | No | — | `updated` or `deleted` |
+| `snapshot` | `JSON` | No | — | Prior financial and category fields |
+| `created_at`, `updated_at` | `TIMESTAMP` | Yes | `NULL` | History timestamps |
+
+History rows are scoped by `user_id` and do not participate in balance or report calculations.
+
+### 2.5 `system_tip_templates`
+Administrator-managed messages shown to all students when active.
+
+| Column | Type | Nullable | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `BIGINT UNSIGNED` | No | AUTO_INCREMENT | Primary Key |
+| `title` | `VARCHAR(150)` | No | — | Template heading |
+| `message` | `TEXT` | No | — | Student-facing message |
+| `type` | `VARCHAR(20)` | No | `'tip'` | `tip` or `announcement` |
+| `is_active` | `BOOLEAN` | No | `TRUE` | Whether it appears on dashboards |
+| `created_at`, `updated_at` | `TIMESTAMP` | Yes | `NULL` | Template timestamps |
+
+### 2.6 `budgets` *(Phase 2 — Implemented & Verified)*
 Monthly limits by student and category.
 
 | Column | Type | Nullable | Default | Description |
@@ -101,7 +129,7 @@ Monthly limits by student and category.
 
 ---
 
-### 2.5 `saving_tips` *(Phase 5 — Implemented & Verified)*
+### 2.7 `saving_tips` *(Phase 5 — Implemented & Verified)*
 Saving opportunities generated from each student's financial metrics.
 
 | Column | Type | Nullable | Default | Description |
@@ -130,7 +158,7 @@ Saving opportunities generated from each student's financial metrics.
 
 ---
 
-### 2.6 `category_learnings` *(Phase 6 — Implemented & Verified)*
+### 2.8 `category_learnings` *(Phase 6 — Implemented & Verified)*
 Student-specific categorization preferences learned from manual corrections and confirmations.
 
 | Column | Type | Nullable | Default | Description |
@@ -157,3 +185,5 @@ Student-specific categorization preferences learned from manual corrections and 
 2. **Deterministic Calculations:** All arithmetic aggregation runs through `SUM(amount)` with `DECIMAL(10,2)` preservation.
 3. **Learned Correction Scoping:** Category learnings are strictly scoped to the student. Learned preferences of Student A never influence suggestions for Student B.
 4. **Saving Tips Scoping:** Saving tips are strictly user-isolated with unique constraint `(user_id, rule_key, category_id)`. Student A cannot view, pin, or dismiss tips of Student B.
+5. **Transaction History Scoping:** Transaction snapshots are queried by the owning `user_id`; they do not alter financial aggregates.
+6. **Recurring Generation:** The unique `(recurring_source_id, transaction_date)` index prevents duplicate generated occurrences.

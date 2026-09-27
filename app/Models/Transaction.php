@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaction extends Model
 {
@@ -21,6 +22,9 @@ class Transaction extends Model
         'transaction_date',
         'payment_method',
         'is_recurring',
+        'recurrence_frequency',
+        'next_occurrence_date',
+        'recurring_source_id',
         'ai_suggested',
         'ai_confidence',
     ];
@@ -31,6 +35,7 @@ class Transaction extends Model
             'amount' => 'decimal:2',
             'transaction_date' => 'date',
             'is_recurring' => 'boolean',
+            'next_occurrence_date' => 'date',
             'ai_suggested' => 'boolean',
             'ai_confidence' => 'decimal:2',
         ];
@@ -44,6 +49,38 @@ class Transaction extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function history(): HasMany
+    {
+        return $this->hasMany(TransactionHistory::class);
+    }
+
+    public function preserveHistory(string $action): void
+    {
+        $snapshot = $this->only([
+            'type',
+            'amount',
+            'merchant',
+            'description',
+            'category_id',
+            'transaction_date',
+            'payment_method',
+            'is_recurring',
+            'recurrence_frequency',
+            'next_occurrence_date',
+            'ai_suggested',
+            'ai_confidence',
+        ]);
+        $snapshot['category_name'] = $this->category?->name;
+        $snapshot['transaction_date'] = $this->transaction_date->format('Y-m-d');
+        $snapshot['next_occurrence_date'] = $this->next_occurrence_date?->format('Y-m-d');
+
+        $this->history()->create([
+            'user_id' => $this->user_id,
+            'action' => $action,
+            'snapshot' => $snapshot,
+        ]);
     }
 
     public function scopeForUser(Builder $query, int $userId): Builder

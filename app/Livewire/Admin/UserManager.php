@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Livewire\Component;
 
 class UserManager extends Component
@@ -93,6 +94,28 @@ class UserManager extends Component
         ]);
 
         $this->feedbackMessage = "Financial baselines (stipend and savings goal) for '{$user->name}' have been reset to zero.";
+    }
+
+    public function sendPasswordResetLink(int $userId): void
+    {
+        $this->feedbackMessage = null;
+        $this->errorMessage = null;
+
+        $user = User::where('role', 'student')->find($userId);
+
+        if (! $user) {
+            $this->errorMessage = 'Target student account not found.';
+
+            return;
+        }
+
+        $status = Password::sendResetLink(['email' => $user->email]);
+
+        if ($status === Password::RESET_LINK_SENT) {
+            $this->feedbackMessage = "Password reset link sent to '{$user->email}'.";
+        } else {
+            $this->errorMessage = __($status);
+        }
     }
 
     public function render()

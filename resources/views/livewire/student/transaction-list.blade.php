@@ -1,9 +1,17 @@
 <div>
-    <x-slot:header>
-        Transactions
-    </x-slot:header>
+    @unless ($quickAddOnly)
+        <x-slot:header>
+            Transactions
+        </x-slot:header>
+    @endunless
 
     <div class="space-y-6">
+        @if ($quickAddOnly)
+            <x-button variant="accent" wire:click="openCreateModal">
+                <x-icon name="plus" class="w-4 h-4" />
+                <span>Add Transaction</span>
+            </x-button>
+        @else
         <!-- Top Summary Banner & Quick-Add -->
         <div class="page-header flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4">
             <div>
@@ -329,6 +337,34 @@
                     {{ $transactions->links() }}
                 </div>
             @endif
+        @endif
+
+        <section class="border hairline-border bg-[var(--panel)]">
+            <div class="p-4 border-b hairline-border">
+                <h2 class="font-display text-base font-medium text-[var(--ink)]">Transaction Change History</h2>
+                <p class="text-xs text-[var(--muted)] mt-1">Previous details are kept when a transaction is edited or deleted.</p>
+            </div>
+            @forelse ($historyEntries as $entry)
+                <div wire:key="transaction-history-{{ $entry->id }}" class="p-4 border-b hairline-border last:border-b-0 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 text-xs">
+                    <div>
+                        <div class="font-medium text-[var(--ink)]">{{ $entry->snapshot['merchant'] }} <span class="text-[var(--muted)] font-normal">{{ $entry->action }}</span></div>
+                        <div class="text-[var(--muted)] mt-1">
+                            {{ ucfirst($entry->snapshot['type']) }} · {{ $entry->snapshot['category_name'] ?? 'Uncategorized' }} · {{ $entry->snapshot['transaction_date'] }}
+                        </div>
+                        @if ($entry->snapshot['description'])
+                            <div class="text-[var(--muted)] mt-1">{{ $entry->snapshot['description'] }}</div>
+                        @endif
+                    </div>
+                    <div class="font-mono tabular-nums text-[var(--ink)]">${{ number_format((float) $entry->snapshot['amount'], 2) }}</div>
+                    <time class="font-mono text-[11px] text-[var(--muted)]" datetime="{{ $entry->created_at->toIso8601String() }}">{{ $entry->created_at->format('M d, Y g:i a') }}</time>
+                </div>
+            @empty
+                <p class="p-4 text-xs text-[var(--muted)]">No transaction changes recorded.</p>
+            @endforelse
+            @if ($historyEntries->hasPages())
+                <div class="p-4 border-t hairline-border">{{ $historyEntries->links() }}</div>
+            @endif
+        </section>
         @endif
 
         <!-- Quick-Add / Edit Transaction Modal -->

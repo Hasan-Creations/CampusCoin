@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\SystemTipTemplate;
 use App\Models\User;
 use App\Services\AdminMetricsService;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +57,7 @@ class Dashboard extends Component
         return view('livewire.admin.dashboard', [
             'metrics' => $metrics,
             'recentStudents' => $recentStudents,
+            'systemTemplates' => SystemTipTemplate::where('is_active', true)->orderBy('type')->get(),
         ])->layout('components.layouts.admin', ['title' => 'Operations & Metrics Telemetry']);
     }
 }

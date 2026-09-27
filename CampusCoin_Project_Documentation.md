@@ -68,9 +68,11 @@ The current interface uses the "Old Money Green" direction:
 | Home | `/` | Public product introduction, calls to action, and visible application sitemap section |
 | Student login | `/login` | Student authentication |
 | Student registration | `/register` | New student account creation |
+| Password recovery | `/forgot-password`, `/reset-password/{token}` | Tokenized email reset link and secure password update |
+| Student profile | `/profile` | Edit name, academic year, monthly allowance, and savings goal |
 | Admin login | `/admin/login` | Direct administrator authentication |
-| Dashboard | `/dashboard` | Safe-to-spend view, KPI strip, budget consumption, saving opportunities, historical cash flow, category trends, recent entries |
-| Transactions | `/transactions` | Add, edit, delete, filter, sort, search, recurring flag, CSV import, CSV export, advisory categorization |
+| Dashboard | `/dashboard` | Safe-to-spend view, KPI strip, dashboard quick-add, budget consumption, saving opportunities, campus updates, cash flow, category trends, recent entries |
+| Transactions | `/transactions` | Add, edit, delete, filter, sort, search, monthly recurrence, retained change history, CSV import/export, advisory categorization |
 | Budgets | `/budgets` | Monthly category budget creation, editing, deletion, consumption, 75% warning, over-budget alert |
 | Categories | `/categories` | Student-owned custom categories and shared system categories |
 | Reports | `/reports` | Monthly, category, six-month, daily, weekly, and ledger report views; CSV and PDF export |
@@ -78,6 +80,7 @@ The current interface uses the "Old Money Green" direction:
 | Admin dashboard | `/admin/dashboard` | Operational metrics, category usage, cohort distribution, and recent account activity |
 | Admin categories | `/admin/categories` | Global category controls, activation state, creation, editing, and safe deletion |
 | Admin users | `/admin/users` | Account search/filtering, inspection, activation/deactivation, and baseline management |
+| Admin tip templates | `/admin/tip-templates` | Create, edit, publish, hide, and remove system-wide tips and announcements |
 
 ## 3. DIAGRAMS
 
@@ -314,13 +317,42 @@ Description: Classifies income and expense entries and supplies category display
 | `description` | TEXT | Nullable | Additional description |
 | `transaction_date` | DATE | Not null, indexed | Occurrence date |
 | `payment_method` | ENUM(cash, card, bank_transfer, upi, digital_wallet, other) | Not null, default card | Payment channel |
-| `is_recurring` | BOOLEAN | Not null, default false | Recurrence marker |
+| `is_recurring` | BOOLEAN | Not null, default false | Marks a monthly recurring source transaction |
+| `recurrence_frequency` | VARCHAR | Nullable | Currently `monthly` for recurring sources |
+| `next_occurrence_date` | DATE | Nullable | Next scheduled occurrence for a recurring source |
+| `recurring_source_id` | BIGINT | Nullable, self-reference to `transactions.id`, set null on source delete | Source transaction for a generated occurrence |
 | `ai_suggested` | BOOLEAN | Not null, default false | Whether categorization was suggested |
 | `ai_confidence` | DECIMAL(3,2) | Nullable | Advisory confidence score |
 | `created_at` | TIMESTAMP | Nullable | Creation timestamp |
 | `updated_at` | TIMESTAMP | Nullable | Update timestamp |
 
 Description: The student cash-flow ledger.
+
+#### `transaction_histories`
+
+| Column | Declared type | Key / nullability | Description |
+|---|---|---|---|
+| `id` | BIGINT primary key | PK, not null, auto-increment | History event identifier |
+| `user_id` | BIGINT | Not null, FK to `users.id`, cascade delete | Student who owns the history |
+| `transaction_id` | BIGINT | Not null, indexed; deliberately retained without a transaction FK | Original ledger row identifier, including deleted rows |
+| `action` | VARCHAR(20) | Not null | `updated` or `deleted` |
+| `snapshot` | JSON | Not null | Previous transaction fields and category label |
+| `created_at`, `updated_at` | TIMESTAMP | Nullable | History event timestamps |
+
+Description: Stores user-scoped snapshots before a ledger edit or deletion. These snapshots are not used in balance calculations.
+
+#### `system_tip_templates`
+
+| Column | Declared type | Key / nullability | Description |
+|---|---|---|---|
+| `id` | BIGINT primary key | PK, not null, auto-increment | Template identifier |
+| `title` | VARCHAR(150) | Not null | Student-facing heading |
+| `message` | TEXT | Not null | Student-facing message |
+| `type` | VARCHAR(20) | Not null, default `tip`, indexed | `tip` or `announcement` |
+| `is_active` | BOOLEAN | Not null, default true, indexed | Whether the message appears on student dashboards |
+| `created_at`, `updated_at` | TIMESTAMP | Nullable | Template timestamps |
+
+Description: Administrator-managed campus-wide tip and announcement templates.
 
 #### `budgets`
 
@@ -390,12 +422,14 @@ These tables are created by the Laravel application skeleton and support framewo
 ### 4.4 Relationships
 
 - One user has many transactions, budgets, owned categories, saving tips, category learnings, and sessions.
+- One user has many transaction history snapshots; snapshots retain the previous values independently of the current ledger row.
 - One category has many transactions, budgets, saving tips, and category learnings.
 - A system category has a null `user_id` and is available across students; a custom category belongs to one student.
 - Every transaction belongs to exactly one user and one category.
 - Every budget belongs to exactly one user and one category and is unique for a month.
 - A saving tip belongs to one user and may optionally refer to one category.
 - A category learning belongs to one user and one category; its keyword is unique within that user.
+- A recurring transaction source can produce monthly transaction rows linked by `recurring_source_id`; a unique source/date index prevents duplicate occurrences.
 - User deletion cascades to that user’s domain records. Category deletion is restricted for transactions and guarded by application-level safe-deletion checks for other references.
 
 ## 5. TEST DATA
@@ -479,9 +513,9 @@ The current database contains additional test rows, including IDs 12-16; the tab
 
 ## 6. INSTALLATION INSTRUCTIONS
 
-Detailed evaluator installation, database setup, default URLs, working credentials, assumptions, SQL-export status, and sitemap status are intentionally repeated in the separate `ReadMe.doc` file so they remain easy to find.
+Detailed evaluator installation, database setup, default URLs, working credentials, assumptions, SQL-export status, sitemap status, and the manual demonstration-video status are intentionally repeated in the separate `ReadMe.doc` file so they remain easy to find.
 
-At a high level, the current repository uses Laravel's normal Composer/npm workflow, `.env.example` defaults to SQLite, migrations create the schema, and the standard local application URL is `http://localhost:8000`. There is no checked-in SQL dump; the migration files are the authoritative schema source.
+At a high level, the current repository uses Laravel's normal Composer/npm workflow, `.env.example` defaults to SQLite, migrations create the schema, and the standard local application URL is `http://localhost:8000`. A schema-only SQLite export is included at `miscellaneous/CampusCoin_schema.sql`; migrations remain the authoritative schema source.
 
 ## 7. USER CREDENTIALS
 
@@ -516,7 +550,10 @@ The implementation clarifies or diverges from ambiguous SRS wording in these way
 - AI categorization is optional and advisory. An OpenAI-compatible provider is used only when configured; missing credentials, API failures, and timeouts use deterministic heuristic categorization. Students can manually override suggestions.
 - Student corrections are learned per user through `category_learnings`; one student's corrections do not influence another student.
 - Saving tips are deterministic rule-generated records with active, pinned, and dismissed lifecycle states. They are not certified financial advice.
-- The SRS mentions email-based password recovery and report sharing by email, but the current route set does not implement a complete email-delivery recovery flow or report-email sharing feature. These should not be presented as implemented capabilities.
+- Password recovery uses Laravel's email reset notification and expiring token broker. Report sharing by email is not implemented; it is described as optional in the SRS.
+- Recurrence currently supports monthly entries, matching the SRS examples. A daily Laravel scheduled command generates due occurrences; hosting must run Laravel's scheduler for automatic generation.
+- Transaction changes and deletions retain user-scoped snapshots in `transaction_histories`; these records are separate from the active ledger and do not affect financial calculations.
+- System-wide admin-managed tips and announcements are stored in `system_tip_templates`; active records appear on student dashboards.
 - The SRS lists a broad set of possible database engines, but the repository's reproducible defaults are SQLite in `.env.example` and MySQL in the active local `.env`. No separate PostgreSQL implementation was verified.
 - The current development database is not seed-only; it includes later manual users, transactions, budgets, tips, and learning records. `php artisan migrate:fresh --seed` is the clean evaluation reset.
 - The home page sitemap is a real route list, not only a marketing section. The `/` page has an `Application Sitemap` section with grouped links for public access, student ledger pages, analysis pages, and staff operations.
@@ -527,3 +564,5 @@ The implementation clarifies or diverges from ambiguous SRS wording in these way
 - **OpenAI API integration:** an optional runtime AI service implemented by CampusCoin for advisory transaction categorization. The configured default model is `gpt-4o-mini`, with a deterministic heuristic fallback. This is an application integration rather than a claim that the OpenAI service authored the project.
 
 No repository or session evidence identifies Claude, Gemini, or another AI authoring tool as having been used during development. Additional tools used outside the repository should be added by the project team before submission if applicable.
+
+The SRS-required demonstration video is a manual submission item. No video was recorded or fabricated in this development environment.

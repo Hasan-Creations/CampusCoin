@@ -17,10 +17,14 @@
         (function() {
             try {
                 const theme = localStorage.getItem('theme');
+                const fontSize = localStorage.getItem('fontSize');
                 if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
                 } else {
                     document.documentElement.classList.remove('dark');
+                }
+                if (['small', 'normal', 'large'].includes(fontSize)) {
+                    document.documentElement.dataset.fontSize = fontSize;
                 }
             } catch (e) {}
         })();
@@ -100,6 +104,7 @@
                         {{ Auth::user()->role }}
                     </span>
                 </div>
+                <a href="{{ route('profile.edit') }}" class="block mb-3 text-[11px] font-mono text-[#A8A599] hover:text-[var(--paper)]">Edit Profile</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" 
@@ -204,6 +209,7 @@
                             {{ Auth::user()->role }}
                         </span>
                     </div>
+                    <a href="{{ route('profile.edit') }}" class="block mb-3 text-[11px] font-mono text-[#A8A599] hover:text-[var(--paper)]">Edit Profile</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" 
@@ -244,6 +250,13 @@
                         <span class="text-[var(--muted)] font-caps text-[11px]">Allowance</span>
                         <span class="font-medium tabular-nums text-[var(--ink)]">${{ number_format(Auth::user()->monthly_allowance ?? 0, 2) }}</span>
                     </div>
+
+                    <label for="text-size-control" class="sr-only">Text size control</label>
+                    <select id="text-size-control" aria-label="Text size control" onchange="window.CampusCoin.setFontSize(this.value)" class="field text-xs py-1.5 px-2">
+                        <option value="small">Small text</option>
+                        <option value="normal">Normal text</option>
+                        <option value="large">Large text</option>
+                    </select>
 
                     <!-- Theme Toggle -->
                     <button type="button" 

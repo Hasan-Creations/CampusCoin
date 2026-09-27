@@ -63,10 +63,7 @@
                         <x-icon name="tag" class="w-4 h-4" />
                         <span>Categories</span>
                     </x-button>
-                    <x-button variant="accent" href="{{ route('transactions') }}">
-                        <x-icon name="plus" class="w-4 h-4" />
-                        <span>Add Transaction</span>
-                    </x-button>
+                    <livewire:student.transaction-list :quick-add-only="true" />
                 </div>
             </div>
         </div>
@@ -108,6 +105,23 @@
                     View Budgets &rarr;
                 </a>
             </div>
+        @endif
+
+        @if ($systemTemplates->isNotEmpty())
+            <section class="border hairline-border bg-[var(--panel)]">
+                <div class="p-4 border-b hairline-border">
+                    <h2 class="font-display text-base font-medium text-[var(--ink)]">Campus Updates</h2>
+                </div>
+                <div class="divide-y divide-[var(--hairline)]">
+                    @foreach ($systemTemplates as $template)
+                        <article class="p-4 border-l-2 {{ $template->type === 'announcement' ? 'border-[var(--secondary)]' : 'border-[var(--accent)]' }}">
+                            <div class="text-[10px] font-caps text-[var(--muted)]">{{ ucfirst($template->type) }}</div>
+                            <h3 class="text-sm font-medium text-[var(--ink)] mt-1">{{ $template->title }}</h3>
+                            <p class="text-xs text-[var(--muted)] mt-1">{{ $template->message }}</p>
+                        </article>
+                    @endforeach
+                </div>
+            </section>
         @endif
 
         {{-- ===================================================== --}}

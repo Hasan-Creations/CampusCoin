@@ -4,6 +4,7 @@ namespace App\Livewire\Student;
 
 use App\Models\Budget;
 use App\Models\SavingTip;
+use App\Models\SystemTipTemplate;
 use App\Models\Transaction;
 use App\Services\FinancialCalculationService;
 use App\Services\SavingTipsService;
@@ -194,6 +195,7 @@ class Dashboard extends Component
             'categoryComparisons' => $categoryComparisons,
             'timePeriod' => $this->timePeriod,
             'topSavingTips' => $topSavingTips,
+            'systemTemplates' => SystemTipTemplate::where('is_active', true)->orderBy('type')->get(),
         ])->layout('components.layouts.app', ['title' => 'Dashboard']);
     }
 }

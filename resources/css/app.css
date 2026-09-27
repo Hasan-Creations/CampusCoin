@@ -90,6 +90,14 @@
   --radius-xl: 9px;
 }
 
+html[data-font-size="small"] {
+  font-size: 14px;
+}
+
+html[data-font-size="large"] {
+  font-size: 18px;
+}
+
 /* ==========================================================================
    Dark Mode — Swapped tokens per §1 (zero invented colors)
    ========================================================================== */

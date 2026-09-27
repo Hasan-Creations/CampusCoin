@@ -95,6 +95,9 @@
                             <label for="password" class="block text-xs font-caps text-[var(--muted)]">
                                 Password
                             </label>
+                            <a href="{{ route('password.request') }}" class="text-[11px] text-[var(--accent)] hover:underline">
+                                Forgot password?
+                            </a>
                         </div>
                         <x-field id="password" 
                                  type="password" 

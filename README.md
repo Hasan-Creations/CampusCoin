@@ -6,20 +6,23 @@ Campus Coin is a student budgeting and expense-tracking web application for reco
 
 ## Features
 - **Student Profile & Cohorts:** Supports academic years from Freshman through Graduate, with monthly allowances and savings targets.
-- **Precision Ledger:** Accurate tracking of income and expenses without floating-point errors.
+- **Editable Student Profile:** Update name, academic year, allowance baseline, and savings goal.
+- **Password Recovery:** Email reset links use Laravel's expiring, token-based password broker.
+- **Precision Ledger:** Accurate income and expense tracking, monthly recurring entries, and retained change history.
+- **Dashboard Quick Add:** Record income or expenses without leaving the dashboard.
 - **Interactive Budgeting:** Category caps with clear threshold alerts (Safe, Warning, Danger).
 - **Deterministic Saving Tips:** Finds saving opportunities from spending history, budget limits, and allowance use.
 - **Advisory AI Categorization:** Suggests expense categories with a local fallback and remembers student corrections.
 - **CSV Batch Import & Categorization:** Bounded batch processing (up to 50 rows) with inline AI suggestions and review/override modal.
-- **Executive Admin Controls:** Global category management and student account administration.
+- **Executive Admin Controls:** Global categories, account activation and password reset, system tip/announcement templates, and usage statistics.
 - **Fintech Precision Design:** Strict adherence to data-dense, flat, hairline-border aesthetics inspired by Linear and Stripe.
 
 ---
 
 ## Technology Stack
-- **Framework:** Laravel 12 (PHP 8.4+)
-- **Presentation:** Blade Templates + Livewire 3
-- **Database:** MySQL / MariaDB (InnoDB, UTF-8 MB4)
+- **Framework:** Laravel 13 (PHP 8.3+)
+- **Presentation:** Blade Templates + Livewire 4
+- **Database:** SQLite by default; other Laravel relational drivers can be configured
 - **Asset Bundler:** Vite
 - **Styling:** Custom Design Tokens + Tailwind CSS
 
@@ -48,13 +51,8 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
-# Configure database in .env
-# DB_DATABASE=campus_coin
-# DB_USERNAME=root
-# DB_PASSWORD=
-
-# Run migrations and seed database
-php artisan migrate:fresh --seed
+# Create the schema and seed evaluator accounts and sample data
+php artisan migrate --seed
 
 # Build assets
 npm run build
@@ -88,5 +86,5 @@ Project documentation is stored in `/docs/`:
 
 ## Running Automated Tests
 ```powershell
-php artisan test
+php artisan test --configuration=miscellaneous/phpunit.xml
 ```

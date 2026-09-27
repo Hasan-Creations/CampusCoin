@@ -17,10 +17,14 @@
         (function() {
             try {
                 const theme = localStorage.getItem('theme');
+                const fontSize = localStorage.getItem('fontSize');
                 if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
                 } else {
                     document.documentElement.classList.remove('dark');
+                }
+                if (['small', 'normal', 'large'].includes(fontSize)) {
+                    document.documentElement.dataset.fontSize = fontSize;
                 }
             } catch (e) {}
         })();
@@ -68,6 +72,12 @@
                    class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-sans tracking-wide transition-colors {{ request()->routeIs('admin.categories*') ? 'bg-[#2E2B23] text-[var(--paper)] border-l-2 border-[var(--secondary)] pl-3 font-medium' : 'text-[#A8A599] hover:text-[var(--paper)] hover:bg-[#2A2720]' }}">
                     <x-icon name="tag" class="w-4 h-4 flex-shrink-0" />
                     <span>Global Categories</span>
+                </a>
+
+                <a href="{{ route('admin.tip-templates') }}" 
+                   class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-sans tracking-wide transition-colors {{ request()->routeIs('admin.tip-templates*') ? 'bg-[#2E2B23] text-[var(--paper)] border-l-2 border-[var(--secondary)] pl-3 font-medium' : 'text-[#A8A599] hover:text-[var(--paper)] hover:bg-[#2A2720]' }}">
+                    <x-icon name="lightbulb" class="w-4 h-4 flex-shrink-0" />
+                    <span>Campus Tips</span>
                 </a>
             </nav>
 
@@ -148,6 +158,12 @@
                         <x-icon name="tag" class="w-4 h-4" />
                         <span>Global Categories</span>
                     </a>
+
+                    <a href="{{ route('admin.tip-templates') }}" 
+                       class="flex items-center gap-3 px-3 py-2 text-xs font-sans transition-colors {{ request()->routeIs('admin.tip-templates*') ? 'bg-[#2E2B23] text-[var(--paper)] border-l-2 border-[var(--secondary)] pl-2.5 font-medium' : 'text-[#A8A599] hover:text-[var(--paper)] hover:bg-[#2A2720]' }}">
+                        <x-icon name="lightbulb" class="w-4 h-4" />
+                        <span>Campus Tips</span>
+                    </a>
                 </nav>
 
                 <div class="p-4 border-t border-[var(--hairline-on-ink)] bg-[#1A1813]">
@@ -187,6 +203,13 @@
                 </div>
 
                 <div class="flex items-center gap-3">
+                    <label for="text-size-control" class="sr-only">Text size control</label>
+                    <select id="text-size-control" aria-label="Text size control" onchange="window.CampusCoin.setFontSize(this.value)" class="field text-xs py-1.5 px-2">
+                        <option value="small">Small text</option>
+                        <option value="normal">Normal text</option>
+                        <option value="large">Large text</option>
+                    </select>
+
                     <!-- Theme Toggle -->
                     <button type="button" 
                             onclick="window.CampusCoin ? window.CampusCoin.toggleTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))"

@@ -180,7 +180,7 @@ class ReportExportController extends Controller
         if ($request->filled('category_id')) {
             $catId = (int) $request->query('category_id');
             $filters['category_id'] = $catId;
-            $cat = Category::find($catId);
+            $cat = Category::forUser((int) Auth::id())->find($catId);
             if ($cat) {
                 $filterLabels[] = "Category: {$cat->name}";
             }

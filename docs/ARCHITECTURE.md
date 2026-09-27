@@ -136,13 +136,13 @@ app/
 ## 9. Accessibility Architecture & Production Hardening
 - **FOUC Prevention & Immediate Boot Script:**
   - Placed in the `<head>` of all layouts before stylesheets and DOM rendering.
-  - Synchronously inspects `localStorage.getItem('theme')` (with fallback to `prefers-color-scheme: dark`) and `localStorage.getItem('font-size')`.
-  - Immediately attaches `dark` class and `data-font-size="[normal|large|xlarge]"` attribute to `document.documentElement`, ensuring zero visible theme flashing or text jumping.
+  - Synchronously inspects `localStorage.getItem('theme')` (with fallback to `prefers-color-scheme: dark`) and `localStorage.getItem('fontSize')`.
+  - Immediately attaches `dark` class and `data-font-size="[small|normal|large]"` attribute to `document.documentElement`, preserving the selected text size across visits.
 - **Three-Tier Root Font Scaling Architecture (SRS §1.6 & §185):**
   - Configured at root level via CSS attribute selectors:
-    - `html[data-font-size="normal"] { font-size: 100%; }` (16px base)
-    - `html[data-font-size="large"] { font-size: 112.5%; }` (18px base)
-    - `html[data-font-size="xlarge"] { font-size: 125%; }` (20px base)
+    - `html[data-font-size="small"] { font-size: 14px; }`
+    - Default root size: 16px (`normal`)
+    - `html[data-font-size="large"] { font-size: 18px; }`
   - Because all UI components, spacing, and typography scale off `rem` units, selecting a text scaling tier proportionally scales all content without layout clipping.
 - **Accessible Focus Indicator System:**
   - Global `:focus-visible` styling (`outline: 2px solid var(--accent-primary) !important; outline-offset: 2px;`) ensures keyboard navigation is clearly visible across all browsers while avoiding distracting focus rings on pointer clicks.

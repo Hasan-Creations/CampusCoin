@@ -267,6 +267,9 @@
                     </div>
                     @if($inspectedUser->isStudent())
                         <div class="pt-2">
+                            <button type="button" wire:click="sendPasswordResetLink({{ $inspectedUser->id }})" class="px-3 py-1.5 text-xs font-mono border hairline-border text-[var(--accent)] hover:border-[var(--accent)] transition-colors">
+                                Send Password Reset Link
+                            </button>
                             <button type="button" 
                                     wire:click="resetStudentFinancialBaselines({{ $inspectedUser->id }})"
                                     wire:confirm="Reset financial baselines (monthly allowance and savings target) to zero for this student?"

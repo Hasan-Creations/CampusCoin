@@ -4,6 +4,7 @@ namespace App\Livewire\Student;
 
 use App\Models\Category;
 use App\Models\Transaction;
+use App\Models\TransactionHistory;
 use App\Services\AiCategorizationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,8 @@ class TransactionList extends Component
     public string $sortDirection = 'desc';
 
     public bool $showModal = false;
+
+    public bool $quickAddOnly = false;
 
     public ?int $editingId = null;
 
@@ -75,8 +78,9 @@ class TransactionList extends Component
         'categoryFilter' => ['except' => ''],
     ];
 
-    public function mount(): void
+    public function mount(bool $quickAddOnly = false): void
     {
+        $this->quickAddOnly = $quickAddOnly;
         $this->transaction_date = date('Y-m-d');
     }
 
@@ -306,6 +310,13 @@ class TransactionList extends Component
                 return;
             }
 
+            $tx->preserveHistory('updated');
+            $nextOccurrenceDate = $this->is_recurring
+                ? ($tx->is_recurring && $tx->next_occurrence_date
+                    ? $tx->next_occurrence_date->format('Y-m-d')
+                    : Carbon::parse($this->transaction_date)->addMonthNoOverflow()->toDateString())
+                : null;
+
             $tx->update([
                 'type' => $this->type,
                 'amount' => $this->amount,
@@ -315,6 +326,8 @@ class TransactionList extends Component
                 'payment_method' => $this->payment_method,
                 'description' => trim($this->description ?? ''),
                 'is_recurring' => $this->is_recurring,
+                'recurrence_frequency' => $this->is_recurring ? 'monthly' : null,
+                'next_occurrence_date' => $nextOccurrenceDate,
                 'ai_suggested' => $isAi,
                 'ai_confidence' => $confidence,
             ]);
@@ -331,6 +344,10 @@ class TransactionList extends Component
                 'payment_method' => $this->payment_method,
                 'description' => trim($this->description ?? ''),
                 'is_recurring' => $this->is_recurring,
+                'recurrence_frequency' => $this->is_recurring ? 'monthly' : null,
+                'next_occurrence_date' => $this->is_recurring
+                    ? Carbon::parse($this->transaction_date)->addMonthNoOverflow()->toDateString()
+                    : null,
                 'ai_suggested' => $isAi,
                 'ai_confidence' => $confidence,
             ]);
@@ -372,6 +389,7 @@ class TransactionList extends Component
         }
 
         $merchant = $tx->merchant;
+        $tx->preserveHistory('deleted');
         $tx->delete();
 
         $this->feedbackMessage = "Transaction '{$merchant}' removed from ledger.";
@@ -652,6 +670,18 @@ class TransactionList extends Component
     public function render()
     {
         $uid = Auth::id();
+        $categories = Category::forUser($uid)
+            ->orderBy('type')
+            ->orderBy('name')
+            ->get();
+        $formCategories = $categories->where('is_active', true)->where('type', $this->type);
+
+        if ($this->quickAddOnly) {
+            return view('livewire.student.transaction-list', [
+                'categories' => $categories,
+                'formCategories' => $formCategories,
+            ]);
+        }
 
         $query = Transaction::where('user_id', $uid)
             ->with('category');
@@ -681,19 +711,16 @@ class TransactionList extends Component
         $direction = strtolower($this->sortDirection) === 'asc' ? 'asc' : 'desc';
 
         $txns = $query->orderBy($sortColumn, $direction)->paginate(12);
-
-        $categories = Category::forUser($uid)
-            ->orderBy('type')
-            ->orderBy('name')
-            ->get();
-
-        $formCategories = $categories->where('is_active', true)->where('type', $this->type);
+        $historyEntries = TransactionHistory::where('user_id', $uid)
+            ->latest()
+            ->paginate(10, pageName: 'historyPage');
 
         return view('livewire.student.transaction-list', [
             'transactions' => $txns,
             'categories' => $categories,
             'formCategories' => $formCategories,
             'totalCount' => Transaction::where('user_id', $uid)->count(),
+            'historyEntries' => $historyEntries,
         ])->layout('components.layouts.app', ['title' => 'Transactions Ledger']);
     }
 }

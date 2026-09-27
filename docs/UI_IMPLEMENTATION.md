@@ -122,7 +122,7 @@ Interactive charts (Cash Flow trend lines, outflow bars, velocity indicators) in
 The visual redesign retains 100% of Phase 8 accessibility and keyboard controls:
 - **Skip Navigation Link:** `.skip-to-content` targeting `<main id="main-content" tabindex="-1">`.
 - **High-Contrast Visible Focus Rings:** `:focus-visible` with `outline: 2px solid var(--accent-primary) !important; outline-offset: 2px !important`.
-- **Root Typography Scaling:** Three-tier scaling via `html[data-font-size="normal|large|xlarge"]` (`100%`, `112.5%`, `125%`).
+- **Root Typography Scaling:** Persistent small/normal/large options via `html[data-font-size="small|normal|large"]` (14px, 16px, 18px root sizes).
 - **Vestibular Motion Protection:** Full `@media (prefers-reduced-motion: reduce)` block nullifying all CSS animations and transform translations.
 - **Semantic Dialogs:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and Alpine `@keydown.escape.window` dismiss across all 8 application modals.
 - **Accessible Table Headers:** `<th scope="col">` with `aria-sort` indicators across all ledger views.
@@ -130,6 +130,6 @@ The visual redesign retains 100% of Phase 8 accessibility and keyboard controls:
 ---
 
 ## 8. Verification & Quality Metrics
-- **Automated PHPUnit Tests:** 151 tests, 722 assertions, 100% passing.
-- **Laravel Pint Code Formatter:** 0 style violations, clean formatting.
-- **Vite Production Asset Build:** Clean compilation in ~4s (`app.css` 86kB / 14.7kB gzip, `app.js` 0.38kB).
+- **Automated PHPUnit Tests:** 164 tests, 810 assertions, 100% passing through `miscellaneous/phpunit.xml`.
+- **Laravel Pint Code Formatter:** Changed PHP files formatted successfully.
+- **Vite Production Asset Build:** Successful production compilation; optional font-fallback optimization notice only.

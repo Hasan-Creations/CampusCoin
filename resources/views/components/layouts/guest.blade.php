@@ -17,10 +17,14 @@
         (function() {
             try {
                 const theme = localStorage.getItem('theme');
+                const fontSize = localStorage.getItem('fontSize');
                 if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
                 } else {
                     document.documentElement.classList.remove('dark');
+                }
+                if (['small', 'normal', 'large'].includes(fontSize)) {
+                    document.documentElement.dataset.fontSize = fontSize;
                 }
             } catch (e) {}
         })();
@@ -47,6 +51,13 @@
                 </a>
 
                 <div class="flex items-center gap-4 text-xs font-mono text-[var(--muted)]">
+                    <label for="text-size-control" class="sr-only">Text size control</label>
+                    <select id="text-size-control" aria-label="Text size control" onchange="window.CampusCoin.setFontSize(this.value)" class="field text-xs py-1.5 px-2">
+                        <option value="small">Small text</option>
+                        <option value="normal">Normal text</option>
+                        <option value="large">Large text</option>
+                    </select>
+
                     <!-- Theme Toggle -->
                     <button type="button" 
                             onclick="window.CampusCoin ? window.CampusCoin.toggleTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))"

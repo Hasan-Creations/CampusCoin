@@ -781,6 +781,7 @@
                         <div class="mt-4 space-y-2 text-xs text-[var(--muted)] font-mono">
                             <a class="block hover:text-[var(--ink)]" href="{{ route('login') }}">/login — Student Login</a>
                             <a class="block hover:text-[var(--ink)]" href="{{ route('register') }}">/register — Profile Setup</a>
+                            <a class="block hover:text-[var(--ink)]" href="{{ route('password.request') }}">/forgot-password — Password Recovery</a>
                             <a class="block hover:text-[var(--ink)]" href="{{ route('admin.login') }}">/admin/login — Staff Console</a>
                         </div>
                     </div>
@@ -790,6 +791,7 @@
                             <a class="block hover:text-[var(--ink)]" href="{{ url('/dashboard') }}">/dashboard — Main Cashbook</a>
                             <a class="block hover:text-[var(--ink)]" href="{{ url('/transactions') }}">/transactions — Ledger Entries</a>
                             <a class="block hover:text-[var(--ink)]" href="{{ url('/budgets') }}">/budgets — Spending Caps</a>
+                            <a class="block hover:text-[var(--ink)]" href="{{ route('profile.edit') }}">/profile — Student Profile</a>
                         </div>
                     </div>
                     <div class="border-t border-[var(--hairline)] bg-[var(--panel)] p-6 md:border-l md:border-t-0">
@@ -806,6 +808,7 @@
                             <a class="block hover:text-[var(--ink)]" href="{{ url('/admin/dashboard') }}">Console Overview</a>
                             <a class="block hover:text-[var(--ink)]" href="{{ url('/admin/users') }}">Student Accounts</a>
                             <a class="block hover:text-[var(--ink)]" href="{{ url('/admin/categories') }}">System Categories</a>
+                            <a class="block hover:text-[var(--ink)]" href="{{ route('admin.tip-templates') }}">Campus Tips & Announcements</a>
                         </div>
                     </div>
                 </div>
