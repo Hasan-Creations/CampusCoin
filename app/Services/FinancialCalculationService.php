@@ -9,88 +9,54 @@ use Illuminate\Support\Facades\DB;
 
 class FinancialCalculationService
 {
-    /**
-     * Compute the 6-month cash flow trends for a specific student.
-     * Generates a 6-month chronological sequence ending with the reference date.
-     *
-     * @return array{
-     *     months: array<int, array{
-     *         month_key: string,
-     *         month_label: string,
-     *         short_label: string,
-     *         income: string,
-     *         expense: string,
-     *         net: string,
-     *         status: string,
-     *         savings_rate: float,
-     *         is_current: bool
-     *     }>,
-     *     total_income: string,
-     *     total_expense: string,
-     *     total_net: string,
-     *     average_monthly_expense: string,
-     *     average_monthly_income: string,
-     *     max_volume: float,
-     *     highest_expense_month: ?string,
-     *     highest_income_month: ?string
-     * }
-     */
     public function getSixMonthCashFlow(int $userId, ?Carbon $referenceDate = null): array
     {
         $ref = $referenceDate ? $referenceDate->copy() : Carbon::now();
         $refMonth = $ref->copy()->startOfMonth();
 
-        // 6 calendar months in chronological order (from 5 months ago to current month)
-        $monthCarbons = [];
+        $monthDates = [];
         for ($i = 5; $i >= 0; $i--) {
-            $monthCarbons[] = $refMonth->copy()->subMonths($i);
+            $monthDates[] = $refMonth->copy()->subMonths($i);
         }
 
-        $startDate = $monthCarbons[0]->copy()->startOfMonth()->toDateString();
+        $startDate = $monthDates[0]->copy()->startOfMonth()->toDateString();
         $endDate = $refMonth->copy()->endOfMonth()->toDateString();
 
-        // Aggregate income and expenses by month and type (driver-agnostic)
         $driver = DB::connection()->getDriverName();
         $dateExpr = $driver === 'sqlite'
             ? "strftime('%Y-%m', transaction_date)"
             : "DATE_FORMAT(transaction_date, '%Y-%m')";
 
-        $aggregates = Transaction::where('user_id', $userId)
+        $rows = Transaction::where('user_id', $userId)
             ->whereBetween('transaction_date', [$startDate, $endDate])
             ->selectRaw("{$dateExpr} as month_key, type, SUM(amount) as total")
             ->groupBy('month_key', 'type')
             ->get();
 
-        $lookup = [];
-        foreach ($aggregates as $row) {
-            $lookup[$row->month_key][$row->type] = number_format((float) $row->total, 2, '.', '');
+        $byMonth = [];
+        foreach ($rows as $row) {
+            $byMonth[$row->month_key][$row->type] = number_format((float) $row->total, 2, '.', '');
         }
 
         $months = [];
         $totalIncome = '0.00';
         $totalExpense = '0.00';
-        $maxVolume = 100.00; // Baseline floor for SVG chart scaling
-        $highestExpenseAmount = -1.0;
-        $highestExpenseMonth = null;
-        $highestIncomeAmount = -1.0;
-        $highestIncomeMonth = null;
+        $maxVolume = 100.00;
+        $topExpAmt = -1.0;
+        $topExpMonth = null;
+        $topIncAmt = -1.0;
+        $topIncMonth = null;
 
         $currentMonthKey = $ref->format('Y-m');
 
-        foreach ($monthCarbons as $m) {
+        foreach ($monthDates as $m) {
             $key = $m->format('Y-m');
-            $income = $lookup[$key]['income'] ?? '0.00';
-            $expense = $lookup[$key]['expense'] ?? '0.00';
+            $income = $byMonth[$key]['income'] ?? '0.00';
+            $expense = $byMonth[$key]['expense'] ?? '0.00';
             $net = bcsub($income, $expense, 2);
 
             $cmp = bccomp($net, '0.00', 2);
-            if ($cmp > 0) {
-                $status = 'positive';
-            } elseif ($cmp < 0) {
-                $status = 'negative';
-            } else {
-                $status = 'balanced';
-            }
+            $status = $cmp > 0 ? 'positive' : ($cmp < 0 ? 'negative' : 'balanced');
 
             $savingsRate = bccomp($income, '0.00', 2) > 0
                 ? max(0.0, min(100.0, round(((float) $net / (float) $income) * 100, 1)))
@@ -106,13 +72,13 @@ class FinancialCalculationService
                 $maxVolume = (float) $expense;
             }
 
-            if ((float) $expense > $highestExpenseAmount && (float) $expense > 0) {
-                $highestExpenseAmount = (float) $expense;
-                $highestExpenseMonth = $m->format('M Y');
+            if ((float) $expense > $topExpAmt && (float) $expense > 0) {
+                $topExpAmt = (float) $expense;
+                $topExpMonth = $m->format('M Y');
             }
-            if ((float) $income > $highestIncomeAmount && (float) $income > 0) {
-                $highestIncomeAmount = (float) $income;
-                $highestIncomeMonth = $m->format('M Y');
+            if ((float) $income > $topIncAmt && (float) $income > 0) {
+                $topIncAmt = (float) $income;
+                $topIncMonth = $m->format('M Y');
             }
 
             $months[] = [
@@ -140,45 +106,18 @@ class FinancialCalculationService
             'average_monthly_expense' => $avgExpense,
             'average_monthly_income' => $avgIncome,
             'max_volume' => $maxVolume,
-            'highest_expense_month' => $highestExpenseMonth,
-            'highest_income_month' => $highestIncomeMonth,
+            'highest_expense_month' => $topExpMonth,
+            'highest_income_month' => $topIncMonth,
         ];
     }
 
-    /**
-     * Compute comparative category spending across selected time periods.
-     *
-     * @return array{
-     *     period_key: string,
-     *     period_label: string,
-     *     comparison_label: string,
-     *     current_total: string,
-     *     previous_total: string,
-     *     total_delta: string,
-     *     total_change: array{pct: float, formatted: string, is_new: bool, direction: string},
-     *     categories: array<int, array{
-     *         category_id: int,
-     *         name: string,
-     *         color: string,
-     *         icon: string,
-     *         current_spent: string,
-     *         previous_spent: string,
-     *         delta: string,
-     *         direction: string,
-     *         pct_change: float,
-     *         pct_formatted: string,
-     *         is_new: bool,
-     *         share_pct: float
-     *     }>
-     * }
-     */
     public function getCategoryComparisons(int $userId, string $period = 'this_month', ?Carbon $referenceDate = null): array
     {
         $ref = $referenceDate ? $referenceDate->copy() : Carbon::now();
 
         [$currentStart, $currentEnd, $prevStart, $prevEnd, $periodLabel, $comparisonLabel] = $this->resolvePeriodRanges($period, $ref);
 
-        $currentExpenses = Transaction::where('user_id', $userId)
+        $currExpenses = Transaction::where('user_id', $userId)
             ->where('type', 'expense')
             ->whereBetween('transaction_date', [$currentStart->toDateString(), $currentEnd->toDateString()])
             ->groupBy('category_id')
@@ -192,7 +131,7 @@ class FinancialCalculationService
             ->selectRaw('category_id, SUM(amount) as total')
             ->pluck('total', 'category_id');
 
-        $allCategoryIds = $currentExpenses->keys()
+        $catIds = $currExpenses->keys()
             ->merge($prevExpenses->keys())
             ->unique()
             ->filter()
@@ -201,17 +140,17 @@ class FinancialCalculationService
         $currentTotal = '0.00';
         $prevTotal = '0.00';
 
-        foreach ($currentExpenses as $amount) {
-            $currentTotal = bcadd($currentTotal, (string) $amount, 2);
+        foreach ($currExpenses as $amt) {
+            $currentTotal = bcadd($currentTotal, (string) $amt, 2);
         }
-        foreach ($prevExpenses as $amount) {
-            $prevTotal = bcadd($prevTotal, (string) $amount, 2);
+        foreach ($prevExpenses as $amt) {
+            $prevTotal = bcadd($prevTotal, (string) $amt, 2);
         }
 
         $totalDelta = bcsub($currentTotal, $prevTotal, 2);
         $totalChange = $this->calculateSafePercentageChange($currentTotal, $prevTotal);
 
-        if ($allCategoryIds->isEmpty()) {
+        if ($catIds->isEmpty()) {
             return [
                 'period_key' => $period,
                 'period_label' => $periodLabel,
@@ -224,12 +163,12 @@ class FinancialCalculationService
             ];
         }
 
-        $categoriesModels = Category::whereIn('id', $allCategoryIds)->get()->keyBy('id');
+        $categories = Category::whereIn('id', $catIds)->get()->keyBy('id');
 
         $rows = [];
-        foreach ($allCategoryIds as $catId) {
-            $cat = $categoriesModels->get($catId);
-            $current = number_format((float) ($currentExpenses->get($catId, 0)), 2, '.', '');
+        foreach ($catIds as $catId) {
+            $cat = $categories->get($catId);
+            $current = number_format((float) ($currExpenses->get($catId, 0)), 2, '.', '');
             $prev = number_format((float) ($prevExpenses->get($catId, 0)), 2, '.', '');
             $delta = bcsub($current, $prev, 2);
             $change = $this->calculateSafePercentageChange($current, $prev);
@@ -254,7 +193,6 @@ class FinancialCalculationService
             ];
         }
 
-        // Sort categories by current_spent descending, then delta descending
         usort($rows, function ($a, $b) {
             $cmp = bccomp((string) $b['current_spent'], (string) $a['current_spent'], 2);
             if ($cmp !== 0) {
@@ -276,11 +214,6 @@ class FinancialCalculationService
         ];
     }
 
-    /**
-     * Determine period boundaries and descriptive labels.
-     *
-     * @return array{0: Carbon, 1: Carbon, 2: Carbon, 3: Carbon, 4: string, 5: string}
-     */
     protected function resolvePeriodRanges(string $period, Carbon $ref): array
     {
         switch ($period) {
@@ -333,11 +266,6 @@ class FinancialCalculationService
         return [$currentStart, $currentEnd, $prevStart, $prevEnd, $periodLabel, $comparisonLabel];
     }
 
-    /**
-     * Compute deterministic percentage change safely guarding against divide-by-zero.
-     *
-     * @return array{pct: float, formatted: string, is_new: bool, direction: string}
-     */
     public function calculateSafePercentageChange(string $current, string $previous): array
     {
         $hasPrev = bccomp($previous, '0.00', 2) > 0;
@@ -392,57 +320,31 @@ class FinancialCalculationService
         ];
     }
 
-    /**
-     * Compute comprehensive financial report summary for a custom date range and filters.
-     *
-     * @param  array{category_id?: ?int, type?: ?string}  $filters
-     * @return array{
-     *     start_date: string,
-     *     end_date: string,
-     *     period_label: string,
-     *     total_income: string,
-     *     total_expense: string,
-     *     net_movement: string,
-     *     status: string,
-     *     savings_rate: float,
-     *     total_count: int,
-     *     income_count: int,
-     *     expense_count: int,
-     *     prev_income: string,
-     *     prev_expense: string,
-     *     prev_net: string,
-     *     expense_delta: string,
-     *     expense_change: array{pct: float, formatted: string, is_new: bool, direction: string},
-     *     income_delta: string,
-     *     income_change: array{pct: float, formatted: string, is_new: bool, direction: string},
-     *     net_delta: string
-     * }
-     */
     public function getReportSummary(int $userId, Carbon $startDate, Carbon $endDate, array $filters = []): array
     {
         $startStr = $startDate->toDateString();
         $endStr = $endDate->toDateString();
 
-        $baseQuery = Transaction::where('user_id', $userId)
+        $query = Transaction::where('user_id', $userId)
             ->whereBetween('transaction_date', [$startStr, $endStr]);
 
         if (! empty($filters['category_id'])) {
-            $baseQuery->where('category_id', $filters['category_id']);
+            $query->where('category_id', $filters['category_id']);
         }
         if (! empty($filters['type']) && in_array($filters['type'], ['income', 'expense'], true)) {
-            $baseQuery->where('type', $filters['type']);
+            $query->where('type', $filters['type']);
         }
 
-        $typeTotals = (clone $baseQuery)
+        $totals = (clone $query)
             ->selectRaw('type, SUM(amount) as total, COUNT(*) as count')
             ->groupBy('type')
             ->get()
             ->keyBy('type');
 
-        $totalIncome = number_format((float) ($typeTotals->get('income')->total ?? 0), 2, '.', '');
-        $totalExpense = number_format((float) ($typeTotals->get('expense')->total ?? 0), 2, '.', '');
-        $incomeCount = (int) ($typeTotals->get('income')->count ?? 0);
-        $expenseCount = (int) ($typeTotals->get('expense')->count ?? 0);
+        $totalIncome = number_format((float) ($totals->get('income')->total ?? 0), 2, '.', '');
+        $totalExpense = number_format((float) ($totals->get('expense')->total ?? 0), 2, '.', '');
+        $incomeCount = (int) ($totals->get('income')->count ?? 0);
+        $expenseCount = (int) ($totals->get('expense')->count ?? 0);
         $totalCount = $incomeCount + $expenseCount;
 
         $netMovement = bcsub($totalIncome, $totalExpense, 2);
@@ -453,7 +355,6 @@ class FinancialCalculationService
             ? min(100.0, round(((float) $netMovement / (float) $totalIncome) * 100, 1))
             : 0.0;
 
-        // Preceding equal-length period
         $diffDays = $startDate->diffInDays($endDate) + 1;
         $prevEnd = $startDate->copy()->subDay();
         $prevStart = $prevEnd->copy()->subDays($diffDays - 1);
@@ -507,32 +408,6 @@ class FinancialCalculationService
         ];
     }
 
-    /**
-     * Compute category-wise breakdown report with volume, counts, averages, and prior-period comparison.
-     *
-     * @param  array{category_id?: ?int, type?: ?string}  $filters
-     * @return array{
-     *     total_spent: string,
-     *     category_count: int,
-     *     categories: array<int, array{
-     *         category_id: int,
-     *         name: string,
-     *         color: string,
-     *         icon: string,
-     *         type: string,
-     *         spent: string,
-     *         count: int,
-     *         average_amount: string,
-     *         percentage_of_total: float,
-     *         prev_spent: string,
-     *         delta: string,
-     *         direction: string,
-     *         pct_change: float,
-     *         pct_formatted: string,
-     *         is_new: bool
-     *     }>
-     * }
-     */
     public function getCategoryWiseReport(int $userId, Carbon $startDate, Carbon $endDate, array $filters = []): array
     {
         $targetType = (! empty($filters['type']) && in_array($filters['type'], ['income', 'expense'], true))
@@ -547,13 +422,12 @@ class FinancialCalculationService
             $query->where('category_id', $filters['category_id']);
         }
 
-        $currentRows = $query
+        $currRows = $query
             ->selectRaw('category_id, SUM(amount) as total, COUNT(*) as count')
             ->groupBy('category_id')
             ->get()
             ->keyBy('category_id');
 
-        // Preceding period
         $diffDays = $startDate->diffInDays($endDate) + 1;
         $prevEnd = $startDate->copy()->subDay();
         $prevStart = $prevEnd->copy()->subDays($diffDays - 1);
@@ -572,14 +446,14 @@ class FinancialCalculationService
             ->get()
             ->keyBy('category_id');
 
-        $allCategoryIds = $currentRows->keys()->merge($prevRows->keys())->unique()->filter()->values();
+        $catIds = $currRows->keys()->merge($prevRows->keys())->unique()->filter()->values();
 
         $totalSpent = '0.00';
-        foreach ($currentRows as $r) {
+        foreach ($currRows as $r) {
             $totalSpent = bcadd($totalSpent, (string) $r->total, 2);
         }
 
-        if ($allCategoryIds->isEmpty()) {
+        if ($catIds->isEmpty()) {
             return [
                 'total_spent' => $totalSpent,
                 'category_count' => 0,
@@ -587,13 +461,13 @@ class FinancialCalculationService
             ];
         }
 
-        $categoryModels = Category::whereIn('id', $allCategoryIds)->get()->keyBy('id');
+        $categories = Category::whereIn('id', $catIds)->get()->keyBy('id');
 
         $rows = [];
-        foreach ($allCategoryIds as $catId) {
-            $cat = $categoryModels->get($catId);
-            $spent = number_format((float) ($currentRows->get($catId)->total ?? 0), 2, '.', '');
-            $count = (int) ($currentRows->get($catId)->count ?? 0);
+        foreach ($catIds as $catId) {
+            $cat = $categories->get($catId);
+            $spent = number_format((float) ($currRows->get($catId)->total ?? 0), 2, '.', '');
+            $count = (int) ($currRows->get($catId)->count ?? 0);
             $avg = $count > 0 ? number_format((float) $spent / $count, 2, '.', '') : '0.00';
 
             $prevSpent = number_format((float) ($prevRows->get($catId)->total ?? 0), 2, '.', '');
@@ -639,24 +513,6 @@ class FinancialCalculationService
         ];
     }
 
-    /**
-     * Compute current month daily summary showing actual transaction dates without database fabrication.
-     *
-     * @param  array{category_id?: ?int, type?: ?string}  $filters
-     * @return array{
-     *     month_label: string,
-     *     total_days_active: int,
-     *     days: array<int, array{
-     *         date: string,
-     *         formatted_date: string,
-     *         income: string,
-     *         expense: string,
-     *         net: string,
-     *         status: string,
-     *         count: int
-     *     }>
-     * }
-     */
     public function getCurrentMonthDailySummary(int $userId, ?Carbon $referenceDate = null, array $filters = []): array
     {
         $ref = $referenceDate ? $referenceDate->copy() : Carbon::now();
@@ -715,7 +571,6 @@ class FinancialCalculationService
             ];
         }
 
-        // Sort descending by date
         usort($days, fn ($a, $b) => strcmp($b['date'], $a['date']));
 
         return [
@@ -725,31 +580,12 @@ class FinancialCalculationService
         ];
     }
 
-    /**
-     * Compute current month weekly summary grouped into calendar periods.
-     *
-     * @param  array{category_id?: ?int, type?: ?string}  $filters
-     * @return array{
-     *     month_label: string,
-     *     weeks: array<int, array{
-     *         week_number: int,
-     *         label: string,
-     *         start_date: string,
-     *         end_date: string,
-     *         income: string,
-     *         expense: string,
-     *         net: string,
-     *         status: string,
-     *         count: int
-     *     }>
-     * }
-     */
     public function getCurrentMonthWeeklySummary(int $userId, ?Carbon $referenceDate = null, array $filters = []): array
     {
         $ref = $referenceDate ? $referenceDate->copy() : Carbon::now();
         $daysInMonth = $ref->copy()->daysInMonth;
 
-        $weekDefinitions = [
+        $weekRanges = [
             1 => [1, 7],
             2 => [8, 14],
             3 => [15, 21],
@@ -759,7 +595,7 @@ class FinancialCalculationService
 
         $weeks = [];
 
-        foreach ($weekDefinitions as $wNum => [$startDay, $endDay]) {
+        foreach ($weekRanges as $wNum => [$startDay, $endDay]) {
             if ($startDay > $daysInMonth) {
                 continue;
             }
@@ -780,15 +616,15 @@ class FinancialCalculationService
                 $query->where('type', $filters['type']);
             }
 
-            $typeTotals = $query->selectRaw('type, SUM(amount) as total, COUNT(*) as count')
+            $totals = $query->selectRaw('type, SUM(amount) as total, COUNT(*) as count')
                 ->groupBy('type')
                 ->get()
                 ->keyBy('type');
 
-            $inc = number_format((float) ($typeTotals->get('income')->total ?? 0), 2, '.', '');
-            $exp = number_format((float) ($typeTotals->get('expense')->total ?? 0), 2, '.', '');
-            $incCount = (int) ($typeTotals->get('income')->count ?? 0);
-            $expCount = (int) ($typeTotals->get('expense')->count ?? 0);
+            $inc = number_format((float) ($totals->get('income')->total ?? 0), 2, '.', '');
+            $exp = number_format((float) ($totals->get('expense')->total ?? 0), 2, '.', '');
+            $incCount = (int) ($totals->get('income')->count ?? 0);
+            $expCount = (int) ($totals->get('expense')->count ?? 0);
 
             $net = bcsub($inc, $exp, 2);
             $cmp = bccomp($net, '0.00', 2);

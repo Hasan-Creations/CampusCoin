@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class CategoryManager extends Component
 {
-    public string $filterType = 'all'; // all, expense, income
+    public string $filterType = 'all';
 
     public string $search = '';
 
@@ -28,9 +28,6 @@ class CategoryManager extends Component
 
     public ?string $errorMessage = null;
 
-    /**
-     * Icon palette matching the visual line icon system.
-     */
     public array $availableIcons = [
         'tag' => 'Tag',
         'wallet' => 'Wallet',
@@ -44,9 +41,6 @@ class CategoryManager extends Component
         'plus' => 'Other',
     ];
 
-    /**
-     * Color palette adhering to Campus Coin color system.
-     */
     public array $availableColors = [
         '#059669' => 'Primary Emerald',
         '#10B981' => 'Light Accent',
@@ -87,21 +81,21 @@ class CategoryManager extends Component
         $this->feedbackMessage = null;
         $this->errorMessage = null;
 
-        $category = Category::where('id', $id)
+        $cat = Category::where('id', $id)
             ->where('user_id', Auth::id())
             ->first();
 
-        if (! $category) {
+        if (! $cat) {
             $this->errorMessage = 'Access denied. You cannot modify global or unauthorized categories.';
 
             return;
         }
 
-        $this->editingId = $category->id;
-        $this->name = $category->name;
-        $this->type = $category->type;
-        $this->icon = $category->icon;
-        $this->color = $category->color;
+        $this->editingId = $cat->id;
+        $this->name = $cat->name;
+        $this->type = $cat->type;
+        $this->icon = $cat->icon;
+        $this->color = $cat->color;
         $this->showModal = true;
     }
 
@@ -116,31 +110,31 @@ class CategoryManager extends Component
     {
         $this->validate();
 
-        $userId = Auth::id();
+        $uid = Auth::id();
 
         if ($this->editingId) {
-            $category = Category::where('id', $this->editingId)
-                ->where('user_id', $userId)
+            $cat = Category::where('id', $this->editingId)
+                ->where('user_id', $uid)
                 ->first();
 
-            if (! $category) {
+            if (! $cat) {
                 $this->errorMessage = 'Category not found or unauthorized.';
                 $this->showModal = false;
 
                 return;
             }
 
-            $category->update([
+            $cat->update([
                 'name' => trim($this->name),
                 'type' => $this->type,
                 'icon' => $this->icon,
                 'color' => $this->color,
             ]);
 
-            $this->feedbackMessage = "Category '{$category->name}' successfully updated.";
+            $this->feedbackMessage = "Category '{$cat->name}' updated.";
         } else {
             Category::create([
-                'user_id' => $userId,
+                'user_id' => $uid,
                 'name' => trim($this->name),
                 'type' => $this->type,
                 'icon' => $this->icon,
@@ -148,7 +142,7 @@ class CategoryManager extends Component
                 'is_default' => false,
             ]);
 
-            $this->feedbackMessage = "Personal category '{$this->name}' successfully created.";
+            $this->feedbackMessage = "Personal category '{$this->name}' created.";
         }
 
         $this->showModal = false;
@@ -156,42 +150,40 @@ class CategoryManager extends Component
 
     public function deleteCategory(int $id): void
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
         $this->feedbackMessage = null;
         $this->errorMessage = null;
 
-        $category = Category::where('id', $id)
-            ->where('user_id', $userId)
+        $cat = Category::where('id', $id)
+            ->where('user_id', $uid)
             ->first();
 
-        if (! $category) {
+        if (! $cat) {
             $this->errorMessage = 'Cannot delete this category. Global default categories are permanent.';
 
             return;
         }
 
-        // Safe handling of categories already referenced by transactions
-        $transactionsCount = $category->transactions()->where('user_id', $userId)->count();
-
-        if ($transactionsCount > 0) {
-            $this->errorMessage = "Cannot delete '{$category->name}'. There are currently {$transactionsCount} transaction(s) assigned to it. Please reassign or delete those transactions first.";
+        $txCount = $cat->transactions()->where('user_id', $uid)->count();
+        if ($txCount > 0) {
+            $this->errorMessage = "Cannot delete '{$cat->name}'. There are currently {$txCount} transaction(s) assigned to it. Please reassign or delete those transactions first.";
 
             return;
         }
 
-        $categoryName = $category->name;
-        $category->delete();
+        $name = $cat->name;
+        $cat->delete();
 
-        $this->feedbackMessage = "Category '{$categoryName}' deleted successfully.";
+        $this->feedbackMessage = "Category '{$name}' deleted.";
     }
 
     public function render()
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
 
-        $query = Category::forUser($userId)
-            ->withCount(['transactions' => function ($q) use ($userId) {
-                $q->where('user_id', $userId);
+        $query = Category::forUser($uid)
+            ->withCount(['transactions' => function ($q) use ($uid) {
+                $q->where('user_id', $uid);
             }]);
 
         if ($this->filterType !== 'all') {
@@ -202,13 +194,13 @@ class CategoryManager extends Component
             $query->where('name', 'like', '%'.trim($this->search).'%');
         }
 
-        $categories = $query->orderBy('is_default', 'desc')
+        $cats = $query->orderBy('is_default', 'desc')
             ->orderBy('name', 'asc')
             ->get();
 
         return view('livewire.student.category-manager', [
-            'categories' => $categories,
-            'personalCount' => Category::personal($userId)->count(),
+            'categories' => $cats,
+            'personalCount' => Category::personal($uid)->count(),
             'defaultCount' => Category::systemDefaults()->count(),
         ])->layout('components.layouts.app', ['title' => 'Category Management']);
     }

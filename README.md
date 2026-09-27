@@ -1,15 +1,15 @@
 # Campus Coin — Smart Spending, Student Style
 
-Campus Coin is a full-stack student budgeting and expense-tracking web application designed to empower university students with deterministic financial control, realistic budget planning, cash-flow visibility, and advisory AI insights.
+Campus Coin is a student budgeting and expense-tracking web application for recording income, planning budgets, reviewing cash flow, and getting optional AI suggestions.
 
 ---
 
 ## Features
-- **Student Profile & Cohorts:** Tailored to academic years (Freshman, Sophomore, Junior, Senior, Graduate) with customizable monthly allowances and savings targets.
+- **Student Profile & Cohorts:** Supports academic years from Freshman through Graduate, with monthly allowances and savings targets.
 - **Precision Ledger:** Accurate tracking of income and expenses without floating-point errors.
 - **Interactive Budgeting:** Category caps with clear threshold alerts (Safe, Warning, Danger).
-- **Deterministic Saving Tips:** Intelligent data-driven financial opportunity detection based on historical patterns, budget limits, and allowance utilization.
-- **Advisory AI Categorization:** Machine-assisted expense tagging with zero-latency heuristics fallback and student learning persistence.
+- **Deterministic Saving Tips:** Finds saving opportunities from spending history, budget limits, and allowance use.
+- **Advisory AI Categorization:** Suggests expense categories with a local fallback and remembers student corrections.
 - **CSV Batch Import & Categorization:** Bounded batch processing (up to 50 rows) with inline AI suggestions and review/override modal.
 - **Executive Admin Controls:** Global category management and student account administration.
 - **Fintech Precision Design:** Strict adherence to data-dense, flat, hairline-border aesthetics inspired by Linear and Stripe.
@@ -74,7 +74,7 @@ php artisan serve
 ---
 
 ## Architecture & Documentation
-Comprehensive, persistent project documentation is maintained in `/docs/`:
+Project documentation is stored in `/docs/`:
 - [`PROJECT_STATE.md`](./docs/PROJECT_STATE.md) — Current sprint, progress, and next steps.
 - [`ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — System layers, request lifecycle, and data flow.
 - [`REQUIREMENTS_TRACEABILITY.md`](./docs/REQUIREMENTS_TRACEABILITY.md) — Traceability matrix mapped to the SRS.

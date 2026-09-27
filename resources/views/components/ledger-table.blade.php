@@ -2,7 +2,7 @@
     'headers' => [],
 ])
 
-<div class="w-full overflow-x-auto border hairline-border bg-[var(--panel)]">
+<div class="ledger-table-frame w-full overflow-x-auto border hairline-border bg-[var(--panel)]">
     <table {{ $attributes->merge(['class' => 'ledger-table w-full']) }}>
         @if(isset($head))
             <thead>
@@ -17,7 +17,7 @@
                 </tr>
             </thead>
         @endif
-        <tbody class="divide-y divide-[var(--hairline)]">
+        <tbody>
             {{ $slot }}
         </tbody>
     </table>

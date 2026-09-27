@@ -9,28 +9,14 @@ use Livewire\Component;
 
 class SavingTipsManager extends Component
 {
-    /**
-     * Active tab filter: 'active', 'pinned', 'dismissed'.
-     */
     public string $activeTab = 'active';
 
-    /**
-     * Flash feedback notification message.
-     */
     public ?string $feedbackMessage = null;
 
-    /**
-     * Query string persistence for tab navigation.
-     *
-     * @var array<string, array<string, string>>
-     */
     protected $queryString = [
         'activeTab' => ['except' => 'active'],
     ];
 
-    /**
-     * Mount component and evaluate current tips.
-     */
     public function mount(SavingTipsService $service): void
     {
         $user = Auth::user();
@@ -39,9 +25,6 @@ class SavingTipsManager extends Component
         }
     }
 
-    /**
-     * Switch the current tab.
-     */
     public function setTab(string $tab): void
     {
         if (in_array($tab, ['active', 'pinned', 'dismissed'], true)) {
@@ -50,9 +33,6 @@ class SavingTipsManager extends Component
         }
     }
 
-    /**
-     * Pin a saving tip for long-term reference.
-     */
     public function pinTip(int $tipId): void
     {
         $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
@@ -61,9 +41,6 @@ class SavingTipsManager extends Component
         $this->feedbackMessage = 'Saved tip pinned to your bookmarks.';
     }
 
-    /**
-     * Unpin a saving tip back to active opportunities.
-     */
     public function unpinTip(int $tipId): void
     {
         $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
@@ -72,9 +49,6 @@ class SavingTipsManager extends Component
         $this->feedbackMessage = 'Tip unpinned and returned to active list.';
     }
 
-    /**
-     * Dismiss a saving tip.
-     */
     public function dismissTip(int $tipId): void
     {
         $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
@@ -83,9 +57,6 @@ class SavingTipsManager extends Component
         $this->feedbackMessage = 'Tip dismissed. You can restore it anytime from the Dismissed tab.';
     }
 
-    /**
-     * Restore a dismissed saving tip back to active.
-     */
     public function restoreTip(int $tipId): void
     {
         $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
@@ -94,9 +65,6 @@ class SavingTipsManager extends Component
         $this->feedbackMessage = 'Tip restored to active opportunities.';
     }
 
-    /**
-     * Re-evaluate deterministic rules manually.
-     */
     public function refreshTips(SavingTipsService $service): void
     {
         $user = Auth::user();
@@ -106,22 +74,19 @@ class SavingTipsManager extends Component
         }
     }
 
-    /**
-     * Render the saving tips manager interface.
-     */
     public function render()
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
 
-        $activeCount = SavingTip::where('user_id', $userId)->active()->count();
-        $pinnedCount = SavingTip::where('user_id', $userId)->pinned()->count();
-        $dismissedCount = SavingTip::where('user_id', $userId)->dismissed()->count();
+        $activeCount = SavingTip::where('user_id', $uid)->active()->count();
+        $pinnedCount = SavingTip::where('user_id', $uid)->pinned()->count();
+        $dismissedCount = SavingTip::where('user_id', $uid)->dismissed()->count();
 
-        $totalPotentialSavings = SavingTip::where('user_id', $userId)
+        $totalSavings = SavingTip::where('user_id', $uid)
             ->whereIn('status', ['active', 'pinned'])
             ->sum('estimated_savings');
 
-        $tips = SavingTip::where('user_id', $userId)
+        $tips = SavingTip::where('user_id', $uid)
             ->where('status', $this->activeTab)
             ->with('category')
             ->orderByDesc('estimated_savings')
@@ -132,7 +97,7 @@ class SavingTipsManager extends Component
             'activeCount' => $activeCount,
             'pinnedCount' => $pinnedCount,
             'dismissedCount' => $dismissedCount,
-            'totalPotentialSavings' => (float) $totalPotentialSavings,
+            'totalPotentialSavings' => (float) $totalSavings,
             'activeTab' => $this->activeTab,
         ])->layout('components.layouts.app', ['title' => 'Saving Tips']);
     }

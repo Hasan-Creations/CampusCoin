@@ -1,7 +1,7 @@
 # Campus Coin — Architecture
 
 ## 1. High-Level Overview
-Campus Coin is an authoritative, full-stack student budgeting and expense tracking platform built strictly with:
+Campus Coin is a full-stack student budgeting and expense-tracking application built with:
 - **Backend Framework:** Laravel 12 (PHP 8.4+)
 - **Templating & Presentation:** Laravel Blade + Livewire 3
 - **Relational Database:** MySQL/MariaDB (InnoDB, UTF-8 MB4)
@@ -82,7 +82,7 @@ app/
 ## 4. Financial Calculations & Monetary Representation
 - Floating-point representations (`float`, `double`) are strictly prohibited for monetary balance and arithmetic.
 - Relational fields use `DECIMAL(10, 2)`.
-- Backend computations utilize deterministic precision routines (`bcmath` or string math) rounded half-up to 2 decimal places.
+- Backend computations use deterministic precision routines (`bcmath` or string math) rounded half-up to 2 decimal places.
 
 ---
 
@@ -112,7 +112,7 @@ app/
 ## 7. AI Categorization & Advisory Integration Boundary
 - **Advisory Architecture:** The expense categorization assistant is an advisory utility behind `CategorizationProviderInterface`. It never silently overrides student category selections.
 - **Student Learned Feedback Layer:** `AiCategorizationService` checks student-specific learned corrections from `CategoryLearning` first. User choices take precedence over external AI.
-- **Deterministic Fallback:** If `OpenAiCategorizationProvider` fails, times out (3-second strict network limit), is unconfigured, or returns an invalid/hallucinated category, it seamlessly falls back to `HeuristicCategorizationProvider`.
+- **Deterministic Fallback:** If `OpenAiCategorizationProvider` fails, times out (3-second strict network limit), is unconfigured, or returns an invalid/hallucinated category, it falls back to `HeuristicCategorizationProvider`.
 - **Validation Shield:** All suggestions are checked against the student's available categories (`Category::forUser($userId)`). External models can never invent or assign non-existent categories.
 - **Zero Secret Leakage:** AI API keys are stored server-side via `config/services.php` and `.env`; no secrets are ever exposed to the client browser.
 
@@ -129,7 +129,7 @@ app/
   - Categories feature an `is_active` boolean column. Deactivated categories are immediately hidden from student creation/budget dropdowns, but remain intact in the database so historical transactions, reports, and ledger entries remain fully interpretable.
   - Hard deletion is protected by `canBeSafelyDeleted()`, which enforces that categories with referencing transactions, budgets, saving tips, or learned mappings cannot be hard deleted.
 - **High-Performance Telemetry Engine:**
-  - `AdminMetricsService` utilizes single-pass SQL aggregate functions (`COUNT`, `SUM`, `AVG`, `GROUP BY`) to compute platform volume, student active rates, category adoption, and the SRS-mandated Most-Used Categories leaderboard without loading raw Eloquent collections into PHP memory. Zero division and empty database states are strictly guarded.
+  - `AdminMetricsService` uses single-pass SQL aggregate functions (`COUNT`, `SUM`, `AVG`, `GROUP BY`) to compute platform volume, student active rates, category adoption, and the SRS-mandated Most-Used Categories leaderboard without loading raw Eloquent collections into PHP memory. It handles zero denominators and empty database results.
 
 ---
 

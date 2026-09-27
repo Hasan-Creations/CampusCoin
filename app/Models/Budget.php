@@ -12,11 +12,6 @@ class Budget extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'user_id',
         'category_id',
@@ -24,11 +19,6 @@ class Budget extends Model
         'month_year',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -36,42 +26,26 @@ class Budget extends Model
         ];
     }
 
-    /**
-     * The student owner of this budget goal.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * The expense category associated with this budget.
-     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Scope to budgets of a specific user.
-     */
     public function scopeForUser(Builder $query, int $userId): Builder
     {
         return $query->where('user_id', $userId);
     }
 
-    /**
-     * Scope to budgets for a specific month (YYYY-MM).
-     */
     public function scopeForMonth(Builder $query, string $monthYear): Builder
     {
         return $query->where('month_year', $monthYear);
     }
 
-    /**
-     * Calculate or retrieve the total spent in this budget's category for this month.
-     * Only considers actual expense transactions for this student.
-     */
     public function getSpentAmount(?string $preloadedSpent = null): string
     {
         if ($preloadedSpent !== null) {
@@ -96,9 +70,6 @@ class Budget extends Model
         return number_format((float) $spent, 2, '.', '');
     }
 
-    /**
-     * Remaining budget amount using BCMath (can be negative if over budget).
-     */
     public function getRemainingAmount(?string $spent = null): string
     {
         $spent = $spent ?? $this->getSpentAmount();
@@ -106,9 +77,6 @@ class Budget extends Model
         return bcsub((string) $this->amount, (string) $spent, 2);
     }
 
-    /**
-     * Percentage of budget consumed (can exceed 100%).
-     */
     public function getPercentageConsumed(?string $spent = null): float
     {
         $spent = $spent ?? $this->getSpentAmount();
@@ -121,9 +89,6 @@ class Budget extends Model
         return round(((float) $spent / $limit) * 100, 1);
     }
 
-    /**
-     * Determine if spending has strictly exceeded the budget limit.
-     */
     public function isOverBudget(?string $spent = null): bool
     {
         $spent = $spent ?? $this->getSpentAmount();
@@ -131,9 +96,6 @@ class Budget extends Model
         return bccomp((string) $spent, (string) $this->amount, 2) > 0;
     }
 
-    /**
-     * Determine if spending is near the limit (between 75% and 100% inclusive).
-     */
     public function isNearLimit(?string $spent = null): bool
     {
         $spent = $spent ?? $this->getSpentAmount();
@@ -142,9 +104,6 @@ class Budget extends Model
         return $pct >= 75.0 && $pct <= 100.0;
     }
 
-    /**
-     * Determine if spending is safely on track (under 75%).
-     */
     public function isOnTrack(?string $spent = null): bool
     {
         $spent = $spent ?? $this->getSpentAmount();
@@ -152,9 +111,6 @@ class Budget extends Model
         return $this->getPercentageConsumed($spent) < 75.0;
     }
 
-    /**
-     * Determine status token ('on_track', 'near_limit', 'over_budget').
-     */
     public function getStatus(?string $spent = null): string
     {
         $spent = $spent ?? $this->getSpentAmount();
@@ -170,9 +126,6 @@ class Budget extends Model
         return 'on_track';
     }
 
-    /**
-     * Human-readable status label.
-     */
     public function getStatusLabel(?string $spent = null): string
     {
         return match ($this->getStatus($spent)) {
@@ -182,9 +135,6 @@ class Budget extends Model
         };
     }
 
-    /**
-     * CSS token / styling class for status badge.
-     */
     public function getStatusBadgeClass(?string $spent = null): string
     {
         return match ($this->getStatus($spent)) {
@@ -194,9 +144,6 @@ class Budget extends Model
         };
     }
 
-    /**
-     * Progress bar color token.
-     */
     public function getProgressBarColor(?string $spent = null): string
     {
         return match ($this->getStatus($spent)) {
@@ -206,9 +153,6 @@ class Budget extends Model
         };
     }
 
-    /**
-     * Check if this budget is owned by the given student.
-     */
     public function isOwnedBy(?User $user): bool
     {
         if (! $user) {

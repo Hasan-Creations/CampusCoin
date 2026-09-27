@@ -121,7 +121,7 @@ class HeuristicCategorizationProvider implements CategorizationProviderInterface
             return null;
         }
 
-        // 1. Direct Category Name Match: Does any category name appear directly in description?
+        // Direct category name match
         foreach ($availableCategories as $category) {
             $catName = mb_strtolower(trim($category->name));
             if (mb_strlen($catName) >= 3 && $this->matchesText($normalized, $catName)) {
@@ -136,11 +136,10 @@ class HeuristicCategorizationProvider implements CategorizationProviderInterface
             }
         }
 
-        // 2. Multi-word and Single-word Semantic Rule Matching
+        // Match semantic keywords
         foreach ($this->rules as $group => $data) {
             foreach ($data['keywords'] as $keyword) {
                 if ($this->matchesText($normalized, $keyword)) {
-                    // Find matching category in available categories
                     $matchedCategory = $this->findCategoryForAliases($availableCategories, $data['category_aliases']);
 
                     if ($matchedCategory) {
@@ -164,30 +163,19 @@ class HeuristicCategorizationProvider implements CategorizationProviderInterface
         return null;
     }
 
-    /**
-     * Check if a keyword matches inside text using boundary or substring check.
-     */
     protected function matchesText(string $text, string $keyword): bool
     {
         if (str_contains($keyword, ' ')) {
             return str_contains($text, $keyword);
         }
 
-        // Word boundary match for single words (e.g. "gas" shouldn't match "vegas")
-        $pattern = '/\b'.preg_quote($keyword, '/').'\b/i';
-
-        return (bool) preg_match($pattern, $text);
+        // Single word boundary check
+        return (bool) preg_match('/\b'.preg_quote($keyword, '/').'\b/i', $text);
     }
 
-    /**
-     * Find a category matching any of the semantic aliases.
-     *
-     * @param  Collection<int, Category>  $categories
-     * @param  list<string>  $aliases
-     */
     protected function findCategoryForAliases(Collection $categories, array $aliases): ?Category
     {
-        // 1. Exact match on alias
+        // Exact match
         foreach ($aliases as $alias) {
             $cat = $categories->first(fn (Category $c) => mb_strtolower($c->name) === $alias);
             if ($cat) {
@@ -195,7 +183,7 @@ class HeuristicCategorizationProvider implements CategorizationProviderInterface
             }
         }
 
-        // 2. Partial / contains match on alias
+        // Partial match
         foreach ($aliases as $alias) {
             $cat = $categories->first(function (Category $c) use ($alias) {
                 $name = mb_strtolower($c->name);

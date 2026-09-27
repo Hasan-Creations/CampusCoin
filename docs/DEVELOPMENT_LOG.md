@@ -16,7 +16,7 @@
 - Student onboarding/registration screen with academic cohort select and live `.edu` campus domain validator.
 - Homepage with required Application Sitemap section (SRS §5.3).
 - Authorization middleware: `EnsureUserIsAdmin` and `EnsureUserIsActive`.
-- Comprehensive automated test suite in `tests/Feature/CampusCoinAuthTest.php` (11 tests, 45 assertions).
+- Automated tests in `tests/Feature/CampusCoinAuthTest.php` (11 tests, 45 assertions).
 
 ---
 
@@ -59,7 +59,7 @@
   - Pre-aggregated current month budget consumption to eliminate N+1 queries.
   - Dynamic "Budget Goals & Spending Caps" widget (SRS §4.4, §4.5) with real-time progress bars.
   - Prominent in-app alert banner when any category is near limit or over budget.
-  - Safe-to-Spend KPI card enhanced with total monthly budget cap.
+  - Safe-to-Spend KPI card now includes the total monthly budget cap.
   - Quick-navigation button to "Budgets" in dashboard header.
 - Automated testing (`tests/Feature/BudgetGoalsTest.php`):
   - 22 new feature tests covering creation, editing, deletion, cross-student isolation, expense consumption from ledger, exclusion of income transactions, exclusion of other months and students, percentage calculations, near-limit and over-budget threshold triggers, validation rules, and dashboard rendering.
@@ -136,7 +136,7 @@
   - `GET /reports/export/pdf` -> `ReportExportController@exportPdf`
   - `GET /reports/export/csv` -> `ReportExportController@exportCsv`
 - Automated Testing (`tests/Feature/MonthlyReportsTest.php`):
-  - 14 comprehensive feature tests covering unauthenticated access, tenant isolation on page and exports, report summary calculations, category-wise breakdowns, period presets, custom date filtering, category filtering, type filtering, daily/weekly velocity methods, PDF download and preview, and CSV streaming.
+  - 14 feature tests covering unauthenticated access, tenant isolation on page and exports, report summary calculations, category-wise breakdowns, period presets, custom date filtering, category filtering, type filtering, daily/weekly velocity methods, PDF download and preview, and CSV streaming.
   - Full suite passed: **77 tests, 389 assertions** (100% pass rate).
 
 ### Verified
@@ -183,7 +183,7 @@
   - Strict tenant isolation: verifies `tip->user_id === Auth::id()` before performing state transitions.
 - Blade View (`resources/views/livewire/student/saving-tips-manager.blade.php`):
   - Precision fintech styling: 1px hairline borders (`#E2E8F0` / `#27272A`), Space Grotesk headings, Inter body, JetBrains Mono monetary figures.
-  - Segmented tab controls, trigger detail pill tags, actionable suggestions, and empty state cards.
+  - Segmented tab controls, trigger detail tags, saving suggestions, and empty state cards.
 - Dashboard Integration (`app/Livewire/Student/Dashboard.php` & `resources/views/livewire/student/dashboard.blade.php`):
   - "Personalized Saving Opportunities" widget presenting the top 3 prioritized active/pinned tips.
   - Inline Pin and Dismiss actions directly on dashboard cards with reactive refresh.
@@ -192,7 +192,7 @@
   - Route `GET /tips` (`student.tips`) protected by `auth`, `active`, and student role checks.
   - Sidebar navigation updated with active state indicator and Lightbulb icon.
 - Automated Testing (`tests/Feature/SavingTipsTest.php`):
-  - 19 comprehensive feature tests (82 assertions):
+  - 19 feature tests (82 assertions):
     - Category spending above average rule trigger and thresholds
     - Category budget alert rule trigger (near-limit & over-budget)
     - High spending share rule (>40% threshold)
@@ -247,7 +247,7 @@
     - Negative amounts and missing data safely caught and flagged.
     - Confirm button creates ledger transactions and persists learned category mappings.
 - Automated Testing (`tests/Feature/AiCategorizationTest.php`):
-  - 15 comprehensive feature tests covering heuristic rules, OpenAI mock response, failure/timeout fallback, hallucinated category rejection, learned corrections precedence, student tenant isolation, repeated correction confidence boost, Livewire advisory UI, manual override priority, non-AI fallback, CSV batch parsing, bounded 50 rows, invalid row safety, and CSV import confirmation.
+  - 15 feature tests covering heuristic rules, OpenAI mock response, failure/timeout fallback, hallucinated category rejection, learned corrections precedence, student tenant isolation, repeated correction confidence boost, Livewire advisory UI, manual override priority, non-AI fallback, CSV batch parsing, bounded 50 rows, invalid row safety, and CSV import confirmation.
   - Full suite passed: **92 tests, 459 assertions** (100% pass rate).
 
 ### Verified
@@ -335,7 +335,7 @@
   - Configured `role="status" aria-live="polite"` on success banners and budget notices, and `role="alert" aria-live="assertive"` on error alerts and over-budget notifications.
   - Provided descriptive `aria-label` attributes for icon-only action buttons (Pin, Unpin, Dismiss, Restore, Edit, Inspect, Deactivate, Reactivate).
 - **Automated Testing (`tests/Feature/AccessibilityAndHardeningTest.php`):**
-  - 12 comprehensive feature tests (74 assertions):
+  - 12 feature tests (74 assertions):
     - Welcome page skip link, main content landmark, font scaling, theme toggle, and head boot script.
     - Authentication forms accessibility, skip links, and browser `autocomplete` attributes.
     - Student layout skip navigation, font size selector, mobile drawer, and main content landmark.

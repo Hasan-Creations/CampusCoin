@@ -16,26 +16,26 @@ class ReportExportController extends Controller
 {
     public function exportPdf(Request $request, FinancialCalculationService $calculationService): Response
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
         $user = Auth::user();
 
         [$startDate, $endDate, $filterLabels, $filters] = $this->resolveReportParameters($request);
 
-        $summary = $calculationService->getReportSummary($userId, $startDate, $endDate, $filters);
-        $categoryReport = $calculationService->getCategoryWiseReport($userId, $startDate, $endDate, $filters);
+        $summary = $calculationService->getReportSummary($uid, $startDate, $endDate, $filters);
+        $categoryReport = $calculationService->getCategoryWiseReport($uid, $startDate, $endDate, $filters);
 
-        $txQuery = Transaction::where('user_id', $userId)
+        $query = Transaction::where('user_id', $uid)
             ->whereBetween('transaction_date', [$startDate->toDateString(), $endDate->toDateString()])
             ->with('category')
             ->orderBy('transaction_date', 'desc');
 
         if (! empty($filters['category_id'])) {
-            $txQuery->where('category_id', $filters['category_id']);
+            $query->where('category_id', $filters['category_id']);
         }
         if (! empty($filters['type'])) {
-            $txQuery->where('type', $filters['type']);
+            $query->where('type', $filters['type']);
         }
-        $transactions = $txQuery->get();
+        $transactions = $query->get();
 
         $viewData = [
             'user' => $user,
@@ -47,7 +47,6 @@ class ReportExportController extends Controller
             'filterLabels' => $filterLabels,
         ];
 
-        // If preview / HTML requested (or print view)
         if ($request->query('format') === 'html' || $request->has('preview')) {
             return response()->view('reports.pdf', $viewData);
         }
@@ -60,45 +59,40 @@ class ReportExportController extends Controller
         return $pdf->download($filename);
     }
 
-    /**
-     * Export the financial statement data and ledger as a structured CSV.
-     */
     public function exportCsv(Request $request, FinancialCalculationService $calculationService): StreamedResponse
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
         $user = Auth::user();
 
         [$startDate, $endDate, $filterLabels, $filters] = $this->resolveReportParameters($request);
 
-        $summary = $calculationService->getReportSummary($userId, $startDate, $endDate, $filters);
-        $categoryReport = $calculationService->getCategoryWiseReport($userId, $startDate, $endDate, $filters);
+        $summary = $calculationService->getReportSummary($uid, $startDate, $endDate, $filters);
+        $categoryReport = $calculationService->getCategoryWiseReport($uid, $startDate, $endDate, $filters);
 
-        $txQuery = Transaction::where('user_id', $userId)
+        $query = Transaction::where('user_id', $uid)
             ->whereBetween('transaction_date', [$startDate->toDateString(), $endDate->toDateString()])
             ->with('category')
             ->orderBy('transaction_date', 'desc');
 
         if (! empty($filters['category_id'])) {
-            $txQuery->where('category_id', $filters['category_id']);
+            $query->where('category_id', $filters['category_id']);
         }
         if (! empty($filters['type'])) {
-            $txQuery->where('type', $filters['type']);
+            $query->where('type', $filters['type']);
         }
-        $transactions = $txQuery->get();
+        $transactions = $query->get();
 
         $filename = 'campus_coin_report_'.$startDate->format('Ymd').'_'.$endDate->format('Ymd').'.csv';
 
         return response()->streamDownload(function () use ($user, $summary, $categoryReport, $transactions) {
             $handle = fopen('php://output', 'w');
 
-            // Metadata
             fputcsv($handle, ['Campus Coin — Financial Statement']);
             fputcsv($handle, ['Student', $user->name, 'Email', $user->email]);
             fputcsv($handle, ['Period', $summary['period_label']]);
             fputcsv($handle, ['Generated', Carbon::now()->toDateTimeString()]);
             fputcsv($handle, []);
 
-            // Summary KPIs
             fputcsv($handle, ['--- EXECUTIVE SUMMARY ---']);
             fputcsv($handle, ['Metric', 'Amount / Value']);
             fputcsv($handle, ['Total Inflow', '$'.$summary['total_income']]);
@@ -108,7 +102,6 @@ class ReportExportController extends Controller
             fputcsv($handle, ['Total Entries', $summary['total_count']]);
             fputcsv($handle, []);
 
-            // Category Breakdown
             fputcsv($handle, ['--- CATEGORY BREAKDOWN ---']);
             fputcsv($handle, ['Category', 'Type', 'Spent', '% Share', 'Count', 'Avg Amount', 'Prior Spent', 'Delta']);
             foreach ($categoryReport['categories'] as $c) {
@@ -125,7 +118,6 @@ class ReportExportController extends Controller
             }
             fputcsv($handle, []);
 
-            // Detailed Ledger Entries
             fputcsv($handle, ['--- VERIFIED LEDGER TRANSACTIONS ---']);
             fputcsv($handle, ['Date', 'Merchant', 'Category', 'Type', 'Amount', 'Payment Method', 'Recurring', 'Description']);
             foreach ($transactions as $t) {
@@ -147,11 +139,6 @@ class ReportExportController extends Controller
         ]);
     }
 
-    /**
-     * Parse query parameters into date range and filter arrays.
-     *
-     * @return array{0: Carbon, 1: Carbon, 2: array<int, string>, 3: array{category_id?: ?int, type?: ?string}}
-     */
     protected function resolveReportParameters(Request $request): array
     {
         $preset = $request->query('preset', 'this_month');
@@ -188,8 +175,8 @@ class ReportExportController extends Controller
         }
 
         $filterLabels = [];
-
         $filters = [];
+
         if ($request->filled('category_id')) {
             $catId = (int) $request->query('category_id');
             $filters['category_id'] = $catId;

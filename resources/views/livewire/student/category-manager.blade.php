@@ -7,7 +7,7 @@
         {{-- ===================================================== --}}
         {{-- HEADER BAR & ACTION                                    --}}
         {{-- ===================================================== --}}
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b hairline-border pb-6">
+        <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <span class="text-xs font-caps text-[var(--muted)]">Classification System</span>
                 <h1 class="font-display text-2xl sm:text-3xl font-medium text-[var(--ink)] mt-1 headline-rule">
@@ -94,7 +94,7 @@
                 <p class="text-xs text-[var(--muted)] max-w-sm mx-auto">
                     Try adjusting your search criteria or create a new personal category.
                 </p>
-                <x-button variant="accent" wire:click="openCreateModal">
+                <x-button variant="secondary" wire:click="openCreateModal">
                     Create Category
                 </x-button>
             </div>
@@ -236,7 +236,7 @@
                                             wire:click="$set('color', '{{ $hex }}')"
                                             aria-label="Select color {{ $label }}"
                                             title="{{ $label }}"
-                                            class="w-7 h-7 border transition-colors {{ $color === $hex ? 'ring-2 ring-offset-1 ring-[var(--ink)]' : 'border-black/10' }}"
+                                            class="w-7 h-7 border transition-colors {{ $color === $hex ? 'ring-2 ring-offset-1 ring-[var(--ink)]' : 'border-[var(--hairline)]' }}"
                                             style="background-color: {{ $hex }};">
                                     </button>
                                 @endforeach

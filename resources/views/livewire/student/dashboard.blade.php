@@ -173,7 +173,7 @@
         {{-- BUDGET GOALS & CONSUMPTION                             --}}
         {{-- ===================================================== --}}
         <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
-            <div class="flex items-baseline justify-between border-b hairline-border pb-4">
+            <div class="section-header flex items-baseline justify-between">
                 <div>
                     <h2 class="font-display text-lg font-medium text-[var(--ink)] headline-rule">
                         Budget Goals & Spending Caps
@@ -239,7 +239,7 @@
         {{-- INTELLIGENT SAVING OPPORTUNITIES WIDGET               --}}
         {{-- ===================================================== --}}
         <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
-            <div class="flex items-baseline justify-between border-b hairline-border pb-4">
+            <div class="section-header flex items-baseline justify-between">
                 <div>
                     <h2 class="font-display text-lg font-medium text-[var(--ink)] headline-rule">
                         Personalized Saving Opportunities
@@ -341,7 +341,7 @@
         {{-- SIX-MONTH CASH FLOW TRENDS (SRS §4.4, §4.6)            --}}
         {{-- ===================================================== --}}
         <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 border-b hairline-border pb-4">
+            <div class="section-header flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3">
                 <div>
                     <h2 class="font-display text-lg font-medium text-[var(--ink)] headline-rule">
                         Historical Cash Flow (Income vs. Expense)
@@ -423,9 +423,9 @@
             </div>
 
             {{-- 6-Month Detailed Strip (Hairline-divided, zero card nesting) --}}
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border-t hairline-border pt-4 divide-y sm:divide-y-0 sm:divide-x divide-[var(--hairline)]">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-4">
                 @foreach ($sixMonthTrends['months'] as $m)
-                    <div class="p-3 space-y-1">
+                    <div class="p-3 space-y-1 bg-[var(--paper)]">
                         <div class="font-mono text-[11px] font-medium text-[var(--ink)]">
                             {{ $m['month_label'] }}
                         </div>
@@ -444,7 +444,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {{-- Category Spending (7-col) --}}
             <div class="lg:col-span-7 bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 border-b hairline-border pb-4">
+                <div class="section-header flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3">
                     <div>
                         <h2 class="font-display text-lg font-medium text-[var(--ink)] headline-rule">
                             Category Spending Trends
@@ -507,7 +507,7 @@
 
             {{-- Recent Transactions (5-col) --}}
             <div class="lg:col-span-5 bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
-                <div class="flex items-baseline justify-between border-b hairline-border pb-4">
+                <div class="section-header flex items-baseline justify-between">
                     <div>
                         <h2 class="font-display text-lg font-medium text-[var(--ink)] headline-rule">
                             Recent Entries
@@ -546,20 +546,20 @@
         {{-- ===================================================== --}}
         {{-- ALL-TIME LEDGER FOOTER (Single hairline divided row)   --}}
         {{-- ===================================================== --}}
-        <div class="bg-[var(--panel)] border hairline-border grid grid-cols-3 divide-x divide-[var(--hairline)] text-center">
-            <div class="p-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+            <div class="p-4 bg-[var(--panel)]">
                 <div class="text-xs font-caps text-[var(--muted)]">All-Time Inflow</div>
                 <div class="mt-1 font-mono text-base font-medium text-[var(--accent)] tabular-nums">
                     ${{ number_format($allTimeIncome, 2) }}
                 </div>
             </div>
-            <div class="p-4">
+            <div class="p-4 bg-[var(--panel)]">
                 <div class="text-xs font-caps text-[var(--muted)]">All-Time Outflow</div>
                 <div class="mt-1 font-mono text-base font-medium text-[var(--expense)] tabular-nums">
                     ${{ number_format($allTimeExpense, 2) }}
                 </div>
             </div>
-            <div class="p-4">
+            <div class="p-4 bg-[var(--panel)]">
                 <div class="text-xs font-caps text-[var(--muted)]">Total Ledger Entries</div>
                 <div class="mt-1 font-mono text-base font-medium text-[var(--ink)] tabular-nums">
                     {{ number_format($totalCount) }}

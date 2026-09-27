@@ -3,7 +3,6 @@
 namespace App\Livewire\Student;
 
 use App\Models\Budget;
-use App\Models\Category;
 use App\Models\SavingTip;
 use App\Models\Transaction;
 use App\Services\FinancialCalculationService;
@@ -14,15 +13,8 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    /**
-     * Active time period for category spending comparison and analytics.
-     * Allowed: 'this_month', 'last_3_months', 'last_6_months', 'year'.
-     */
     public string $timePeriod = 'this_month';
 
-    /**
-     * Set the active time period filter dynamically.
-     */
     public function setTimePeriod(string $period): void
     {
         if (in_array($period, ['this_month', 'last_3_months', 'last_6_months', 'year'], true)) {
@@ -30,36 +22,24 @@ class Dashboard extends Component
         }
     }
 
-    /**
-     * Pin a saving tip from the dashboard widget.
-     */
     public function pinTip(int $tipId): void
     {
         $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
         $tip->pin();
     }
 
-    /**
-     * Unpin a saving tip from the dashboard widget.
-     */
     public function unpinTip(int $tipId): void
     {
         $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
         $tip->unpin();
     }
 
-    /**
-     * Dismiss a saving tip from the dashboard widget.
-     */
     public function dismissTip(int $tipId): void
     {
         $tip = SavingTip::where('user_id', Auth::id())->findOrFail($tipId);
         $tip->dismiss();
     }
 
-    /**
-     * Render the live dashboard with real financial KPIs, 6-month cash flow trends, and comparative analytics.
-     */
     public function render(FinancialCalculationService $calculationService, SavingTipsService $savingTipsService)
     {
         $userId = Auth::id();
@@ -69,7 +49,6 @@ class Dashboard extends Component
         $monthEnd = $now->copy()->endOfMonth();
         $currentMonthYear = $now->format('Y-m');
 
-        // --- Current Month Aggregates ---
         $monthlyIncome = Transaction::where('user_id', $userId)
             ->where('type', 'income')
             ->whereBetween('transaction_date', [$monthStart, $monthEnd])
@@ -83,12 +62,10 @@ class Dashboard extends Component
         $netBalance = bcsub((string) $monthlyIncome, (string) $monthlyExpense, 2);
         $savedAmount = max(0, (float) $netBalance);
 
-        // --- All-time Totals ---
         $allTimeIncome = Transaction::where('user_id', $userId)->where('type', 'income')->sum('amount');
         $allTimeExpense = Transaction::where('user_id', $userId)->where('type', 'expense')->sum('amount');
         $totalCount = Transaction::where('user_id', $userId)->count();
 
-        // --- Top Spending Category this Month ---
         $topCategory = Transaction::where('user_id', $userId)
             ->where('type', 'expense')
             ->whereBetween('transaction_date', [$monthStart, $monthEnd])
@@ -98,7 +75,6 @@ class Dashboard extends Component
             ->with('category')
             ->first();
 
-        // --- Category Breakdown for current month expenses ---
         $expenseBreakdown = Transaction::where('user_id', $userId)
             ->where('type', 'expense')
             ->whereBetween('transaction_date', [$monthStart, $monthEnd])
@@ -109,7 +85,6 @@ class Dashboard extends Component
             ->limit(5)
             ->get();
 
-        // --- Recent Transactions ---
         $recentTransactions = Transaction::where('user_id', $userId)
             ->with('category')
             ->orderBy('transaction_date', 'desc')
@@ -117,17 +92,14 @@ class Dashboard extends Component
             ->limit(6)
             ->get();
 
-        // --- Savings Goal Progress ---
         $savingsGoal = (float) ($user->savings_goal ?? 0);
         $savingsProgress = $savingsGoal > 0
             ? min(100, round(($savedAmount / $savingsGoal) * 100, 1))
             : 0;
 
-        // --- Safe-to-Spend (remaining allowance for the month) ---
         $allowance = (float) ($user->monthly_allowance ?? 0);
         $safeToSpend = max(0, $allowance - (float) $monthlyExpense);
 
-        // --- Month-over-month change (last month) ---
         $lastMonthStart = $now->copy()->subMonth()->startOfMonth();
         $lastMonthEnd = $now->copy()->subMonth()->endOfMonth();
         $lastMonthExpense = Transaction::where('user_id', $userId)
@@ -139,7 +111,6 @@ class Dashboard extends Component
             ? round((((float) $monthlyExpense - (float) $lastMonthExpense) / (float) $lastMonthExpense) * 100, 1)
             : null;
 
-        // --- Current Month Budget Goals & Alerts ---
         $expensesByCategory = Transaction::where('user_id', $userId)
             ->where('type', 'expense')
             ->whereBetween('transaction_date', [$monthStart, $monthEnd])
@@ -182,11 +153,9 @@ class Dashboard extends Component
         $overBudgets = $decoratedBudgets->filter(fn ($item) => $item['status'] === 'over_budget');
         $nearLimitBudgets = $decoratedBudgets->filter(fn ($item) => $item['status'] === 'near_limit');
 
-        // --- Six-Month Cash Flow Trends & Advanced Analytics (Phase 3) ---
         $sixMonthTrends = $calculationService->getSixMonthCashFlow($userId, $now);
         $categoryComparisons = $calculationService->getCategoryComparisons($userId, $this->timePeriod, $now);
 
-        // --- Deterministic Saving Tips & Opportunities (Phase 5) ---
         if ($user && SavingTip::where('user_id', $userId)->count() === 0) {
             $savingTipsService->syncTips($user, $now);
         }

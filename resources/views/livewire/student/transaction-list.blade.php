@@ -5,7 +5,7 @@
 
     <div class="space-y-6">
         <!-- Top Summary Banner & Quick-Add -->
-        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 border-b hairline-border pb-6">
+        <div class="page-header flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4">
             <div>
                 <h1 class="font-display text-2xl sm:text-3xl font-medium text-[var(--ink)] headline-rule">
                     Transaction History
@@ -124,7 +124,7 @@
                     <p class="text-xs text-[var(--muted)] max-w-sm mx-auto">
                         Start tracking your campus expenses to unlock insights.
                     </p>
-                    <x-button variant="accent" wire:click="openCreateModal" class="mt-2">
+                    <x-button variant="secondary" wire:click="openCreateModal" class="mt-2">
                         Add First Transaction
                     </x-button>
                 @else
@@ -143,7 +143,7 @@
             <!-- Mobile view (< 640px) -->
             <div class="sm:hidden space-y-3">
                 @foreach ($transactions as $t)
-                    <div class="bg-[var(--panel)] border hairline-border p-4 space-y-3">
+                    <div class="transaction-data bg-[var(--panel)] border hairline-border p-4 space-y-3">
                         <div class="flex items-start justify-between gap-3">
                             <div class="min-w-0 flex-1">
                                 <div class="font-medium text-xs text-[var(--ink)] truncate">
@@ -439,7 +439,7 @@
                                         <strong class="text-[var(--accent)] ml-1">{{ $activeSuggestion['categoryName'] }}</strong>
                                         <span class="font-mono text-[11px] text-[var(--muted)] ml-1">({{ round($activeSuggestion['confidence'] * 100) }}%)</span>
                                     </div>
-                                    <x-button variant="accent" type="button" wire:click="acceptSuggestion" class="py-1 px-3 text-xs">
+                                    <x-button variant="secondary" type="button" wire:click="acceptSuggestion" class="py-1 px-3 text-xs">
                                         Accept
                                     </x-button>
                                 </div>
@@ -581,10 +581,10 @@
                     @else
                         <!-- STEP 2: REVIEW BATCH SUGGESTIONS -->
                         <div class="space-y-4 overflow-y-auto flex-1 max-h-[60vh]">
-                            <div class="border hairline-border overflow-x-auto">
+                            <div class="ledger-table-frame border hairline-border overflow-x-auto">
                                 <table class="ledger-table w-full text-xs text-left">
                                     <thead>
-                                        <tr class="border-b hairline-border bg-[var(--panel)]">
+                                        <tr class="bg-[var(--panel)]">
                                             <th>Date</th>
                                             <th>Merchant / Description</th>
                                             <th>Type</th>
@@ -593,7 +593,7 @@
                                             <th>Assigned Category</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-[var(--hairline)]">
+                                    <tbody>
                                         @foreach ($importRows as $idx => $row)
                                             <tr class="table-row-tactile">
                                                 <td class="font-mono text-xs whitespace-nowrap text-[var(--muted)]">

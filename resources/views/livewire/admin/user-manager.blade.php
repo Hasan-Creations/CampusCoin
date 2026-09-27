@@ -42,18 +42,18 @@
     </div>
 
     <!-- Quick Stats Bar -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 border hairline-border bg-[var(--panel)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--hairline)]">
-        <div class="p-5 space-y-2">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">Total Registered Students</div>
             <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--ink)] tabular-nums tracking-tight">{{ number_format($totalStudents) }}</div>
         </div>
 
-        <div class="p-5 space-y-2">
+        <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--accent)]">Active Accounts</div>
             <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--accent)] tabular-nums tracking-tight">{{ number_format($activeStudents) }}</div>
         </div>
 
-        <div class="p-5 space-y-2">
+        <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--expense)]">Disabled / Deactivated</div>
             <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--expense)] tabular-nums tracking-tight">{{ number_format($disabledStudents) }}</div>
         </div>
@@ -280,20 +280,20 @@
                 <!-- Ledger & Operational Activity -->
                 <div class="space-y-3">
                     <div class="text-xs font-caps text-[var(--muted)]">Ledger & Engagement Telemetry</div>
-                    <div class="grid grid-cols-4 border hairline-border bg-[var(--paper)] divide-x divide-[var(--hairline)] text-center">
-                        <div class="p-2.5">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                        <div class="p-2.5 bg-[var(--panel)]">
                             <div class="font-mono text-lg font-medium text-[var(--ink)] tabular-nums">{{ $inspectedUser->transactions_count }}</div>
                             <div class="text-[9px] font-caps text-[var(--muted)] mt-0.5">Transactions</div>
                         </div>
-                        <div class="p-2.5">
+                        <div class="p-2.5 bg-[var(--panel)]">
                             <div class="font-mono text-lg font-medium text-[var(--ink)] tabular-nums">{{ $inspectedUser->budgets_count }}</div>
                             <div class="text-[9px] font-caps text-[var(--muted)] mt-0.5">Budgets</div>
                         </div>
-                        <div class="p-2.5">
+                        <div class="p-2.5 bg-[var(--panel)]">
                             <div class="font-mono text-lg font-medium text-[var(--ink)] tabular-nums">{{ $inspectedUser->saving_tips_count }}</div>
                             <div class="text-[9px] font-caps text-[var(--muted)] mt-0.5">Tips</div>
                         </div>
-                        <div class="p-2.5">
+                        <div class="p-2.5 bg-[var(--panel)]">
                             <div class="font-mono text-lg font-medium text-[var(--ink)] tabular-nums">{{ $inspectedUser->category_learnings_count }}</div>
                             <div class="text-[9px] font-caps text-[var(--muted)] mt-0.5">Learnings</div>
                         </div>

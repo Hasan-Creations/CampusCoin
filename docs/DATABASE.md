@@ -102,7 +102,7 @@ Monthly limits by student and category.
 ---
 
 ### 2.5 `saving_tips` *(Phase 5 — Implemented & Verified)*
-Personalized saving opportunities generated deterministically from student financial metrics.
+Saving opportunities generated from each student's financial metrics.
 
 | Column | Type | Nullable | Default | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -112,7 +112,7 @@ Personalized saving opportunities generated deterministically from student finan
 | `category_id` | `BIGINT UNSIGNED` | Yes | `NULL` | Foreign key to `categories.id` (if category-specific) |
 | `title` | `VARCHAR(255)` | No | — | Concise headline |
 | `message` | `TEXT` | No | — | Trigger explanation and diagnostic context |
-| `suggestion` | `TEXT` | No | — | Concrete actionable financial advice |
+| `suggestion` | `TEXT` | No | — | Concrete advice about saving money |
 | `trigger_data` | `JSON` | Yes | `NULL` | Structured metric snapshots |
 | `estimated_savings` | `DECIMAL(10,2)` | No | `0.00` | Calculated potential monthly savings impact |
 | `status` | `ENUM('active','dismissed','pinned')` | No | `'active'` | Tip lifecycle state |

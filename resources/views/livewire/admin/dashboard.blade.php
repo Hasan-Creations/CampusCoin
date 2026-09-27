@@ -28,7 +28,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b hairline-border">
         <div>
             <h1 class="font-display text-2xl sm:text-3xl font-medium tracking-tight text-[var(--ink)] headline-rule">System Operations & Metric Telemetry</h1>
-            <p class="text-xs sm:text-sm text-[var(--muted)] mt-1.5">Platform-level student governance, global category administration, and operational metrics</p>
+            <p class="text-xs sm:text-sm text-[var(--muted)] mt-1.5">Manage student accounts, shared categories, and usage metrics.</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
             <x-button variant="secondary" href="{{ route('admin.categories') }}">
@@ -43,9 +43,9 @@
     </div>
 
     <!-- 4 High-Level Telemetry Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border hairline-border bg-[var(--panel)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--hairline)]">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <!-- Students Metric -->
-        <div class="p-5 space-y-3">
+        <div class="p-5 space-y-3 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Total Students</span>
             </div>
@@ -63,7 +63,7 @@
         </div>
 
         <!-- Platform Ledger Volume -->
-        <div class="p-5 space-y-3">
+        <div class="p-5 space-y-3 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Tracked Ledger Volume</span>
             </div>
@@ -77,7 +77,7 @@
         </div>
 
         <!-- Ledger Transactions Count -->
-        <div class="p-5 space-y-3">
+        <div class="p-5 space-y-3 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Logged Transactions</span>
             </div>
@@ -91,7 +91,7 @@
         </div>
 
         <!-- Category & Budget Coverage -->
-        <div class="p-5 space-y-3">
+        <div class="p-5 space-y-3 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Category Governance</span>
             </div>

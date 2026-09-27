@@ -18,7 +18,7 @@
         }
         .header-table {
             width: 100%;
-            border-bottom: 2px solid #059669;
+            border-bottom: 2px solid #234F3B;
             padding-bottom: 12px;
             margin-bottom: 16px;
         }
@@ -26,7 +26,6 @@
             font-size: 20px;
             font-weight: 700;
             color: #0f172a;
-            letter-spacing: -0.5px;
         }
         .brand-accent {
             color: #059669;
@@ -34,8 +33,7 @@
         .brand-sub {
             font-size: 9px;
             color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0;
             margin-top: 2px;
         }
         .report-meta {
@@ -45,7 +43,6 @@
         }
         .student-strip {
             background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
             border-radius: 4px;
             padding: 10px 14px;
             margin-bottom: 18px;
@@ -63,36 +60,34 @@
         .section-title {
             font-size: 12px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0;
             color: #0f172a;
             margin-top: 18px;
             margin-bottom: 8px;
-            border-left: 3px solid #059669;
             padding-left: 6px;
         }
         .kpi-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 6px;
             margin-bottom: 18px;
         }
         .kpi-table td {
-            border: 1px solid #e2e8f0;
+            border: 0;
             padding: 8px 12px;
-            background-color: #ffffff;
+            background-color: #f8fafc;
             width: 25%;
         }
         .kpi-label {
             font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0;
             color: #64748b;
             margin-bottom: 4px;
         }
         .kpi-value {
             font-size: 15px;
             font-weight: 700;
-            font-family: monospace, monospace;
+            font-family: Arial, sans-serif;
             color: #0f172a;
         }
         .kpi-sub {
@@ -107,16 +102,17 @@
         }
         .data-table th {
             background-color: #f1f5f9;
-            border: 1px solid #cbd5e1;
+            border: 0;
+            border-bottom: 1px solid #DAD8CC;
             padding: 6px 8px;
             font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0;
             text-align: left;
             color: #334155;
         }
         .data-table td {
-            border: 1px solid #e2e8f0;
+            border: 0;
+            border-bottom: 1px solid #DAD8CC;
             padding: 6px 8px;
             font-size: 10px;
             color: #1e293b;
@@ -141,7 +137,7 @@
         }
         .footer {
             margin-top: 24px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #DAD8CC;
             padding-top: 8px;
             font-size: 8px;
             color: #94a3b8;
@@ -153,17 +149,16 @@
             font-size: 8px;
             font-weight: 600;
             border-radius: 3px;
-            text-transform: uppercase;
         }
         .badge-income {
             background-color: #ecfdf5;
             color: #047857;
-            border: 1px solid #a7f3d0;
+            border: 0;
         }
         .badge-expense {
             background-color: #fff1f2;
             color: #be123c;
-            border: 1px solid #fecdd3;
+            border: 0;
         }
     </style>
 </head>
@@ -174,7 +169,7 @@
         <tr>
             <td>
                 <div class="brand-title">Campus<span class="brand-accent">Coin</span></div>
-                <div class="brand-sub">Smart Spending &bull; Official Financial Statement</div>
+                <div class="brand-sub">Spending Summary &bull; Financial Report</div>
             </td>
             <td class="report-meta">
                 <div><strong>Period:</strong> {{ $periodLabel }}</div>
@@ -199,7 +194,7 @@
     </div>
 
     {{-- Summary KPIs --}}
-    <div class="section-title">Executive Financial Summary</div>
+    <div class="section-title">Financial Summary</div>
     <table class="kpi-table">
         <tr>
             <td>

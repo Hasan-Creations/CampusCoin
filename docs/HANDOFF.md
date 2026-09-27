@@ -61,7 +61,7 @@ php artisan serve
 ## 4. Crucial Business & Architectural Rules
 1. **Never use floats for money:** All monetary numbers must be `DECIMAL(10,2)` in database and string/BCMath in business logic.
 2. **Strict Data Isolation:** Never query transactions, budgets, or categories without scoping to `where('user_id', Auth::id())`. A student must never see another student's data.
-3. **Ledger-Calculated Budget Consumption:** Do not duplicate or cache transaction spending inside the `budgets` table; compute it dynamically from actual expense transactions.
+3. **Ledger-Calculated Budget Consumption:** Do not duplicate or cache transaction spending inside the `budgets` table; calculate it from actual expense transactions.
 4. **Expense-Only Budgets:** Budget goals are strictly restricted to `expense` categories.
 5. **No Design Anti-Patterns:**
    - No pill buttons (no `rounded-full` or 9999px radius).

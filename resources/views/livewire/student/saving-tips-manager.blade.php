@@ -7,7 +7,7 @@
         {{-- ===================================================== --}}
         {{-- HEADER BAR: TITLE & RE-EVALUATE ACTION                  --}}
         {{-- ===================================================== --}}
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b hairline-border pb-6">
+        <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <span class="text-xs font-caps text-[var(--muted)]">
                     Deterministic Financial Intelligence &bull; Active Analysis
@@ -16,11 +16,11 @@
                     Saving Opportunities
                 </h1>
                 <p class="text-xs text-[var(--muted)] mt-1.5">
-                    Actionable, data-driven saving tips evaluated directly from your spending ledger, category budgets, and savings targets.
+                    Saving tips based on your transactions, category budgets, and savings target.
                 </p>
             </div>
 
-            <x-button variant="secondary" wire:click="refreshTips">
+            <x-button variant="accent" wire:click="refreshTips">
                 <x-icon name="refresh-cw" class="w-3.5 h-3.5" wire:loading.class="animate-spin" wire:target="refreshTips" />
                 <span>Re-evaluate Ledger</span>
             </x-button>
@@ -147,7 +147,7 @@
                     @elseif ($activeTab === 'dismissed')
                         You have not dismissed any tips. When you dismiss tips you don't wish to track, they are archived here for optional restoration.
                     @else
-                        Your financial ledger is operating strictly within historical averages and category budgets. Continue logging transactions to maintain real-time evaluation.
+                        Your current spending is within its historical averages and category budgets. Keep logging transactions to update these checks.
                     @endif
                 </p>
 
@@ -170,7 +170,7 @@
                                 {{-- Category Badge or Ledger Badge --}}
                                 @if ($tip->category)
                                     <span class="badge text-white text-xs"
-                                          style="background-color: {{ $tip->category->color ?? '#64748B' }}; border-color: {{ $tip->category->color ?? '#64748B' }};">
+                                        style="background-color: {{ $tip->category->color ?? 'var(--accent)' }}; border-color: {{ $tip->category->color ?? 'var(--accent)' }};">
                                         <x-icon :name="$tip->category->icon ?? 'tag'" class="w-3.5 h-3.5" />
                                         <span>{{ $tip->category->name }}</span>
                                     </span>
@@ -219,7 +219,7 @@
                         <div class="p-3.5 border hairline-border bg-[var(--paper)] space-y-1">
                             <div class="flex items-center gap-1.5 text-[11px] font-caps text-[var(--accent)]">
                                 <x-icon name="compass" class="w-3.5 h-3.5" />
-                                <span>Actionable Recommendation</span>
+                                <span>Suggested Next Step</span>
                             </div>
                             <p class="text-xs font-medium text-[var(--ink)] leading-normal">
                                 {{ $tip->suggestion }}
@@ -243,7 +243,7 @@
                                         <x-icon name="bookmark" class="w-3.5 h-3.5" />
                                         <span>Pin Tip</span>
                                     </x-button>
-                                    <x-button variant="primary" wire:click="dismissTip({{ $tip->id }})" aria-label="Dismiss tip: {{ $tip->title }}">
+                                    <x-button variant="secondary" wire:click="dismissTip({{ $tip->id }})" aria-label="Dismiss tip: {{ $tip->title }}">
                                         <x-icon name="x" class="w-3.5 h-3.5" />
                                         <span>Dismiss</span>
                                     </x-button>
@@ -252,12 +252,12 @@
                                         <x-icon name="bookmark-minus" class="w-3.5 h-3.5" />
                                         <span>Unpin</span>
                                     </x-button>
-                                    <x-button variant="primary" wire:click="dismissTip({{ $tip->id }})" aria-label="Dismiss tip: {{ $tip->title }}">
+                                    <x-button variant="secondary" wire:click="dismissTip({{ $tip->id }})" aria-label="Dismiss tip: {{ $tip->title }}">
                                         <x-icon name="x" class="w-3.5 h-3.5" />
                                         <span>Dismiss</span>
                                     </x-button>
                                 @elseif ($tip->isDismissed())
-                                    <x-button variant="accent" wire:click="restoreTip({{ $tip->id }})" aria-label="Restore tip to active: {{ $tip->title }}">
+                                    <x-button variant="secondary" wire:click="restoreTip({{ $tip->id }})" aria-label="Restore tip to active: {{ $tip->title }}">
                                         <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
                                         <span>Restore to Active</span>
                                     </x-button>

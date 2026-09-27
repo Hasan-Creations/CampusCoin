@@ -93,7 +93,7 @@
                 Start tracking your campus expenses to unlock cash flow trends, category breakdowns, and safe-to-spend intelligence.
             </p>
             <div class="pt-2">
-                <button type="button" class="btn-primary py-2 px-4 text-xs opacity-80 cursor-not-allowed">
+                <button type="button" class="btn-secondary py-2 px-4 text-xs opacity-80 cursor-not-allowed">
                     Add First Transaction (Phase 1)
                 </button>
             </div>

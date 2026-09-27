@@ -36,6 +36,7 @@
   --secondary: #B08C4F;
   --expense: #A8431F;
   --hairline: #DAD8CC;
+  --hairline-on-ink: #3A362C;
   --muted: #8F8D80;
 
   /* Backward-compatible mappings for existing views during rollout */
@@ -82,11 +83,11 @@
   --shadow-tactile-lg: none;
   --shadow-modal: 0 20px 46px -20px rgba(21, 20, 15, 0.35);
 
-  --radius-xs: 0px;
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 7px;
+  --radius-xl: 9px;
 }
 
 /* ==========================================================================
@@ -203,13 +204,13 @@ textarea:focus-visible,
   outline-offset: 2px !important;
 }
 
-/* ==========================================================================
-   Shape: Hard Zero Border-Radius Everywhere (§4)
+/* ========================================================================== 
+   Shape: restrained ledger geometry
    ========================================================================== */
 *,
 *::before,
 *::after {
-  border-radius: 0 !important;
+  letter-spacing: 0 !important;
 }
 
 /* The ONLY circular elements allowed are avatar photos and status dots */
@@ -235,16 +236,28 @@ body {
 /* Typography tokens per §2 */
 .font-display,
 .font-heading {
-  font-family: 'Fraunces', serif !important;
+  font-family: 'IBM Plex Sans', sans-serif !important;
   font-weight: 500;
+}
+
+h1.font-display,
+.font-display.text-4xl,
+.font-display.text-5xl,
+.font-display.text-6xl {
+  font-family: 'Fraunces', serif !important;
 }
 
 .font-sans {
   font-family: 'IBM Plex Sans', sans-serif;
 }
 
-.font-mono,
-.tabular-nums,
+.font-mono {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.ledger-table .font-mono,
+.transaction-data .font-mono,
 .field-numeric,
 .amount-mono {
   font-family: 'IBM Plex Mono', monospace !important;
@@ -253,9 +266,10 @@ body {
 
 .label-caps,
 .font-caps {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-variant: small-caps;
-  letter-spacing: 0.04em;
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-variant: normal !important;
+  letter-spacing: 0 !important;
+  text-transform: none;
 }
 
 /* Headline accent rule (§5) */
@@ -276,8 +290,8 @@ body {
 /* ==========================================================================
    Hairline Borders & Surface System (§5)
    ========================================================================== */
-.hairline-border {
-  border: 1px solid var(--hairline);
+@utility hairline-border {
+  border-color: var(--hairline);
 }
 
 .hairline-border-b {
@@ -296,19 +310,27 @@ body {
   border-left: 1px solid var(--hairline);
 }
 
+.section-header {
+  padding-bottom: 1rem;
+}
+
+.page-header {
+  padding-bottom: 1.5rem;
+}
+
 /* Panels */
 .card-campus,
 .panel-ledger {
   background-color: var(--panel);
-  border: 1px solid var(--hairline);
   box-shadow: none;
+  border-radius: var(--radius-md);
 }
 
 /* Hero Panel (§5: Shadows allowed only for hero & elevated side panels) */
 .surface-hero {
   background-color: var(--panel);
-  border: 1px solid var(--hairline);
   box-shadow: 0 24px 56px -32px rgba(21, 20, 15, 0.20);
+  border-radius: var(--radius-lg);
 }
 
 .dark .surface-hero {
@@ -336,12 +358,12 @@ body {
    Solid fill at idle, inverts to outline of same color on hover.
    ========================================================================== */
 .btn {
-  border-radius: 0 !important;
+  border-radius: var(--radius-sm) !important;
   border: 1px solid transparent;
   padding: 13px 22px;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 13.5px;
-  letter-spacing: 0.3px;
+  letter-spacing: 0;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -382,14 +404,14 @@ body {
 
 /* Secondary — bronze */
 .btn-secondary {
-  background: var(--secondary);
-  color: var(--paper);
-  border-color: var(--secondary);
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--hairline);
 }
 .btn-secondary:hover {
-  background: var(--paper);
-  color: var(--secondary);
-  border-color: var(--secondary);
+  background: var(--bg-subtle);
+  color: var(--ink);
+  border-color: var(--muted);
 }
 
 /* Destructive — semantic rust */
@@ -423,17 +445,16 @@ body {
   justify-content: center;
   width: 38px;
   height: 38px;
-  border: 1px solid var(--hairline);
-  background: var(--panel);
+  border: 1px solid transparent;
+  background: transparent;
   color: var(--ink);
   cursor: pointer;
-  border-radius: 0 !important;
+  border-radius: var(--radius-sm) !important;
   box-shadow: none !important;
   transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 .btn-icon:hover {
-  background: var(--paper);
-  border-color: var(--ink);
+  background: var(--bg-subtle);
 }
 .btn-icon:focus-visible {
   outline: 2px solid var(--accent) !important;
@@ -446,35 +467,42 @@ body {
    ========================================================================== */
 .field,
 .input-campus {
-  border-radius: 0 !important;
-  border: 1px solid var(--hairline);
-  background: var(--panel);
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid transparent;
+  background: var(--bg-subtle);
   color: var(--ink);
   padding: 12px 14px;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 13.5px;
   transition: border-color 150ms ease;
-  outline: none !important;
   box-shadow: none !important;
 }
 
 .field:hover,
 .input-campus:hover {
-  border-color: var(--muted);
+  background: var(--bg-subtle-hover);
 }
 
 .field:focus,
 .input-campus:focus,
 .field:focus-visible,
 .input-campus:focus-visible {
-  border-color: var(--accent) !important;
-  outline: none !important;
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 1px !important;
 }
 
-.field:invalid,
 .field.has-error,
-.input-campus.has-error {
-  border-color: var(--expense) !important;
+.input-campus.has-error,
+.field[aria-invalid="true"],
+.input-campus[aria-invalid="true"] {
+  box-shadow: inset 3px 0 var(--expense) !important;
+}
+
+.field.has-error:focus-visible,
+.input-campus.has-error:focus-visible,
+.field[aria-invalid="true"]:focus-visible,
+.input-campus[aria-invalid="true"]:focus-visible {
+  outline-color: var(--expense) !important;
 }
 
 .field-numeric {
@@ -489,15 +517,28 @@ body {
 .stat-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0;
   background: var(--panel);
-  border: 1px solid var(--hairline);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
 }
 .stat-strip > div {
-  padding: 24px 28px;
+  padding: 20px 24px;
+  background: transparent;
   border-right: 1px solid var(--hairline);
 }
 .stat-strip > div:last-child {
-  border-right: none;
+  border-right: 0;
+}
+@media (max-width: 639px) {
+  .stat-strip > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .stat-strip > div:last-child {
+    border-bottom: 0;
+  }
 }
 
 /* ==========================================================================
@@ -511,21 +552,27 @@ body {
 
 .ledger-table th {
   font-family: 'IBM Plex Sans', sans-serif;
-  font-variant: small-caps;
+  font-variant: normal;
   color: var(--muted);
   font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
   text-align: left;
-  padding: 12px 16px;
+  padding: 13px 16px;
   border-bottom: 1px solid var(--hairline);
   background: var(--panel);
 }
 
 .ledger-table td {
-  padding: 14px 16px;
+  padding: 15px 16px;
   border-bottom: 1px solid var(--hairline);
   color: var(--ink);
   font-size: 13.5px;
+}
+
+.ledger-table-frame .ledger-table tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 .table-row-tactile:hover,
@@ -548,32 +595,29 @@ body {
   align-items: center;
   gap: 4px;
   font-family: 'IBM Plex Sans', sans-serif;
-  font-variant: small-caps;
+  font-variant: normal;
   font-size: 11px;
   padding: 3px 8px;
-  border: 1px solid var(--hairline);
-  background: var(--paper);
+  border: 0;
+  background: var(--bg-subtle);
   color: var(--ink);
   line-height: 1.2;
-  border-radius: 0 !important;
+  border-radius: var(--radius-xs) !important;
 }
 
 .badge-income {
-  border-color: var(--accent);
   color: var(--accent);
-  background: transparent;
+  background: var(--accent-tint);
 }
 
 .badge-expense {
-  border-color: var(--expense);
   color: var(--expense);
-  background: transparent;
+  background: var(--danger-tint);
 }
 
 .badge-secondary {
-  border-color: var(--secondary);
   color: var(--secondary);
-  background: transparent;
+  background: var(--gold-tint);
 }
 
 /* ==========================================================================
@@ -581,10 +625,8 @@ body {
    Dashed border + direct sentence, no illustration
    ========================================================================== */
 .empty-state {
-  border: 1px dashed var(--hairline);
-  padding: 40px 24px;
+  padding: 44px 24px;
   text-align: center;
-  background: transparent;
   color: var(--muted);
   font-size: 13.5px;
 }
@@ -595,8 +637,7 @@ body {
    ========================================================================== */
 .modal-dialog-surface {
   background-color: var(--panel);
-  border: 1px solid var(--hairline);
-  border-radius: 0 !important;
+  border-radius: var(--radius-lg) !important;
   box-shadow: 0 20px 46px -20px rgba(21, 20, 15, 0.35);
 }
 
@@ -609,8 +650,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0;
-  border: 1px solid var(--hairline);
-  background: var(--panel);
+  border: 0;
+  background: var(--bg-subtle);
   padding: 0;
 }
 
@@ -618,12 +659,14 @@ body {
   padding: 8px 16px;
   font-size: 12px;
   font-family: 'IBM Plex Sans', sans-serif;
-  font-variant: small-caps;
+  font-variant: normal;
+  letter-spacing: 0;
+  text-transform: none;
   font-weight: 500;
   color: var(--muted);
   cursor: pointer;
   border: none;
-  border-right: 1px solid var(--hairline);
+  border-right: 0;
   background: transparent;
   transition: background-color 150ms ease, color 150ms ease;
   user-select: none;

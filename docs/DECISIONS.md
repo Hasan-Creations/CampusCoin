@@ -2,7 +2,7 @@
 
 ## DEC-001 — Technology Stack Selection
 - **Decision:** Laravel 12 + Blade + Livewire 3 + MySQL / MariaDB.
-- **Reason:** Fast, robust, and secure server-rendered development for a data-dense financial application. Avoids unnecessary SPA/API build overhead while providing dynamic real-time reactivity where needed.
+- **Reason:** Laravel provides server-rendered pages for the financial application. It avoids unnecessary SPA/API build overhead while providing Livewire reactivity where needed.
 - **Status:** Accepted
 
 ---
@@ -30,7 +30,7 @@
 
 ## DEC-005 — Design Language & Strict Anti-Cliché Rules
 - **Decision:** Precision fintech aesthetic inspired by Linear, Stripe, and Copilot Money. Space Grotesk for headings, Inter for UI, JetBrains Mono for figures. Strict prohibition of pill buttons, gradients, glassmorphism, and emoji UI icons.
-- **Reason:** Delivers a focused, professional, high-density tool tailored for student financial control without generic SaaS tropes.
+- **Reason:** Provides a dense interface for student financial tasks without using a generic SaaS layout.
 - **Status:** Accepted
 
 ---
@@ -51,7 +51,7 @@
 
 ## DEC-008 — Advisory AI Categorization, Heuristic Fallback & Student Learning Layer
 - **Decision:** Implement a dual-provider architecture behind `CategorizationProviderInterface` with `HeuristicCategorizationProvider` (zero-latency semantic matching across student domains) and `OpenAiCategorizationProvider` (optional LLM integration with 3-second timeout). Precede all provider calls with student-isolated `CategoryLearning` lookups and strictly validate all suggestions against the student's available categories before rendering.
-- **Reason:** Ensures zero-cost, zero-latency instant suggestions without requiring external API keys while providing clean extensibility when keys are provided. Strictly prevents category hallucinations, protects student privacy, preserves manual override supremacy, and enables customized suggestions based on previous student choices.
+- **Reason:** Provides local suggestions without API keys and leaves room for an external provider. It rejects unknown categories, keeps student data isolated, respects manual choices, and uses previous student choices when available.
 - **Status:** Accepted
 
 ---
@@ -72,7 +72,7 @@
 
 ## DEC-011 — Distinctive Product Design, Tactile Physical Interaction & Material Depth
 - **Decision:** Establish an authoritative visual and tactile identity for Campus Coin to stand out decisively against 20+ competing student teams without relying on decorative noise, cartoon animations, or SaaS clichés. Lock the chromatic system to warm, earth-derived tones (Warm Ivory `#F5EFE3`, Deep Olive `#4F5B2A`, Muted Brass `#B8892D`, Warm Beige `#D8C9A8`, and Olive-Charcoal Night `#14170F`). Enforce an intentional corner radius hierarchy (16px surfaces/cards, 22px dialogs/sheets, 10px controls/inputs, 4px badges) and strictly reject universal 8px rounding. Implement 4-state tactile physical micro-interactions on interactive controls (resting elevation → hover lift → downward pressed compression at 60ms → settled release). Eradicate all `backdrop-blur` and glassmorphism in favor of solid physical depth (`bg-black/55`, `modal-dialog-surface`). Format all financial figures using monospaced tabular numerals (`tabular-nums`).
-- **Reason:** Generic purple/blue SaaS palettes, ubiquitous 8px radii, and frosted glass clichés make student projects look templated and indistinct. The combination of warm editorial palette tokens, deliberate architectural geometry, mechanical physical button compression, and solid contact shadows gives Campus Coin the gravitas of a precision financial instrument while retaining 100% test compatibility and accessibility compliance.
+- **Reason:** Warm colors, defined geometry, pressed controls, and solid surfaces give the app a distinct visual style without relying on generic SaaS patterns.
 - **Status:** Accepted
 
 

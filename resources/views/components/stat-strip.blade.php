@@ -2,7 +2,7 @@
     'stats' => [], // array of ['label' => '...', 'value' => '...', 'meta' => '...', 'variant' => '...']
 ])
 
-<div {{ $attributes->merge(['class' => 'stat-strip w-full bg-[var(--panel)] border hairline-border grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 divide-x-0 md:divide-x divide-[var(--hairline)]']) }}>
+<div {{ $attributes->merge(['class' => 'stat-strip w-full grid grid-cols-2 md:grid-cols-4 gap-3']) }}>
     @if(!empty($stats))
         @foreach($stats as $stat)
             <div class="p-5 sm:p-6 flex flex-col justify-between">

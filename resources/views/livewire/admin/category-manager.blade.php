@@ -42,23 +42,23 @@
     </div>
 
     <!-- Quick Stats Bar -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 border hairline-border bg-[var(--panel)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--hairline)]">
-        <div class="p-5 space-y-2">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">Global System Defaults</div>
             <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--ink)] tabular-nums tracking-tight">{{ $globalCount }}</div>
         </div>
 
-        <div class="p-5 space-y-2">
+        <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">Student Personal Categories</div>
             <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--ink)] tabular-nums tracking-tight">{{ $personalCount }}</div>
         </div>
 
-        <div class="p-5 space-y-2">
+        <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--accent)]">Active / Selectable</div>
             <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--accent)] tabular-nums tracking-tight">{{ $activeCount }}</div>
         </div>
 
-        <div class="p-5 space-y-2">
+        <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--expense)]">Deactivated / Archived</div>
             <div class="font-mono text-2xl sm:text-3xl font-medium text-[var(--expense)] tabular-nums tracking-tight">{{ $inactiveCount }}</div>
         </div>

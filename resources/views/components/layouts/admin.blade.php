@@ -38,7 +38,7 @@
     <div class="min-h-full flex" x-data="{ mobileNavOpen: false }">
         <!-- Admin Ops Sidebar (Desktop — Fixed 240px dark sidebar per §3) -->
         <aside class="sidebar-shell hidden md:sticky md:top-0 md:h-screen md:flex md:w-[240px] md:flex-col border-r hairline-border bg-[var(--ink)] text-[var(--paper)] shrink-0" aria-label="Administrator Sidebar Navigation">
-            <div class="p-6 border-b border-[#3A362C] flex items-center justify-between">
+            <div class="p-6 border-b border-[var(--hairline-on-ink)] flex items-center justify-between">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-[var(--secondary)] flex items-center justify-center text-[var(--paper)] font-display font-medium text-sm" aria-hidden="true">
                         AD
@@ -71,14 +71,14 @@
                 </a>
             </nav>
 
-            <div class="p-4 border-t border-[#3A362C] bg-[#1A1813]">
+            <div class="p-4 border-t border-[var(--hairline-on-ink)] bg-[#1A1813]">
                 <div class="text-xs font-medium text-[var(--paper)] mb-0.5 truncate">{{ Auth::user()->name }}</div>
                 <div class="text-[10px] font-caps text-[var(--secondary)] tracking-wider mb-3">Root Operator</div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" 
                             aria-label="Sign out of administrator console"
-                            class="w-full py-2 px-3 text-xs font-sans text-[#A8A599] hover:text-[var(--expense)] border border-[#3A362C] hover:border-[var(--expense)] transition-colors flex items-center justify-center gap-2 bg-transparent">
+                            class="w-full py-2 px-3 text-xs font-sans text-[#A8A599] hover:text-[var(--expense)] border border-[var(--hairline-on-ink)] hover:border-[var(--expense)] transition-colors flex items-center justify-center gap-2 bg-transparent">
                         <x-icon name="log-out" class="w-3.5 h-3.5" />
                         <span>Sign Out</span>
                     </button>
@@ -115,7 +115,7 @@
                  x-transition:leave-start="translate-x-0"
                  x-transition:leave-end="-translate-x-full"
                  class="sidebar-shell relative flex-1 flex flex-col max-w-xs w-full bg-[var(--ink)] text-[var(--paper)] border-r hairline-border z-10">
-                <div class="p-4 border-b border-[#3A362C] flex items-center justify-between">
+                <div class="p-4 border-b border-[var(--hairline-on-ink)] flex items-center justify-between">
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
                         <div class="w-8 h-8 bg-[var(--secondary)] flex items-center justify-center text-[var(--paper)] font-display font-medium text-xs" aria-hidden="true">
                             AD
@@ -150,14 +150,14 @@
                     </a>
                 </nav>
 
-                <div class="p-4 border-t border-[#3A362C] bg-[#1A1813]">
+                <div class="p-4 border-t border-[var(--hairline-on-ink)] bg-[#1A1813]">
                     <div class="text-xs font-medium text-[var(--paper)] mb-0.5 truncate">{{ Auth::user()->name }}</div>
                     <div class="text-[10px] font-caps text-[var(--secondary)] tracking-wider mb-3">Root Operator</div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" 
                                 aria-label="Sign out of administrator console"
-                                class="w-full py-2 text-xs font-sans text-[#A8A599] hover:text-[var(--expense)] border border-[#3A362C] hover:border-[var(--expense)] transition-colors flex items-center justify-center gap-2 bg-transparent">
+                                class="w-full py-2 text-xs font-sans text-[#A8A599] hover:text-[var(--expense)] border border-[var(--hairline-on-ink)] hover:border-[var(--expense)] transition-colors flex items-center justify-center gap-2 bg-transparent">
                             <x-icon name="log-out" class="w-3.5 h-3.5" />
                             <span>Sign Out</span>
                         </button>

@@ -1,12 +1,12 @@
 # Campus Coin — Distinctive Product Design & Tactile Physical Interaction Specification
 
 ## 1. Executive Identity & Aesthetic Thesis
-Campus Coin is engineered with a **distinctive, authoritative visual identity** that deliberately stands out from standard SaaS templates and 20+ competing student teams without relying on decorative noise, cartoon animations, or visual clichés.
+Campus Coin uses a distinct visual style with warm colors, defined geometry, solid surfaces, and pressed control states.
 
 ### The Identity Pillar: Warm Editorial Precision + Physical Instrument Depth
 - **Tactile Physicality:** Controls feel mechanical and grounded. Buttons compress downward upon click with tangible resistance rather than floating or springing cartoonishly.
 - **Warm Architectural Palette:** Anchored by Warm Ivory canvas, Deep Olive brand accents, and Muted Brass highlights, rejecting cold generic slate/blue palettes.
-- **Intentional Geometry:** A strict hierarchy of corner radii matching structural purpose (16px cards, 22px dialogs, 10px inputs/buttons, 4px badges), deliberately avoiding ubiquitous 8px monotony.
+- **Geometry:** Corner radii are 16px for cards, 22px for dialogs, 10px for controls, and 4px for badges.
 - **Solid Material Depth:** Zero glassmorphism, zero `backdrop-blur`, and zero floating gradient blobs. Depth is achieved strictly through calibrated hairline borders, subtle tonal insets, and physical contact shadows.
 - **Financial Authority:** Monospaced figures with tabular numbers (`tabular-nums`) and strict double-entry ledger alignment communicate fiscal clarity and credibility.
 

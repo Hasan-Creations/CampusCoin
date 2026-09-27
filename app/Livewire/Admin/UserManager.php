@@ -10,13 +10,13 @@ class UserManager extends Component
 {
     public string $search = '';
 
-    public string $filterStatus = 'all'; // all, active, disabled
+    public string $filterStatus = 'all';
 
-    public string $filterCohort = 'all'; // all, Freshman, Sophomore, Junior, Senior, Graduate
+    public string $filterCohort = 'all';
 
-    public string $filterRole = 'student'; // student, admin, all
+    public string $filterRole = 'student';
 
-    public string $sortBy = 'latest'; // latest, name_asc, transactions_desc
+    public string $sortBy = 'latest';
 
     public ?int $inspectingUserId = null;
 
@@ -53,7 +53,6 @@ class UserManager extends Component
         }
 
         $user = User::find($userId);
-
         if (! $user) {
             $this->errorMessage = 'User account not found.';
 
@@ -71,7 +70,7 @@ class UserManager extends Component
             $this->feedbackMessage = "Account for student '{$user->name}' ({$user->email}) was deactivated. All active sessions were invalidated.";
         } else {
             $user->activate();
-            $this->feedbackMessage = "Account for student '{$user->name}' ({$user->email}) was successfully reactivated.";
+            $this->feedbackMessage = "Account for '{$user->name}' ({$user->email}) was reactivated.";
         }
     }
 
@@ -100,26 +99,22 @@ class UserManager extends Component
     {
         $query = User::withCount(['transactions', 'budgets', 'categories', 'savingTips']);
 
-        // Filter by role
         if ($this->filterRole === 'student') {
             $query->where('role', 'student');
         } elseif ($this->filterRole === 'admin') {
             $query->where('role', 'admin');
         }
 
-        // Filter by status
         if ($this->filterStatus === 'active') {
             $query->where('status', 'active');
         } elseif ($this->filterStatus === 'disabled') {
             $query->where('status', 'disabled');
         }
 
-        // Filter by cohort
         if ($this->filterCohort !== 'all') {
             $query->where('academic_year', $this->filterCohort);
         }
 
-        // Search by name or email
         if (filled($this->search)) {
             $term = trim($this->search);
             $query->where(function ($q) use ($term) {
@@ -128,7 +123,6 @@ class UserManager extends Component
             });
         }
 
-        // Sorting
         if ($this->sortBy === 'name_asc') {
             $query->orderBy('name', 'asc');
         } elseif ($this->sortBy === 'transactions_desc') {

@@ -26,19 +26,19 @@
 
 College and university students routinely receive money from multiple, irregular sources such as monthly allowance from family, part-time or gig-work income, scholarships, and occasional gifts, yet rarely track where that money actually goes. Generic personal-finance apps are built for salaried adults with fixed pay cycles and bank integrations, and they are often too complex, subscription-gated, or simply irrelevant to a student's spending patterns (canteen food, hostel expenses, textbooks, transport, subscriptions, and social outings).
 
-There is a clear demand for a lightweight, student-first Web application that makes it effortless to log income and expenses, view spending by category, and receive plain-language guidance on how to save more without requiring a linked bank account or financial expertise. An application is required to fulfil this demand by offering a dynamic, responsive platform which provides the following features:
+Students need a lightweight Web application for logging income and expenses, viewing spending by category, and getting plain-language guidance on saving without a linked bank account or financial expertise. The application should provide the following features:
 
 - Fast entry of income and expenses with student-relevant categories
 - Personalized, easy-to-follow saving tips generated from the student's own transaction history
 - Optional AI assistance that automatically categorizes expenses and summarizes monthly spending in plain language
 
-Built with modern front-end technologies backed by a robust database layer, the Web application should ensure a smooth, reliable experience across devices, making it ideal for individual students, hostel communities, and campus financial-literacy initiatives.
+The application should work reliably across desktop, tablet, and mobile devices for individual students, hostel communities, and campus financial-literacy initiatives.
 
 ## 1.2 Proposed Solution
 
 To close the gap between generic finance apps and the realities of student life, this document proposes the development of a fully functional Web application named **Campus Coin**, a responsive, interactive student budget and expense tracker designed for college and university students.
 
-The application offers a seamless experience where a student can register, log in, and immediately record income such as allowance, part-time job earnings, scholarships, and gifts, and expenses such as food, transport, hostel or rent, academics, subscriptions, entertainment, and miscellaneous. Every transaction is stored in a central database, which powers category-wise breakdowns, month-over-month trend charts, and a personalized tips engine that reacts to the student's own habits. An optional AI-driven assistant can help categorize expenses automatically as they are entered. It can generate a friendly, actionable monthly insight summary, for example flagging that food delivery spending rose sharply, and suggesting a simple and achievable adjustment.
+After registering and signing in, students can record income such as allowance, part-time job earnings, scholarships, and gifts, along with expenses such as food, transport, hostel or rent, academics, subscriptions, entertainment, and miscellaneous items. Every transaction is stored in the database for category breakdowns, month-over-month trend charts, and saving tips based on the student's habits. An optional AI assistant can suggest expense categories as they are entered. It can generate a short monthly summary with suggested next steps, such as flagging a sharp rise in food delivery spending.
 
 ### Architecture Overview
 
@@ -71,9 +71,9 @@ This document presents a detailed description of the Campus Coin application, ex
 
 ## 1.4 Scope of Project
 
-**Campus Coin** is a full-stack Web application designed to help students take control of their personal finances by logging income and expenses, categorizing spending, and reviewing their financial habits through monthly reports. It offers a personalized experience through user registration and login, quick transaction entry, a category management system, an interactive dashboard with charts, and a saving-tips engine driven by the student's own transaction history.
+**Campus Coin** is a full-stack Web application that helps students log income and expenses, categorize spending, and review their financial habits through monthly reports. Students can register, sign in, enter transactions, manage categories, view dashboard charts, and review saving tips based on their transaction history.
 
-The application includes a backend system to support data storage, session management, budget-goal tracking, and report generation. Users can add and edit transactions, set monthly budgets per category, view spending trends over time, receive optional AI-generated categorization suggestions, and read AI-generated monthly spending insights with simple, actionable advice. Built with modern technologies, the platform is scalable, responsive, and adaptable for individual students, student communities, and campus financial-literacy programs. Administrative functionality will also be part of the application, giving oversight of categories, users, and system-wide usage statistics.
+The application includes a backend system for data storage, session management, budget-goal tracking, and report generation. Users can add and edit transactions, set monthly budgets per category, view spending trends over time, receive optional AI-generated categorization suggestions, and read AI-generated monthly spending insights with simple advice. The platform is responsive and can support individual students, student communities, and campus financial-literacy programs. Administrators can manage categories and users and view system-wide usage statistics.
 
 ## 1.5 Constraints
 
@@ -83,7 +83,7 @@ Since Campus Coin does not integrate with real banking systems, all income and e
 
 ## 1.6 Functional Requirements
 
-The Campus Coin Web application will offer a complete and student-centric budgeting experience with dynamic front-end features and robust backend support. It will not only cover essential functionality, but also implement advanced capabilities to enhance personalization, insight generation, and interactivity.
+The application will provide budgeting features for students through a responsive front end and a Laravel backend. It will also support personalized tips, spending insights, and interactive controls.
 
 ### User Authentication and Management
 

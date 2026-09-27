@@ -25,26 +25,26 @@ class Dashboard extends Component
         $this->feedbackMessage = null;
         $this->errorMessage = null;
 
-        $targetUser = User::find($userId);
+        $user = User::find($userId);
 
-        if (! $targetUser) {
+        if (! $user) {
             $this->errorMessage = 'User account not found.';
 
             return;
         }
 
-        if ($targetUser->isAdmin()) {
+        if ($user->isAdmin()) {
             $this->errorMessage = 'Security policy violation: Administrator status cannot be toggled here.';
 
             return;
         }
 
-        if ($targetUser->isActive()) {
-            $targetUser->deactivate();
-            $this->feedbackMessage = "Student account for '{$targetUser->name}' ({$targetUser->email}) has been deactivated. Active sessions terminated.";
+        if ($user->isActive()) {
+            $user->deactivate();
+            $this->feedbackMessage = "Student account for '{$user->name}' ({$user->email}) has been deactivated. Active sessions terminated.";
         } else {
-            $targetUser->activate();
-            $this->feedbackMessage = "Student account for '{$targetUser->name}' ({$targetUser->email}) has been reactivated.";
+            $user->activate();
+            $this->feedbackMessage = "Student account for '{$user->name}' ({$user->email}) has been reactivated.";
         }
     }
 

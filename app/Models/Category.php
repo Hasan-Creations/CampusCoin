@@ -12,11 +12,6 @@ class Category extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'user_id',
         'name',
@@ -27,11 +22,6 @@ class Category extends Model
         'is_active',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -40,49 +30,31 @@ class Category extends Model
         ];
     }
 
-    /**
-     * The student owner of this personal category, if not a system default.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Transactions logged under this category.
-     */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    /**
-     * Budget goals set for this category.
-     */
     public function budgets(): HasMany
     {
         return $this->hasMany(Budget::class);
     }
 
-    /**
-     * Saving tips associated with this category.
-     */
     public function savingTips(): HasMany
     {
         return $this->hasMany(SavingTip::class);
     }
 
-    /**
-     * Learned mappings targeting this category.
-     */
     public function categoryLearnings(): HasMany
     {
         return $this->hasMany(CategoryLearning::class);
     }
 
-    /**
-     * Scope to categories accessible by a specific user (their personal categories + system defaults).
-     */
     public function scopeForUser(Builder $query, int $userId): Builder
     {
         return $query->where(function (Builder $q) use ($userId) {
@@ -92,49 +64,36 @@ class Category extends Model
         });
     }
 
-    /**
-     * Scope to strictly personal categories of a student.
-     */
     public function scopePersonal(Builder $query, int $userId): Builder
     {
         return $query->where('user_id', $userId);
     }
 
-    /**
-     * Scope to system-wide default categories.
-     */
     public function scopeSystemDefaults(Builder $query): Builder
     {
         return $query->where('is_default', true)->orWhereNull('user_id');
     }
 
-    /**
-     * Scope to income categories.
-     */
     public function scopeIncome(Builder $query): Builder
     {
         return $query->where('type', 'income');
     }
 
-    /**
-     * Scope to expense categories.
-     */
     public function scopeExpense(Builder $query): Builder
     {
         return $query->where('type', 'expense');
     }
 
-    /**
-     * Check if this is a system-wide default category.
-     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
     public function isDefault(): bool
     {
         return (bool) $this->is_default || is_null($this->user_id);
     }
 
-    /**
-     * Check if this category can be edited/deleted by the given user.
-     */
     public function isOwnedBy(?User $user): bool
     {
         if (! $user) {
@@ -144,17 +103,6 @@ class Category extends Model
         return $this->user_id === $user->id;
     }
 
-    /**
-     * Scope to only active categories.
-     */
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query->where('is_active', true);
-    }
-
-    /**
-     * Determine if this category can be safely deleted.
-     */
     public function canBeDeletedBy(?User $user): bool
     {
         if (! $this->isOwnedBy($user)) {
@@ -164,9 +112,6 @@ class Category extends Model
         return $this->transactions()->count() === 0;
     }
 
-    /**
-     * Check if category can be safely deleted system-wide without violating historical integrity.
-     */
     public function canBeSafelyDeleted(): bool
     {
         return $this->transactions()->count() === 0

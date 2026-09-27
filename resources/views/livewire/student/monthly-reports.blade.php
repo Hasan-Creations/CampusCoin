@@ -7,7 +7,7 @@
         {{-- ===================================================== --}}
         {{-- REPORT HEADER & EXPORT ACTIONS                         --}}
         {{-- ===================================================== --}}
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b hairline-border pb-6">
+        <div class="page-header flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <span class="text-xs font-caps text-[var(--muted)]">
                     {{ $user->academic_year ?? 'Student' }} Cohort &bull; Statement Generator
@@ -16,7 +16,7 @@
                     Monthly Financial Reports
                 </h1>
                 <p class="text-xs text-[var(--muted)] mt-1.5">
-                    Comprehensive ledger reconciliation, category breakdowns, daily velocities, and multi-format exports.
+                    Review ledger totals, category breakdowns, daily activity, and export options.
                 </p>
             </div>
 

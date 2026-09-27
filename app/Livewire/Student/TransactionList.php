@@ -17,10 +17,9 @@ class TransactionList extends Component
 {
     use WithFileUploads, WithPagination;
 
-    // Filters and Search
     public string $search = '';
 
-    public string $typeFilter = 'all'; // all, expense, income
+    public string $typeFilter = 'all';
 
     public string $categoryFilter = '';
 
@@ -30,7 +29,6 @@ class TransactionList extends Component
 
     public string $sortDirection = 'desc';
 
-    // Modal & Form State
     public bool $showModal = false;
 
     public ?int $editingId = null;
@@ -55,14 +53,12 @@ class TransactionList extends Component
 
     public ?string $errorMessage = null;
 
-    // AI Categorization Advisory State
     public ?array $activeSuggestion = null;
 
     public bool $manualCategorySelected = false;
 
     public bool $suggestionAccepted = false;
 
-    // CSV Batch Import State
     public bool $showImportModal = false;
 
     public $csvFile = null;
@@ -92,7 +88,6 @@ class TransactionList extends Component
     public function updatedTypeFilter(): void
     {
         $this->resetPage();
-        // Reset category selection if it does not match new type
         if ($this->category_id) {
             $cat = Category::find($this->category_id);
             if ($cat && $cat->type !== $this->type) {
@@ -103,7 +98,6 @@ class TransactionList extends Component
 
     public function updatedType(): void
     {
-        // When changing type in form, clear selected category and previous suggestions
         $this->category_id = null;
         $this->activeSuggestion = null;
         $this->manualCategorySelected = false;
@@ -117,45 +111,33 @@ class TransactionList extends Component
 
     public function updatedMerchant(): void
     {
-        // If description is not yet populated, use merchant to predict category
         if (blank($this->description)) {
             $this->requestCategorySuggestion();
         }
     }
 
-    /**
-     * Request category suggestion non-blockingly from central AI service.
-     */
     public function requestCategorySuggestion(): void
     {
-        $queryText = trim((string) ($this->description ?: $this->merchant));
-
-        if (mb_strlen($queryText) < 2) {
+        $query = trim((string) ($this->description ?: $this->merchant));
+        if (mb_strlen($query) < 2) {
             $this->activeSuggestion = null;
 
             return;
         }
 
-        $userId = (int) Auth::id();
-        $availableCategories = Category::forUser($userId)
+        $uid = (int) Auth::id();
+        $cats = Category::forUser($uid)
             ->active()
             ->where('type', $this->type)
             ->get();
 
-        /** @var AiCategorizationService $service */
-        $service = app(AiCategorizationService::class);
-        $suggestion = $service->suggestCategory($queryText, $availableCategories, Auth::user());
+        /** @var AiCategorizationService $ai */
+        $ai = app(AiCategorizationService::class);
+        $suggestion = $ai->suggestCategory($query, $cats, Auth::user());
 
-        if ($suggestion) {
-            $this->activeSuggestion = $suggestion->toArray();
-        } else {
-            $this->activeSuggestion = null;
-        }
+        $this->activeSuggestion = $suggestion ? $suggestion->toArray() : null;
     }
 
-    /**
-     * Accept the advisory AI suggestion.
-     */
     public function acceptSuggestion(): void
     {
         if ($this->activeSuggestion && isset($this->activeSuggestion['categoryId'])) {
@@ -165,10 +147,6 @@ class TransactionList extends Component
         }
     }
 
-    /**
-     * Student explicitly clicks or chooses a category.
-     * Manual selection is always authoritative.
-     */
     public function selectCategory(int $id): void
     {
         $this->category_id = $id;
@@ -207,7 +185,7 @@ class TransactionList extends Component
 
     protected function rules(): array
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
 
         return [
             'type' => ['required', 'in:income,expense'],
@@ -216,10 +194,10 @@ class TransactionList extends Component
             'category_id' => [
                 'required',
                 'integer',
-                function ($attribute, $value, $fail) use ($userId) {
+                function ($attribute, $value, $fail) use ($uid) {
                     $exists = Category::where('id', $value)
-                        ->where(function ($q) use ($userId) {
-                            $q->where('user_id', $userId)
+                        ->where(function ($q) use ($uid) {
+                            $q->where('user_id', $uid)
                                 ->orWhere('is_default', true)
                                 ->orWhereNull('user_id');
                         })
@@ -245,7 +223,7 @@ class TransactionList extends Component
         $this->type = 'expense';
         $this->amount = '';
         $this->merchant = '';
-        $this->category_id = null; // Do NOT pre-fill to force explicit selection
+        $this->category_id = null;
         $this->transaction_date = date('Y-m-d');
         $this->payment_method = 'card';
         $this->description = null;
@@ -266,25 +244,25 @@ class TransactionList extends Component
         $this->feedbackMessage = null;
         $this->errorMessage = null;
 
-        $transaction = Transaction::where('id', $id)
+        $tx = Transaction::where('id', $id)
             ->where('user_id', Auth::id())
             ->first();
 
-        if (! $transaction) {
+        if (! $tx) {
             $this->errorMessage = 'Transaction not found or unauthorized.';
 
             return;
         }
 
-        $this->editingId = $transaction->id;
-        $this->type = $transaction->type;
-        $this->amount = (string) $transaction->amount;
-        $this->merchant = $transaction->merchant;
-        $this->category_id = $transaction->category_id;
-        $this->transaction_date = $transaction->transaction_date->format('Y-m-d');
-        $this->payment_method = $transaction->payment_method;
-        $this->description = $transaction->description;
-        $this->is_recurring = (bool) $transaction->is_recurring;
+        $this->editingId = $tx->id;
+        $this->type = $tx->type;
+        $this->amount = (string) $tx->amount;
+        $this->merchant = $tx->merchant;
+        $this->category_id = $tx->category_id;
+        $this->transaction_date = $tx->transaction_date->format('Y-m-d');
+        $this->payment_method = $tx->payment_method;
+        $this->description = $tx->description;
+        $this->is_recurring = (bool) $tx->is_recurring;
 
         $this->activeSuggestion = null;
         $this->manualCategorySelected = true;
@@ -307,28 +285,28 @@ class TransactionList extends Component
     {
         $this->validate();
 
-        $userId = (int) Auth::id();
+        $uid = (int) Auth::id();
 
-        $isAiSuggested = ($this->activeSuggestion
+        $isAi = ($this->activeSuggestion
             && isset($this->activeSuggestion['categoryId'])
             && (int) $this->category_id === (int) $this->activeSuggestion['categoryId']
             && ! $this->manualCategorySelected);
 
-        $aiConfidence = $isAiSuggested ? ($this->activeSuggestion['confidence'] ?? null) : null;
+        $confidence = $isAi ? ($this->activeSuggestion['confidence'] ?? null) : null;
 
         if ($this->editingId) {
-            $transaction = Transaction::where('id', $this->editingId)
-                ->where('user_id', $userId)
+            $tx = Transaction::where('id', $this->editingId)
+                ->where('user_id', $uid)
                 ->first();
 
-            if (! $transaction) {
+            if (! $tx) {
                 $this->errorMessage = 'Unauthorized transaction modification.';
                 $this->showModal = false;
 
                 return;
             }
 
-            $transaction->update([
+            $tx->update([
                 'type' => $this->type,
                 'amount' => $this->amount,
                 'merchant' => trim($this->merchant),
@@ -337,14 +315,14 @@ class TransactionList extends Component
                 'payment_method' => $this->payment_method,
                 'description' => trim($this->description ?? ''),
                 'is_recurring' => $this->is_recurring,
-                'ai_suggested' => $isAiSuggested,
-                'ai_confidence' => $aiConfidence,
+                'ai_suggested' => $isAi,
+                'ai_confidence' => $confidence,
             ]);
 
-            $this->feedbackMessage = "Transaction '{$transaction->merchant}' successfully updated.";
+            $this->feedbackMessage = "Transaction '{$tx->merchant}' updated.";
         } else {
             Transaction::create([
-                'user_id' => $userId,
+                'user_id' => $uid,
                 'type' => $this->type,
                 'amount' => $this->amount,
                 'merchant' => trim($this->merchant),
@@ -353,24 +331,23 @@ class TransactionList extends Component
                 'payment_method' => $this->payment_method,
                 'description' => trim($this->description ?? ''),
                 'is_recurring' => $this->is_recurring,
-                'ai_suggested' => $isAiSuggested,
-                'ai_confidence' => $aiConfidence,
+                'ai_suggested' => $isAi,
+                'ai_confidence' => $confidence,
             ]);
 
-            $this->feedbackMessage = "Transaction '{$this->merchant}' recorded successfully.";
+            $this->feedbackMessage = "Transaction '{$this->merchant}' recorded.";
         }
 
-        // When transaction is saved, record learned mapping for student
         if ($this->category_id) {
-            /** @var AiCategorizationService $aiService */
-            $aiService = app(AiCategorizationService::class);
+            /** @var AiCategorizationService $ai */
+            $ai = app(AiCategorizationService::class);
 
             if (filled($this->description)) {
-                $aiService->recordCorrection($userId, (string) $this->description, (int) $this->category_id);
+                $ai->recordCorrection($uid, (string) $this->description, (int) $this->category_id);
             }
 
             if (filled($this->merchant) && trim((string) $this->merchant) !== trim((string) $this->description)) {
-                $aiService->recordCorrection($userId, (string) $this->merchant, (int) $this->category_id);
+                $ai->recordCorrection($uid, (string) $this->merchant, (int) $this->category_id);
             }
         }
 
@@ -382,27 +359,23 @@ class TransactionList extends Component
 
     public function deleteTransaction(int $id): void
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
 
-        $transaction = Transaction::where('id', $id)
-            ->where('user_id', $userId)
+        $tx = Transaction::where('id', $id)
+            ->where('user_id', $uid)
             ->first();
 
-        if (! $transaction) {
+        if (! $tx) {
             $this->errorMessage = 'Transaction could not be found or unauthorized.';
 
             return;
         }
 
-        $merchant = $transaction->merchant;
-        $transaction->delete();
+        $merchant = $tx->merchant;
+        $tx->delete();
 
         $this->feedbackMessage = "Transaction '{$merchant}' removed from ledger.";
     }
-
-    // ==========================================
-    // CSV BATCH SUGGESTIONS & IMPORT FLOW
-    // ==========================================
 
     public function openImportModal(): void
     {
@@ -450,7 +423,6 @@ class TransactionList extends Component
             return;
         }
 
-        // Read header row
         $headerRow = fgetcsv($handle);
         if (! $headerRow) {
             fclose($handle);
@@ -459,7 +431,6 @@ class TransactionList extends Component
             return;
         }
 
-        // Normalize header row
         $headers = array_map(function ($h) {
             $h = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', (string) $h);
 
@@ -496,16 +467,16 @@ class TransactionList extends Component
             $typeCol = 3;
         }
 
-        $userId = (int) Auth::id();
+        $uid = (int) Auth::id();
         $user = Auth::user();
-        $availableCategories = Category::forUser($userId)->active()->get();
+        $cats = Category::forUser($uid)->active()->get();
 
-        /** @var AiCategorizationService $aiService */
-        $aiService = app(AiCategorizationService::class);
+        /** @var AiCategorizationService $ai */
+        $ai = app(AiCategorizationService::class);
 
         $rows = [];
         $rowCount = 0;
-        $maxRows = 50; // Bounded batch processing (up to 50 rows)
+        $maxRows = 50;
 
         while (($data = fgetcsv($handle)) !== false) {
             if (empty(array_filter($data, fn ($val) => trim((string) $val) !== ''))) {
@@ -525,7 +496,6 @@ class TransactionList extends Component
             $isValid = true;
             $error = null;
 
-            // Parse Date
             $parsedDate = date('Y-m-d');
             if (blank($rawDate)) {
                 $isValid = false;
@@ -539,15 +509,13 @@ class TransactionList extends Component
                 }
             }
 
-            // Parse Description
-            $description = $rawDesc;
-            if (blank($description)) {
+            $desc = $rawDesc;
+            if (blank($desc)) {
                 $isValid = false;
                 $error = $error ? "$error, missing description" : 'Missing description';
-                $description = 'Unknown Transaction';
+                $desc = 'Unknown Transaction';
             }
 
-            // Parse Amount
             $hasNegative = str_contains($rawAmount, '-');
             $cleanAmount = preg_replace('/[^\d.]/', '', $rawAmount);
             $amount = (float) $cleanAmount;
@@ -557,17 +525,13 @@ class TransactionList extends Component
                 $amount = 0.00;
             }
 
-            // Parse Type
             $normType = strtolower($rawType);
             $type = in_array($normType, ['income', 'credit', 'inflow', 'deposit'], true) ? 'income' : 'expense';
+            $typeCategories = $cats->where('type', $type);
 
-            // Filter available categories for this transaction's flow type
-            $typeCategories = $availableCategories->where('type', $type);
-
-            // Categorization suggestion
             $suggestion = null;
-            if ($isValid && filled($description)) {
-                $suggestion = $aiService->suggestCategory($description, $typeCategories, $user);
+            if ($isValid && filled($desc)) {
+                $suggestion = $ai->suggestCategory($desc, $typeCategories, $user);
             }
 
             $suggestedCatId = $suggestion?->categoryId;
@@ -576,13 +540,12 @@ class TransactionList extends Component
             $confidenceLevel = $suggestion?->confidenceLevel ?? 'low';
             $source = $suggestion?->source ?? 'none';
 
-            // Pre-select suggested category or first available category of type
             $selectedCatId = $suggestedCatId ?? ($typeCategories->first()?->id);
 
             $rows[] = [
                 'id' => $rowCount,
                 'date' => $parsedDate,
-                'description' => $description,
+                'description' => $desc,
                 'amount' => number_format($amount, 2, '.', ''),
                 'type' => $type,
                 'suggested_category_id' => $suggestedCatId,
@@ -610,7 +573,7 @@ class TransactionList extends Component
 
     public function confirmImport(): void
     {
-        $userId = (int) Auth::id();
+        $uid = (int) Auth::id();
         $validRows = array_filter($this->importRows, fn ($r) => ! empty($r['is_valid']) && ! empty($r['selected_category_id']));
 
         if (empty($validRows)) {
@@ -619,16 +582,16 @@ class TransactionList extends Component
             return;
         }
 
-        /** @var AiCategorizationService $aiService */
-        $aiService = app(AiCategorizationService::class);
-        $importedCount = 0;
+        /** @var AiCategorizationService $ai */
+        $ai = app(AiCategorizationService::class);
+        $count = 0;
 
         foreach ($validRows as $row) {
             $isAi = ($row['suggested_category_id'] && (int) $row['selected_category_id'] === (int) $row['suggested_category_id']);
             $confidence = $isAi ? $row['confidence'] : null;
 
             Transaction::create([
-                'user_id' => $userId,
+                'user_id' => $uid,
                 'category_id' => (int) $row['selected_category_id'],
                 'type' => $row['type'],
                 'amount' => $row['amount'],
@@ -641,33 +604,32 @@ class TransactionList extends Component
                 'ai_confidence' => $confidence,
             ]);
 
-            // Save student's learned mapping for future transactions
-            $aiService->recordCorrection($userId, (string) $row['description'], (int) $row['selected_category_id']);
-            $importedCount++;
+            $ai->recordCorrection($uid, (string) $row['description'], (int) $row['selected_category_id']);
+            $count++;
         }
 
         $this->showImportModal = false;
         $this->importRows = [];
         $this->importStepReview = false;
         $this->csvFile = null;
-        $this->feedbackMessage = "Successfully imported {$importedCount} transactions with learned category mappings.";
+        $this->feedbackMessage = "Imported {$count} transactions with learned category mappings.";
     }
 
     public function exportCsv(): StreamedResponse
     {
-        $userId = Auth::id();
-        $transactions = Transaction::where('user_id', $userId)
+        $uid = Auth::id();
+        $txns = Transaction::where('user_id', $uid)
             ->with('category')
             ->orderBy('transaction_date', 'desc')
             ->get();
 
         $filename = 'campus_coin_transactions_'.date('Y-m-d').'.csv';
 
-        return response()->streamDownload(function () use ($transactions) {
+        return response()->streamDownload(function () use ($txns) {
             $handle = fopen('php://output', 'w');
             fputcsv($handle, ['ID', 'Date', 'Merchant', 'Type', 'Category', 'Amount', 'Payment Method', 'Recurring', 'Description']);
 
-            foreach ($transactions as $t) {
+            foreach ($txns as $t) {
                 fputcsv($handle, [
                     $t->id,
                     $t->transaction_date->format('Y-m-d'),
@@ -689,9 +651,9 @@ class TransactionList extends Component
 
     public function render()
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
 
-        $query = Transaction::where('user_id', $userId)
+        $query = Transaction::where('user_id', $uid)
             ->with('category');
 
         if ($this->typeFilter !== 'all') {
@@ -718,10 +680,9 @@ class TransactionList extends Component
         $sortColumn = in_array($this->sortBy, $allowedSorts) ? $this->sortBy : 'transaction_date';
         $direction = strtolower($this->sortDirection) === 'asc' ? 'asc' : 'desc';
 
-        $transactions = $query->orderBy($sortColumn, $direction)->paginate(12);
+        $txns = $query->orderBy($sortColumn, $direction)->paginate(12);
 
-        // Fetch categories available to student for filters & form
-        $categories = Category::forUser($userId)
+        $categories = Category::forUser($uid)
             ->orderBy('type')
             ->orderBy('name')
             ->get();
@@ -729,10 +690,10 @@ class TransactionList extends Component
         $formCategories = $categories->where('is_active', true)->where('type', $this->type);
 
         return view('livewire.student.transaction-list', [
-            'transactions' => $transactions,
+            'transactions' => $txns,
             'categories' => $categories,
             'formCategories' => $formCategories,
-            'totalCount' => Transaction::where('user_id', $userId)->count(),
+            'totalCount' => Transaction::where('user_id', $uid)->count(),
         ])->layout('components.layouts.app', ['title' => 'Transactions Ledger']);
     }
 }

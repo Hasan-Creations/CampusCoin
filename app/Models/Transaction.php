@@ -11,11 +11,6 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'user_id',
         'category_id',
@@ -30,11 +25,6 @@ class Transaction extends Model
         'ai_confidence',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -46,49 +36,31 @@ class Transaction extends Model
         ];
     }
 
-    /**
-     * The student owner of this transaction record.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * The assigned category for this transaction.
-     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Scope to transactions of a specific user.
-     */
     public function scopeForUser(Builder $query, int $userId): Builder
     {
         return $query->where('user_id', $userId);
     }
 
-    /**
-     * Scope to income transactions.
-     */
     public function scopeIncome(Builder $query): Builder
     {
         return $query->where('type', 'income');
     }
 
-    /**
-     * Scope to expense transactions.
-     */
     public function scopeExpense(Builder $query): Builder
     {
         return $query->where('type', 'expense');
     }
 
-    /**
-     * Search transactions by merchant or description.
-     */
     public function scopeSearch(Builder $query, ?string $term): Builder
     {
         if (blank($term)) {
@@ -101,9 +73,6 @@ class Transaction extends Model
         });
     }
 
-    /**
-     * Filter by category ID.
-     */
     public function scopeByCategory(Builder $query, ?int $categoryId): Builder
     {
         if (blank($categoryId)) {
@@ -113,25 +82,16 @@ class Transaction extends Model
         return $query->where('category_id', $categoryId);
     }
 
-    /**
-     * Determine if this is an income transaction.
-     */
     public function isIncome(): bool
     {
         return $this->type === 'income';
     }
 
-    /**
-     * Determine if this is an expense transaction.
-     */
     public function isExpense(): bool
     {
         return $this->type === 'expense';
     }
 
-    /**
-     * Formatted monetary string with directional sign.
-     */
     public function formattedAmount(): string
     {
         $prefix = $this->isIncome() ? '+' : '-';

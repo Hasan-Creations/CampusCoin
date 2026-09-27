@@ -1,27 +1,50 @@
-*.log
-.DS_Store
+/miscellaneous/
+# Local environment and secrets
 .env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.codex
-/.cursor/
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
+.env.*
+!.env.example
 /auth.json
-/node_modules
-/public/build
-/public/fonts-manifest.dev.json
+
+# Dependencies that can be recreated from lock files
+/vendor/
+/node_modules/
+
+# Laravel runtime and generated files
+/storage/*.key
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/testing/*
+/storage/framework/cache/data/*
+/storage/pail/
+/bootstrap/cache/*
+
+# Frontend build output
+/public/build/
 /public/hot
 /public/storage
-/storage/*.key
-/storage/pail
-/vendor
-_ide_helper.php
+/public/fonts-manifest.dev.json
+
+# Editor and local tooling
+/.idea/
+/.vscode/
+/.cursor/
+/.nova/
+/.zed/
+/.codex
+/.phpunit.cache
+/.phpunit.result.cache
+/.phpactor.json
+
+# OS and temp files
+*.log
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local VM / environment metadata
 Homestead.json
 Homestead.yaml
-Thumbs.db

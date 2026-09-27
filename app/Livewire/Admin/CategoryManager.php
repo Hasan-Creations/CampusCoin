@@ -10,11 +10,11 @@ use Livewire\Component;
 
 class CategoryManager extends Component
 {
-    public string $filterScope = 'global'; // global, personal, all
+    public string $filterScope = 'global';
 
-    public string $filterType = 'all'; // all, expense, income
+    public string $filterType = 'all';
 
-    public string $filterStatus = 'all'; // all, active, inactive
+    public string $filterStatus = 'all';
 
     public string $search = '';
 
@@ -36,9 +36,6 @@ class CategoryManager extends Component
 
     public ?string $errorMessage = null;
 
-    /**
-     * Icon palette matching the visual line icon system.
-     */
     public array $availableIcons = [
         'tag' => 'Tag',
         'wallet' => 'Wallet',
@@ -53,9 +50,6 @@ class CategoryManager extends Component
         'plus' => 'Other',
     ];
 
-    /**
-     * Color palette adhering to Campus Coin color system.
-     */
     public array $availableColors = [
         '#059669' => 'Primary Emerald',
         '#10B981' => 'Light Accent',
@@ -123,20 +117,19 @@ class CategoryManager extends Component
         $this->feedbackMessage = null;
         $this->errorMessage = null;
 
-        $category = Category::find($id);
-
-        if (! $category) {
+        $cat = Category::find($id);
+        if (! $cat) {
             $this->errorMessage = 'Category not found.';
 
             return;
         }
 
-        $this->editingId = $category->id;
-        $this->name = $category->name;
-        $this->type = $category->type;
-        $this->icon = $category->icon;
-        $this->color = $category->color;
-        $this->is_active = $category->is_active;
+        $this->editingId = $cat->id;
+        $this->name = $cat->name;
+        $this->type = $cat->type;
+        $this->icon = $cat->icon;
+        $this->color = $cat->color;
+        $this->is_active = $cat->is_active;
         $this->showModal = true;
     }
 
@@ -152,16 +145,16 @@ class CategoryManager extends Component
         $this->validate();
 
         if ($this->editingId) {
-            $category = Category::find($this->editingId);
+            $cat = Category::find($this->editingId);
 
-            if (! $category) {
+            if (! $cat) {
                 $this->errorMessage = 'Category not found.';
                 $this->showModal = false;
 
                 return;
             }
 
-            $category->update([
+            $cat->update([
                 'name' => trim($this->name),
                 'type' => $this->type,
                 'icon' => $this->icon,
@@ -169,7 +162,7 @@ class CategoryManager extends Component
                 'is_active' => $this->is_active,
             ]);
 
-            $this->feedbackMessage = "Category '{$category->name}' successfully updated.";
+            $this->feedbackMessage = "Category '{$cat->name}' updated.";
         } else {
             Category::create([
                 'user_id' => null,
@@ -181,7 +174,7 @@ class CategoryManager extends Component
                 'is_active' => true,
             ]);
 
-            $this->feedbackMessage = "Global system category '{$this->name}' successfully created.";
+            $this->feedbackMessage = "Global category '{$this->name}' created.";
         }
 
         $this->showModal = false;
@@ -192,22 +185,21 @@ class CategoryManager extends Component
         $this->feedbackMessage = null;
         $this->errorMessage = null;
 
-        $category = Category::find($id);
-
-        if (! $category) {
+        $cat = Category::find($id);
+        if (! $cat) {
             $this->errorMessage = 'Category not found.';
 
             return;
         }
 
-        $category->update([
-            'is_active' => ! $category->is_active,
+        $cat->update([
+            'is_active' => ! $cat->is_active,
         ]);
 
-        if ($category->is_active) {
-            $this->feedbackMessage = "Category '{$category->name}' has been activated and is now selectable for student transactions.";
+        if ($cat->is_active) {
+            $this->feedbackMessage = "Category '{$cat->name}' has been activated and is now selectable for student transactions.";
         } else {
-            $this->feedbackMessage = "Category '{$category->name}' has been deactivated. Historical records remain intact, but students cannot select it for new entries.";
+            $this->feedbackMessage = "Category '{$cat->name}' has been deactivated. Historical records remain intact, but students cannot select it for new entries.";
         }
     }
 
@@ -216,42 +208,41 @@ class CategoryManager extends Component
         $this->feedbackMessage = null;
         $this->errorMessage = null;
 
-        $category = Category::find($id);
-
-        if (! $category) {
+        $cat = Category::find($id);
+        if (! $cat) {
             $this->errorMessage = 'Category not found.';
 
             return;
         }
 
-        $transactionsCount = $category->transactions()->count();
-        $budgetsCount = $category->budgets()->count();
-        $tipsCount = $category->savingTips()->count();
-        $learningsCount = $category->categoryLearnings()->count();
+        $txCount = $cat->transactions()->count();
+        $budgetCount = $cat->budgets()->count();
+        $tipCount = $cat->savingTips()->count();
+        $learnCount = $cat->categoryLearnings()->count();
 
-        if ($transactionsCount > 0 || $budgetsCount > 0 || $tipsCount > 0 || $learningsCount > 0) {
+        if ($txCount > 0 || $budgetCount > 0 || $tipCount > 0 || $learnCount > 0) {
             $details = [];
-            if ($transactionsCount > 0) {
-                $details[] = "{$transactionsCount} transaction(s)";
+            if ($txCount > 0) {
+                $details[] = "{$txCount} transaction(s)";
             }
-            if ($budgetsCount > 0) {
-                $details[] = "{$budgetsCount} budget(s)";
+            if ($budgetCount > 0) {
+                $details[] = "{$budgetCount} budget(s)";
             }
-            if ($tipsCount > 0) {
-                $details[] = "{$tipsCount} tip(s)";
+            if ($tipCount > 0) {
+                $details[] = "{$tipCount} tip(s)";
             }
-            if ($learningsCount > 0) {
-                $details[] = "{$learningsCount} AI learned mapping(s)";
+            if ($learnCount > 0) {
+                $details[] = "{$learnCount} AI learned mapping(s)";
             }
 
             $detailStr = implode(', ', $details);
-            $this->errorMessage = "Cannot hard delete '{$category->name}'. It is currently referenced by {$detailStr}. Deactivate this category instead to preserve historical financial integrity.";
+            $this->errorMessage = "Cannot hard delete '{$cat->name}'. It is currently referenced by {$detailStr}. Deactivate this category instead to preserve historical financial integrity.";
 
             return;
         }
 
-        $name = $category->name;
-        $category->delete();
+        $name = $cat->name;
+        $cat->delete();
 
         $this->feedbackMessage = "Category '{$name}' was safely and permanently deleted.";
     }
@@ -261,7 +252,6 @@ class CategoryManager extends Component
         $query = Category::with('user')
             ->withCount(['transactions', 'budgets']);
 
-        // Scope filter: Global Default vs Personal vs All
         if ($this->filterScope === 'global') {
             $query->where(function (Builder $q) {
                 $q->where('is_default', true)->orWhereNull('user_id');
@@ -270,24 +260,21 @@ class CategoryManager extends Component
             $query->where('is_default', false)->whereNotNull('user_id');
         }
 
-        // Type filter
         if ($this->filterType !== 'all') {
             $query->where('type', $this->filterType);
         }
 
-        // Status filter
         if ($this->filterStatus === 'active') {
             $query->where('is_active', true);
         } elseif ($this->filterStatus === 'inactive') {
             $query->where('is_active', false);
         }
 
-        // Search filter
         if (filled($this->search)) {
             $query->where('name', 'like', '%'.trim($this->search).'%');
         }
 
-        $categories = $query->orderBy('is_default', 'desc')
+        $cats = $query->orderBy('is_default', 'desc')
             ->orderBy('name', 'asc')
             ->get();
 
@@ -297,7 +284,7 @@ class CategoryManager extends Component
         $inactiveCount = Category::where('is_active', false)->count();
 
         return view('livewire.admin.category-manager', [
-            'categories' => $categories,
+            'categories' => $cats,
             'globalCount' => $globalCount,
             'personalCount' => $personalCount,
             'activeCount' => $activeCount,

@@ -11,25 +11,25 @@
                     Student Style.
                 </h1>
                 <p class="text-sm sm:text-base text-[var(--muted)] leading-relaxed max-w-xl pt-2">
-                    Engineered for collegiate cash flow. Reconcile monthly allowances, enforce category spending limits, and track savings goals with deterministic precision.
+                    Track allowances, category limits, and savings goals with precise calculations.
                 </p>
             </div>
 
             <!-- Single Hairline-Divided Metric Strip (Zero Border Overuse per §5) -->
-            <div class="grid grid-cols-3 border hairline-border bg-[var(--panel)] divide-x divide-[var(--hairline)]">
-                <div class="p-4">
+            <div class="grid grid-cols-3 gap-3">
+                <div class="p-4 bg-[var(--panel)]">
                     <div class="text-xs font-caps text-[var(--muted)]">Accuracy</div>
                     <div class="font-mono text-xl font-medium text-[var(--ink)] mt-1 tabular-nums">100%</div>
                     <div class="text-[11px] text-[var(--muted)] mt-0.5">Fixed-point arithmetic</div>
                 </div>
 
-                <div class="p-4">
+                <div class="p-4 bg-[var(--panel)]">
                     <div class="text-xs font-caps text-[var(--muted)]">Isolation</div>
                     <div class="font-mono text-xl font-medium text-[var(--accent)] mt-1">Strict</div>
                     <div class="text-[11px] text-[var(--muted)] mt-0.5">Tenant privacy safe</div>
                 </div>
 
-                <div class="p-4">
+                <div class="p-4 bg-[var(--panel)]">
                     <div class="text-xs font-caps text-[var(--muted)]">Advisory</div>
                     <div class="font-mono text-xl font-medium text-[var(--secondary)] mt-1">Controlled</div>
                     <div class="text-[11px] text-[var(--muted)] mt-0.5">Student override authority</div>

@@ -14,16 +14,8 @@ class MonthlyReports extends Component
 {
     use WithPagination;
 
-    /**
-     * Active report viewing tab.
-     * Options: 'monthly', 'category', 'six_month', 'daily', 'weekly', 'ledger'.
-     */
     public string $reportTab = 'monthly';
 
-    /**
-     * Preset period selector.
-     * Options: 'this_month', 'last_month', 'last_3_months', 'last_6_months', 'year', 'custom'.
-     */
     public string $presetPeriod = 'this_month';
 
     public string $dateFrom = '';
@@ -32,7 +24,7 @@ class MonthlyReports extends Component
 
     public string $categoryFilter = '';
 
-    public string $typeFilter = 'all'; // all, expense, income
+    public string $typeFilter = 'all';
 
     protected $queryString = [
         'reportTab' => ['except' => 'monthly'],
@@ -87,7 +79,6 @@ class MonthlyReports extends Component
                 $this->dateTo = $now->copy()->endOfMonth()->toDateString();
                 break;
             case 'custom':
-                // retain existing dateFrom and dateTo
                 break;
         }
 
@@ -127,9 +118,9 @@ class MonthlyReports extends Component
         $this->resetPage();
     }
 
-    public function render(FinancialCalculationService $calculationService)
+    public function render(FinancialCalculationService $calcService)
     {
-        $userId = Auth::id();
+        $uid = Auth::id();
         $user = Auth::user();
         $now = Carbon::now();
 
@@ -148,31 +139,28 @@ class MonthlyReports extends Component
             $filters['type'] = $this->typeFilter;
         }
 
-        // --- Data Gathering via Calculation Service ---
-        $summary = $calculationService->getReportSummary($userId, $startDate, $endDate, $filters);
-        $categoryReport = $calculationService->getCategoryWiseReport($userId, $startDate, $endDate, $filters);
-        $sixMonthTrends = $calculationService->getSixMonthCashFlow($userId, $now);
-        $dailySummary = $calculationService->getCurrentMonthDailySummary($userId, $now, $filters);
-        $weeklySummary = $calculationService->getCurrentMonthWeeklySummary($userId, $now, $filters);
+        $summary = $calcService->getReportSummary($uid, $startDate, $endDate, $filters);
+        $categoryReport = $calcService->getCategoryWiseReport($uid, $startDate, $endDate, $filters);
+        $sixMonths = $calcService->getSixMonthCashFlow($uid, $now);
+        $daily = $calcService->getCurrentMonthDailySummary($uid, $now, $filters);
+        $weekly = $calcService->getCurrentMonthWeeklySummary($uid, $now, $filters);
 
-        // --- Detailed Ledger Query ---
-        $txQuery = Transaction::where('user_id', $userId)
+        $query = Transaction::where('user_id', $uid)
             ->whereBetween('transaction_date', [$startDate->toDateString(), $endDate->toDateString()])
             ->with('category')
             ->orderBy('transaction_date', 'desc')
             ->orderBy('id', 'desc');
 
         if (! empty($filters['category_id'])) {
-            $txQuery->where('category_id', $filters['category_id']);
+            $query->where('category_id', $filters['category_id']);
         }
         if (! empty($filters['type'])) {
-            $txQuery->where('type', $filters['type']);
+            $query->where('type', $filters['type']);
         }
 
-        $transactions = $txQuery->paginate(15);
+        $txns = $query->paginate(15);
 
-        // Categories available for student
-        $categories = Category::forUser($userId)
+        $cats = Category::forUser($uid)
             ->orderBy('type')
             ->orderBy('name')
             ->get();
@@ -183,11 +171,11 @@ class MonthlyReports extends Component
             'endDate' => $endDate,
             'summary' => $summary,
             'categoryReport' => $categoryReport,
-            'sixMonthTrends' => $sixMonthTrends,
-            'dailySummary' => $dailySummary,
-            'weeklySummary' => $weeklySummary,
-            'transactions' => $transactions,
-            'categories' => $categories,
+            'sixMonthTrends' => $sixMonths,
+            'dailySummary' => $daily,
+            'weeklySummary' => $weekly,
+            'transactions' => $txns,
+            'categories' => $cats,
             'periodLabel' => $summary['period_label'],
         ])->layout('components.layouts.app', ['title' => 'Monthly Financial Reports']);
     }

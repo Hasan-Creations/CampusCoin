@@ -4,7 +4,7 @@
             <div class="border-b hairline-border pb-4">
                 <span class="text-xs font-caps text-[var(--muted)]">Student Onboarding</span>
                 <h1 class="font-display text-2xl font-medium text-[var(--ink)] mt-1">Setup Your Campus Coin Ledger</h1>
-                <p class="text-xs text-[var(--muted)] mt-1">Configure your academic cohort and spending baselines to unlock tailored budgeting</p>
+                <p class="text-xs text-[var(--muted)] mt-1">Choose your academic cohort and enter your monthly spending details to set up a budget.</p>
             </div>
 
             @if ($errors->any())

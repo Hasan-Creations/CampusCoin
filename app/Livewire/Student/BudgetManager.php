@@ -11,27 +11,22 @@ use Livewire\Component;
 
 class BudgetManager extends Component
 {
-    // Filter by month (YYYY-MM)
     public string $selectedMonth = '';
 
-    // Modal state
     public bool $showModal = false;
 
     public ?int $editingId = null;
 
-    // Form inputs
     public ?int $category_id = null;
 
     public string $amount = '';
 
     public string $month_year = '';
 
-    // Delete confirmation state
     public bool $showDeleteModal = false;
 
     public ?int $deletingId = null;
 
-    // Flash messages
     public ?string $feedbackMessage = null;
 
     public ?string $errorMessage = null;
@@ -84,7 +79,6 @@ class BudgetManager extends Component
                         return;
                     }
 
-                    // Check uniqueness for (user_id, category_id, month_year)
                     $existsQuery = Budget::where('user_id', $userId)
                         ->where('category_id', $value)
                         ->where('month_year', $this->month_year);
@@ -124,19 +118,18 @@ class BudgetManager extends Component
         $this->amount = '';
         $this->month_year = $this->selectedMonth ?: date('Y-m');
 
-        // Select first available expense category that doesn't have a budget in this month
-        $existingCatIds = Budget::where('user_id', Auth::id())
+        $usedCatIds = Budget::where('user_id', Auth::id())
             ->where('month_year', $this->month_year)
             ->pluck('category_id')
             ->toArray();
 
-        $availableCategory = Category::forUser(Auth::id())
+        $cat = Category::forUser(Auth::id())
             ->active()
             ->expense()
-            ->whereNotIn('id', $existingCatIds)
+            ->whereNotIn('id', $usedCatIds)
             ->first();
 
-        $this->category_id = $availableCategory?->id;
+        $this->category_id = $cat?->id;
         $this->showModal = true;
     }
 
@@ -277,8 +270,7 @@ class BudgetManager extends Component
             $monthDisplay = $targetMonth;
         }
 
-        // Pre-aggregate actual expense spending per category for this student and month
-        $expensesByCategory = Transaction::where('user_id', $userId)
+        $spentByCat = Transaction::where('user_id', $userId)
             ->where('type', 'expense')
             ->whereBetween('transaction_date', [$startDate, $endDate])
             ->groupBy('category_id')
@@ -286,28 +278,26 @@ class BudgetManager extends Component
             ->pluck('total_spent', 'category_id')
             ->map(fn ($val) => number_format((float) $val, 2, '.', ''));
 
-        // Load all budget goals for this student and month
         $budgets = Budget::where('user_id', $userId)
             ->where('month_year', $targetMonth)
             ->with('category')
             ->get();
 
-        // Calculate aggregates and decorate budgets
         $totalBudgeted = '0.00';
-        $totalSpentOnBudgets = '0.00';
+        $spentTotal = '0.00';
         $overBudgetCount = 0;
         $nearLimitCount = 0;
         $onTrackCount = 0;
 
         $decoratedBudgets = $budgets->map(function ($budget) use (
-            $expensesByCategory,
+            $spentByCat,
             &$totalBudgeted,
-            &$totalSpentOnBudgets,
+            &$spentTotal,
             &$overBudgetCount,
             &$nearLimitCount,
             &$onTrackCount
         ) {
-            $spent = $expensesByCategory->get($budget->category_id, '0.00');
+            $spent = $spentByCat->get($budget->category_id, '0.00');
             $remaining = $budget->getRemainingAmount($spent);
             $percentage = $budget->getPercentageConsumed($spent);
             $status = $budget->getStatus($spent);
@@ -316,7 +306,7 @@ class BudgetManager extends Component
             $barColor = $budget->getProgressBarColor($spent);
 
             $totalBudgeted = bcadd($totalBudgeted, (string) $budget->amount, 2);
-            $totalSpentOnBudgets = bcadd($totalSpentOnBudgets, (string) $spent, 2);
+            $spentTotal = bcadd($spentTotal, (string) $spent, 2);
 
             match ($status) {
                 'over_budget' => $overBudgetCount++,
@@ -336,9 +326,8 @@ class BudgetManager extends Component
             ];
         });
 
-        $totalRemaining = bcsub($totalBudgeted, $totalSpentOnBudgets, 2);
+        $totalRemaining = bcsub($totalBudgeted, $spentTotal, 2);
 
-        // Load available expense categories for modal dropdown
         $eligibleCategories = Category::forUser($userId)
             ->active()
             ->expense()
@@ -348,7 +337,7 @@ class BudgetManager extends Component
         return view('livewire.student.budget-manager', [
             'decoratedBudgets' => $decoratedBudgets,
             'totalBudgeted' => $totalBudgeted,
-            'totalSpentOnBudgets' => $totalSpentOnBudgets,
+            'totalSpentOnBudgets' => $spentTotal,
             'totalRemaining' => $totalRemaining,
             'overBudgetCount' => $overBudgetCount,
             'nearLimitCount' => $nearLimitCount,

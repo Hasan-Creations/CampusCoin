@@ -13,59 +13,48 @@ use Illuminate\Support\Facades\DB;
 
 class AdminMetricsService
 {
-    /**
-     * Retrieve aggregate operational platform metrics and usage telemetry.
-     *
-     * @return array<string, mixed>
-     */
     public function getPlatformOverviewMetrics(): array
     {
-        // 1. Student Account Telemetry
-        $totalStudents = User::where('role', 'student')->count();
-        $activeStudents = User::where('role', 'student')->where('status', 'active')->count();
-        $disabledStudents = User::where('role', 'student')->where('status', 'disabled')->count();
-        $activePercentage = $totalStudents > 0
-            ? round(($activeStudents / $totalStudents) * 100, 1)
+        $studentsCount = User::where('role', 'student')->count();
+        $activeCount = User::where('role', 'student')->where('status', 'active')->count();
+        $disabledCount = User::where('role', 'student')->where('status', 'disabled')->count();
+        $activePct = $studentsCount > 0
+            ? round(($activeCount / $studentsCount) * 100, 1)
             : 0.0;
 
-        // 2. Transaction & Volume Telemetry
-        $totalTransactions = Transaction::count();
-        $totalVolume = Transaction::sum('amount') ?? '0.00';
-        $expenseVolume = Transaction::where('type', 'expense')->sum('amount') ?? '0.00';
-        $incomeVolume = Transaction::where('type', 'income')->sum('amount') ?? '0.00';
-        $expenseCount = Transaction::where('type', 'expense')->count();
-        $incomeCount = Transaction::where('type', 'income')->count();
-        $avgTransactionAmount = $totalTransactions > 0
+        $txCount = Transaction::count();
+        $totalVol = Transaction::sum('amount') ?? '0.00';
+        $expVol = Transaction::where('type', 'expense')->sum('amount') ?? '0.00';
+        $incVol = Transaction::where('type', 'income')->sum('amount') ?? '0.00';
+        $expCount = Transaction::where('type', 'expense')->count();
+        $incCount = Transaction::where('type', 'income')->count();
+        $avgAmount = $txCount > 0
             ? (float) (Transaction::avg('amount') ?? 0.00)
             : 0.00;
 
-        // 3. Category System Telemetry
-        $totalCategories = Category::count();
-        $globalCategories = Category::where('is_default', true)->orWhereNull('user_id')->count();
-        $personalCategories = Category::where('is_default', false)->whereNotNull('user_id')->count();
-        $activeCategories = Category::where('is_active', true)->count();
-        $inactiveCategories = Category::where('is_active', false)->count();
+        $catCount = Category::count();
+        $globalCount = Category::where('is_default', true)->orWhereNull('user_id')->count();
+        $personalCount = Category::where('is_default', false)->whereNotNull('user_id')->count();
+        $activeCats = Category::where('is_active', true)->count();
+        $inactiveCats = Category::where('is_active', false)->count();
 
-        // 4. Budget & Financial Goals Telemetry
-        $totalBudgets = Budget::count();
-        $totalBudgetedAmount = Budget::sum('amount') ?? '0.00';
-        $uniqueStudentsWithBudgets = Budget::distinct('user_id')->count('user_id');
+        $budgetCount = Budget::count();
+        $budgetTotal = Budget::sum('amount') ?? '0.00';
+        $studentsWithBudgets = Budget::distinct('user_id')->count('user_id');
 
-        // 5. Intelligent Advisory Telemetry
-        $totalTipsGenerated = SavingTip::count();
-        $pinnedTipsCount = SavingTip::where('status', 'pinned')->count();
-        $totalLearnedCorrections = CategoryLearning::count();
+        $tipsCount = SavingTip::count();
+        $pinnedCount = SavingTip::where('status', 'pinned')->count();
+        $correctionsCount = CategoryLearning::count();
 
-        // 6. Most-Used Categories (Top 5 by transaction frequency)
-        $mostUsedCategories = Transaction::select('category_id', DB::raw('COUNT(*) as tx_count'), DB::raw('SUM(amount) as total_volume'))
+        $topCategories = Transaction::select('category_id', DB::raw('COUNT(*) as tx_count'), DB::raw('SUM(amount) as total_volume'))
             ->groupBy('category_id')
             ->orderByDesc('tx_count')
             ->limit(5)
             ->with('category')
             ->get()
-            ->map(function ($row) use ($totalTransactions) {
+            ->map(function ($row) use ($txCount) {
                 $count = (int) $row->tx_count;
-                $pct = $totalTransactions > 0 ? round(($count / $totalTransactions) * 100, 1) : 0.0;
+                $pct = $txCount > 0 ? round(($count / $txCount) * 100, 1) : 0.0;
 
                 return [
                     'category_id' => $row->category_id,
@@ -81,73 +70,65 @@ class AdminMetricsService
                 ];
             });
 
-        // 7. Student Cohort Distribution
-        $cohortDistribution = User::where('role', 'student')
+        $cohorts = User::where('role', 'student')
             ->select(DB::raw('COALESCE(academic_year, "Unspecified") as cohort'), DB::raw('COUNT(*) as student_count'))
             ->groupBy('academic_year')
             ->orderByDesc('student_count')
             ->pluck('student_count', 'cohort')
             ->toArray();
 
-        // 8. Recent 30-Day Activity
-        $recentThirtyDaysSignups = User::where('role', 'student')
+        $recentSignups = User::where('role', 'student')
             ->where('created_at', '>=', now()->subDays(30))
             ->count();
 
-        $recentThirtyDaysTransactions = Transaction::where('transaction_date', '>=', now()->subDays(30)->toDateString())
+        $recentTxCount = Transaction::where('transaction_date', '>=', now()->subDays(30)->toDateString())
             ->count();
 
-        // 9. Total Monthly Baseline Commitment
-        $totalMonthlyAllowance = User::where('role', 'student')->sum('monthly_allowance') ?? '0.00';
-        $totalSavingsGoal = User::where('role', 'student')->sum('savings_goal') ?? '0.00';
+        $allowanceSum = User::where('role', 'student')->sum('monthly_allowance') ?? '0.00';
+        $savingsSum = User::where('role', 'student')->sum('savings_goal') ?? '0.00';
 
         return [
             'students' => [
-                'total' => $totalStudents,
-                'active' => $activeStudents,
-                'disabled' => $disabledStudents,
-                'active_percentage' => $activePercentage,
-                'recent_signups_30d' => $recentThirtyDaysSignups,
-                'total_monthly_allowance' => number_format((float) $totalMonthlyAllowance, 2, '.', ''),
-                'total_savings_goal' => number_format((float) $totalSavingsGoal, 2, '.', ''),
-                'cohort_distribution' => $cohortDistribution,
+                'total' => $studentsCount,
+                'active' => $activeCount,
+                'disabled' => $disabledCount,
+                'active_percentage' => $activePct,
+                'recent_signups_30d' => $recentSignups,
+                'total_monthly_allowance' => number_format((float) $allowanceSum, 2, '.', ''),
+                'total_savings_goal' => number_format((float) $savingsSum, 2, '.', ''),
+                'cohort_distribution' => $cohorts,
             ],
             'transactions' => [
-                'total_count' => $totalTransactions,
-                'total_volume' => number_format((float) $totalVolume, 2, '.', ''),
-                'expense_count' => $expenseCount,
-                'expense_volume' => number_format((float) $expenseVolume, 2, '.', ''),
-                'income_count' => $incomeCount,
-                'income_volume' => number_format((float) $incomeVolume, 2, '.', ''),
-                'avg_amount' => number_format($avgTransactionAmount, 2, '.', ''),
-                'recent_30d_count' => $recentThirtyDaysTransactions,
+                'total_count' => $txCount,
+                'total_volume' => number_format((float) $totalVol, 2, '.', ''),
+                'expense_count' => $expCount,
+                'expense_volume' => number_format((float) $expVol, 2, '.', ''),
+                'income_count' => $incCount,
+                'income_volume' => number_format((float) $incVol, 2, '.', ''),
+                'avg_amount' => number_format($avgAmount, 2, '.', ''),
+                'recent_30d_count' => $recentTxCount,
             ],
             'categories' => [
-                'total' => $totalCategories,
-                'global' => $globalCategories,
-                'personal' => $personalCategories,
-                'active' => $activeCategories,
-                'inactive' => $inactiveCategories,
-                'most_used' => $mostUsedCategories,
+                'total' => $catCount,
+                'global' => $globalCount,
+                'personal' => $personalCount,
+                'active' => $activeCats,
+                'inactive' => $inactiveCats,
+                'most_used' => $topCategories,
             ],
             'budgets' => [
-                'total_budgets' => $totalBudgets,
-                'total_budgeted_amount' => number_format((float) $totalBudgetedAmount, 2, '.', ''),
-                'participating_students' => $uniqueStudentsWithBudgets,
+                'total_budgets' => $budgetCount,
+                'total_budgeted_amount' => number_format((float) $budgetTotal, 2, '.', ''),
+                'participating_students' => $studentsWithBudgets,
             ],
             'intelligence' => [
-                'total_tips' => $totalTipsGenerated,
-                'pinned_tips' => $pinnedTipsCount,
-                'learned_corrections' => $totalLearnedCorrections,
+                'total_tips' => $tipsCount,
+                'pinned_tips' => $pinnedCount,
+                'learned_corrections' => $correctionsCount,
             ],
         ];
     }
 
-    /**
-     * Retrieve recent registered student accounts for admin dashboard overview.
-     *
-     * @return Collection<int, User>
-     */
     public function getRecentStudentAccounts(int $limit = 5): Collection
     {
         return User::where('role', 'student')

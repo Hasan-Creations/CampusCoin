@@ -7,7 +7,7 @@
         {{-- ===================================================== --}}
         {{-- HEADER BAR: TITLE, MONTH PICKER, SET BUDGET ACTION     --}}
         {{-- ===================================================== --}}
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b hairline-border pb-6">
+        <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <span class="text-xs font-caps text-[var(--muted)]">
                     Financial Planning &bull; {{ $monthDisplay }}
@@ -154,7 +154,7 @@
                         Setting monthly category limits helps prevent impulse spending and guarantees you hit your student savings target.
                     </p>
                 </div>
-                <x-button variant="accent" wire:click="openCreateModal">
+                <x-button variant="secondary" wire:click="openCreateModal">
                     <x-icon name="plus" class="w-4 h-4" />
                     <span>Set First Budget Goal</span>
                 </x-button>
