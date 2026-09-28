@@ -8,7 +8,6 @@
 
     <title>{{ $title ?? 'Administration' }} — Campus Coin Ops</title>
 
-    <!-- Google Fonts per §2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -34,13 +33,11 @@
 </head>
 
 <body class="h-full font-sans antialiased text-[var(--ink)] bg-[var(--paper)]">
-    <!-- Skip to Main Content Link for Keyboard & Screen Reader Users -->
     <a href="#main-content" class="skip-to-content">
         Skip to main content
     </a>
 
     <div class="min-h-full flex" x-data="{ mobileNavOpen: false }">
-        <!-- Admin Ops Sidebar (Desktop — Fixed 240px dark sidebar per §3) -->
         <aside
             class="sidebar-shell hidden md:sticky md:top-0 md:h-screen md:flex md:w-[240px] md:flex-col border-r hairline-border bg-[var(--ink)] text-[var(--paper)] shrink-0"
             aria-label="Administrator Sidebar Navigation">
@@ -58,7 +55,6 @@
                 </a>
             </div>
 
-            <!-- Admin Navigation -->
             <nav class="flex-1 p-3 space-y-1" aria-label="Administrator Main Navigation">
                 <a href="{{ route('admin.dashboard') }}"
                     class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-sans tracking-wide transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[#2E2B23] text-[var(--paper)] border-l-2 border-[var(--secondary)] pl-3 font-medium' : 'text-[#A8A599] hover:text-[var(--paper)] hover:bg-[#2A2720]' }}">
@@ -93,18 +89,15 @@
             </div>
         </aside>
 
-        <!-- Admin Mobile Navigation Drawer -->
         <div x-show="mobileNavOpen" x-cloak id="admin-mobile-navigation" role="dialog" aria-modal="true"
             aria-label="Admin Navigation Menu" @keydown.escape.window="mobileNavOpen = false"
             class="fixed inset-0 z-50 md:hidden flex">
-            <!-- Backdrop -->
             <div x-show="mobileNavOpen" x-transition:enter="transition-opacity ease-linear duration-200"
                 x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                 x-transition:leave="transition-opacity ease-linear duration-200" x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0" @click="mobileNavOpen = false" class="fixed inset-0 bg-black/60">
             </div>
 
-            <!-- Drawer Panel -->
             <div x-show="mobileNavOpen" x-transition:enter="transition ease-in-out duration-200 transform"
                 x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
                 x-transition:leave="transition ease-in-out duration-200 transform"
@@ -160,9 +153,7 @@
             </div>
         </div>
 
-        <!-- Main Workspace Area -->
         <div class="flex-1 flex flex-col min-w-0">
-            <!-- Admin Top Bar -->
             <header
                 class="border-b hairline-border bg-[var(--panel)] px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
@@ -180,7 +171,6 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <!-- Theme Toggle -->
                     <button type="button"
                         onclick="window.CampusCoin ? window.CampusCoin.toggleTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))"
                         aria-label="Toggle dark mode" title="Toggle dark mode" class="btn-icon">
@@ -190,7 +180,6 @@
                 </div>
             </header>
 
-            <!-- Page Body: 1280px max-width per §3 -->
             <main id="main-content" tabindex="-1"
                 class="flex-1 p-6 sm:p-8 lg:p-10 max-w-[1280px] w-full overflow-y-auto focus:outline-none">
                 {{ $slot }}

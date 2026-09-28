@@ -35,7 +35,6 @@ class AiCategorizationService
             return null;
         }
 
-        // Make sure the suggested category is actually in the student's list.
         $catMatch = $availableCategories->firstWhere('id', $suggestion->categoryId);
         if (! $catMatch) {
             return null;
@@ -98,7 +97,6 @@ class AiCategorizationService
 
         $matched = null;
 
-        // Exact match first
         foreach ($learnings as $row) {
             if (mb_strtolower($row->keyword) === $input) {
                 $matched = $row;
@@ -106,7 +104,6 @@ class AiCategorizationService
             }
         }
 
-        // Substring / word match fallback
         if (! $matched) {
             foreach ($learnings as $row) {
                 $kw = mb_strtolower($row->keyword);

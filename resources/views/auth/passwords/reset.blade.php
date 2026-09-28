@@ -19,15 +19,19 @@
                 <input type="hidden" name="token" value="{{ $token }}">
                 <div>
                     <label for="email" class="block text-xs font-caps text-[var(--muted)] mb-1">Campus Email</label>
-                    <x-field id="email" type="email" name="email" autocomplete="email" value="{{ old('email', $email) }}" required class="text-xs font-mono" :hasError="$errors->has('email')" />
+                    <x-field id="email" type="email" name="email" autocomplete="email"
+                        value="{{ old('email', $email) }}" required class="text-xs font-mono" :hasError="$errors->has('email')" />
                 </div>
                 <div>
                     <label for="password" class="block text-xs font-caps text-[var(--muted)] mb-1">New Password</label>
-                    <x-field id="password" type="password" name="password" autocomplete="new-password" required class="text-xs" :hasError="$errors->has('password')" />
+                    <x-field id="password" type="password" name="password" autocomplete="new-password" required
+                        class="text-xs" :hasError="$errors->has('password')" />
                 </div>
                 <div>
-                    <label for="password_confirmation" class="block text-xs font-caps text-[var(--muted)] mb-1">Confirm New Password</label>
-                    <x-field id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" required class="text-xs" />
+                    <label for="password_confirmation" class="block text-xs font-caps text-[var(--muted)] mb-1">Confirm
+                        New Password</label>
+                    <x-field id="password_confirmation" type="password" name="password_confirmation"
+                        autocomplete="new-password" required class="text-xs" />
                 </div>
                 <x-button variant="accent" type="submit" class="w-full py-3">Update Password</x-button>
             </form>

@@ -22,10 +22,7 @@
 @source '../../storage/framework/views/*.php';
 @source '../views/**/*.blade.php';
 
-/* ==========================================================================
-   Campus Coin — "Ledger" Design System (v2 — Old Money Green)
-   Authoritative visual tokens per docs/campuscoin-design-system.md
-   ========================================================================== */
+/* Campus Coin design tokens */
 
 :root {
   /* Base Surfaces & Canvas — Old Money Green */
@@ -98,9 +95,7 @@ html[data-font-size="large"] {
   font-size: 18px;
 }
 
-/* ==========================================================================
-   Dark Mode — Swapped tokens per §1 (zero invented colors)
-   ========================================================================== */
+/* Dark mode tokens */
 .dark {
   --paper: #15140F;
   --panel: #221F19;
@@ -152,9 +147,7 @@ html[data-font-size="large"] {
   --shadow-modal: 0 20px 48px -8px rgba(0, 0, 0, 0.80);
 }
 
-/* ==========================================================================
-   Accessibility: Reduced Motion Mandate
-   ========================================================================== */
+/* Respect reduced-motion settings */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -167,9 +160,7 @@ html[data-font-size="large"] {
   }
 }
 
-/* ==========================================================================
-   Accessibility: High-Contrast Visible Focus Indicators (§4a, §4b)
-   ========================================================================== */
+/* Visible keyboard focus */
 :focus-visible {
   outline: 2px solid var(--accent) !important;
   outline-offset: 2px !important;
@@ -185,9 +176,7 @@ textarea:focus-visible,
   outline-offset: 2px !important;
 }
 
-/* ==========================================================================
-   Accessibility: Skip Navigation Link
-   ========================================================================== */
+/* Skip navigation link */
 .skip-to-content {
   position: fixed;
   top: 0.75rem;
@@ -212,9 +201,7 @@ textarea:focus-visible,
   outline-offset: 2px !important;
 }
 
-/* ========================================================================== 
-   Shape: restrained ledger geometry
-   ========================================================================== */
+/* Restrained ledger shapes */
 *,
 *::before,
 *::after {
@@ -229,9 +216,7 @@ textarea:focus-visible,
   border-radius: 9999px !important;
 }
 
-/* ==========================================================================
-   Base Document Body & Font Styling
-   ========================================================================== */
+/* Base typography */
 body {
   background-color: var(--paper);
   color: var(--ink);
@@ -241,7 +226,7 @@ body {
   min-height: 100vh;
 }
 
-/* Typography tokens per §2 */
+/* Typography */
 .font-display,
 .font-heading {
   font-family: 'IBM Plex Sans', sans-serif !important;
@@ -280,7 +265,7 @@ h1.font-display,
   text-transform: none;
 }
 
-/* Headline accent rule (§5) */
+/* Headline accent */
 .headline-rule {
   position: relative;
   display: inline-block;
@@ -295,9 +280,7 @@ h1.font-display,
   background-color: var(--accent);
 }
 
-/* ==========================================================================
-   Hairline Borders & Surface System (§5)
-   ========================================================================== */
+/* Borders and surfaces */
 @utility hairline-border {
   border-color: var(--hairline);
 }
@@ -361,10 +344,7 @@ h1.font-display,
   padding: 16px;
 }
 
-/* ==========================================================================
-   Button System — Invert on Hover (§4a)
-   Solid fill at idle, inverts to outline of same color on hover.
-   ========================================================================== */
+/* Buttons invert to outlines on hover */
 .btn {
   border-radius: var(--radius-sm) !important;
   border: 1px solid transparent;
@@ -469,10 +449,7 @@ h1.font-display,
   outline-offset: 2px !important;
 }
 
-/* ==========================================================================
-   Inputs & Selects (§4b)
-   Idle state neutral, color enters on focus via accent green.
-   ========================================================================== */
+/* Inputs use the accent color on focus */
 .field,
 .input-campus {
   border-radius: var(--radius-sm) !important;
@@ -518,10 +495,7 @@ h1.font-display,
   text-align: right;
 }
 
-/* ==========================================================================
-   Stat Strip (§12)
-   Hairline-divided stat row, not separate boxes
-   ========================================================================== */
+/* Hairline-divided stat row */
 .stat-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -549,10 +523,7 @@ h1.font-display,
   }
 }
 
-/* ==========================================================================
-   Ledger Table (§12)
-   Header row (small-caps, muted) + rows (mono amounts, hover tint)
-   ========================================================================== */
+/* Ledger table */
 .ledger-table {
   width: 100%;
   border-collapse: collapse;
@@ -593,10 +564,7 @@ h1.font-display,
   background-color: rgba(78, 138, 112, 0.08);
 }
 
-/* ==========================================================================
-   Badges & Tags (§12)
-   Category/status tags, small-caps
-   ========================================================================== */
+/* Badges and tags */
 .badge,
 .badge-campus {
   display: inline-flex;
@@ -628,10 +596,7 @@ h1.font-display,
   background: var(--gold-tint);
 }
 
-/* ==========================================================================
-   Empty State (§9, §12)
-   Dashed border + direct sentence, no illustration
-   ========================================================================== */
+/* Empty state */
 .empty-state {
   padding: 44px 24px;
   text-align: center;
@@ -639,10 +604,7 @@ h1.font-display,
   font-size: 13.5px;
 }
 
-/* ==========================================================================
-   Modal Dialog Surface (§4, §5, §7)
-   Hairline border, zero radius, 200ms ease slide/fade
-   ========================================================================== */
+/* Modal surface */
 .modal-dialog-surface {
   background-color: var(--panel);
   border-radius: var(--radius-lg) !important;

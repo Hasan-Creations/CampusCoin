@@ -4,9 +4,6 @@
     </x-slot:header>
 
     <div class="space-y-6">
-        {{-- ===================================================== --}}
-        {{-- REPORT HEADER & EXPORT ACTIONS                         --}}
-        {{-- ===================================================== --}}
         <div class="page-header flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <span class="text-xs font-caps text-[var(--muted)]">
@@ -46,9 +43,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- INTERACTIVE REPORT FILTERS                             --}}
-        {{-- ===================================================== --}}
         <div class="card-campus p-4 sm:p-5 space-y-3.5">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
                 {{-- Period Selector Segmented Bar --}}
@@ -103,9 +97,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- FOUR EXECUTIVE SUMMARY KPI CARDS                       --}}
-        {{-- ===================================================== --}}
         <div class="stat-strip">
             <div>
                 <div class="text-xs font-caps text-[var(--muted)]">Total Inflow</div>
@@ -148,9 +139,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- REPORT TABS NAVIGATION                                 --}}
-        {{-- ===================================================== --}}
         <div role="tablist" aria-label="Report Views" class="border-b hairline-border flex items-center gap-6 overflow-x-auto text-sm">
             <button type="button" role="tab"
                     aria-selected="{{ ($reportTab === 'monthly' || $reportTab === 'category') ? 'true' : 'false' }}"
@@ -184,9 +172,6 @@
             </button>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- TAB 1: CATEGORY-WISE SPENDING REPORT                   --}}
-        {{-- ===================================================== --}}
         @if ($reportTab === 'monthly' || $reportTab === 'category')
             <div class="card-campus overflow-hidden p-0">
                 <div class="p-5 border-b hairline-border flex items-center justify-between bg-[var(--panel)]">
@@ -259,9 +244,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- TAB 2: SIX-MONTH INCOME VS EXPENSE REPORT              --}}
-        {{-- ===================================================== --}}
         @if ($reportTab === 'six_month')
             <div class="card-campus overflow-hidden p-0">
                 <div class="p-5 border-b hairline-border flex items-center justify-between bg-[var(--panel)]">
@@ -330,9 +312,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- TAB 3: DAILY CURRENT-MONTH SUMMARY                     --}}
-        {{-- ===================================================== --}}
         @if ($reportTab === 'daily')
             <div class="card-campus overflow-hidden p-0">
                 <div class="p-5 border-b hairline-border flex items-center justify-between bg-[var(--panel)]">
@@ -390,9 +369,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- TAB 4: WEEKLY CURRENT-MONTH SUMMARY                    --}}
-        {{-- ===================================================== --}}
         @if ($reportTab === 'weekly')
             <div class="card-campus overflow-hidden p-0">
                 <div class="p-5 border-b hairline-border flex items-center justify-between bg-[var(--panel)]">
@@ -442,9 +418,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- TAB 5: FILTERED LEDGER TRANSACTIONS                    --}}
-        {{-- ===================================================== --}}
         @if ($reportTab === 'ledger')
             <div class="card-campus overflow-hidden p-0">
                 <div class="p-5 border-b hairline-border flex items-center justify-between bg-[var(--panel)]">

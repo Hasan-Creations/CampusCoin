@@ -6,11 +6,13 @@
                     <x-icon name="lock" class="w-5 h-5 text-[var(--secondary)]" />
                 </div>
                 <h1 class="font-display text-xl font-medium text-[var(--ink)]">Administrator Direct Access</h1>
-                <p class="text-xs text-[var(--muted)] mt-1">Authorized personnel only &bull; Multi-factor audit enabled</p>
+                <p class="text-xs text-[var(--muted)] mt-1">Authorized personnel only &bull; Multi-factor audit enabled
+                </p>
             </div>
 
             @if ($errors->any())
-                <div role="alert" aria-live="assertive" class="p-3.5 border border-[var(--expense)] bg-[var(--paper)] text-xs text-[var(--expense)]">
+                <div role="alert" aria-live="assertive"
+                    class="p-3.5 border border-[var(--expense)] bg-[var(--paper)] text-xs text-[var(--expense)]">
                     <ul class="list-disc pl-4 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -19,37 +21,25 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-4" aria-label="Administrator Direct Access Form">
+            <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-4"
+                aria-label="Administrator Direct Access Form">
                 @csrf
 
                 <div>
                     <label for="email" class="block text-xs font-caps text-[var(--muted)] mb-1">
                         Admin Email
                     </label>
-                    <x-field id="email" 
-                             type="email" 
-                             name="email" 
-                             autocomplete="email" 
-                             value="{{ old('email') }}" 
-                             required 
-                             autofocus 
-                             placeholder="admin@campuscoin.edu" 
-                             class="text-xs font-mono" 
-                             :hasError="$errors->has('email')" />
+                    <x-field id="email" type="email" name="email" autocomplete="email"
+                        value="{{ old('email') }}" required autofocus placeholder="admin@campuscoin.edu"
+                        class="text-xs font-mono" :hasError="$errors->has('email')" />
                 </div>
 
                 <div>
                     <label for="password" class="block text-xs font-caps text-[var(--muted)] mb-1">
                         Root Key / Password
                     </label>
-                    <x-field id="password" 
-                             type="password" 
-                             name="password" 
-                             autocomplete="current-password" 
-                             required 
-                             placeholder="••••••••••••" 
-                             class="text-xs" 
-                             :hasError="$errors->has('password')" />
+                    <x-field id="password" type="password" name="password" autocomplete="current-password" required
+                        placeholder="••••••••••••" class="text-xs" :hasError="$errors->has('password')" />
                 </div>
 
                 <x-button variant="primary" type="submit" class="w-full py-3 mt-2">
@@ -59,17 +49,12 @@
             </form>
 
             <div class="pt-4 border-t hairline-border text-center text-xs text-[var(--muted)]">
-                <a href="{{ route('login') }}" class="hover:text-[var(--ink)] inline-flex items-center gap-1.5 font-mono transition-colors">
+                <a href="{{ route('login') }}"
+                    class="hover:text-[var(--ink)] inline-flex items-center gap-1.5 font-mono transition-colors">
                     &larr; Return to Student Portal
                 </a>
             </div>
 
-            <!-- Credentials Hint -->
-            <div class="p-3 bg-[var(--paper)] border hairline-border text-[11px] font-mono text-[var(--muted)] space-y-0.5">
-                <div class="font-medium text-[var(--ink)]">Admin Credentials:</div>
-                <div>User: <span class="text-[var(--secondary)] font-medium">admin@campuscoin.edu</span></div>
-                <div>Pass: <span class="text-[var(--secondary)] font-medium">AdminSecure123!</span></div>
-            </div>
         </div>
     </div>
 </x-layouts.guest>

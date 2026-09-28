@@ -1,5 +1,5 @@
 @props([
-    'stats' => [], // array of ['label' => '...', 'value' => '...', 'meta' => '...', 'variant' => '...']
+    'stats' => [],
 ])
 
 <div {{ $attributes->merge(['class' => 'stat-strip w-full grid grid-cols-2 md:grid-cols-4 gap-3']) }}>

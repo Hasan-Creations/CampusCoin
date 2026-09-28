@@ -1,5 +1,5 @@
 @props([
-    'type' => 'success', // success (accent), error (expense), warning (secondary)
+    'type' => 'success', 
     'message' => '',
 ])
 

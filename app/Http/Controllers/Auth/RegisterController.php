@@ -13,9 +13,6 @@ use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
-    /**
-     * Show the student registration setup panel.
-     */
     public function showRegistrationForm(): View|RedirectResponse
     {
         if (Auth::check()) {
@@ -25,9 +22,6 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    /**
-     * Handle incoming student registration request.
-     */
     public function register(Request $request): RedirectResponse
     {
         $validated = $request->validate([

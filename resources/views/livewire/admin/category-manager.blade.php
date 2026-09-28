@@ -1,5 +1,4 @@
 <div class="space-y-6">
-    <!-- Feedback Alerts -->
     @if ($feedbackMessage)
         <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-[var(--accent)] text-xs flex items-center justify-between">
             <div class="flex items-center gap-2.5">
@@ -24,7 +23,6 @@
         </div>
     @endif
 
-    <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b hairline-border">
         <div>
             <div class="flex items-center gap-2">
@@ -41,7 +39,6 @@
         </div>
     </div>
 
-    <!-- Quick Stats Bar -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">Global System Defaults</div>
@@ -64,10 +61,8 @@
         </div>
     </div>
 
-    <!-- Filters & Search Toolbar -->
     <div class="card-campus p-4 space-y-3">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <!-- Scope Segmented Tabs -->
             <div class="segmented-bar" role="group" aria-label="Category scope filter">
                 <button wire:click="$set('filterScope', 'global')" 
                         aria-label="Show global defaults only"
@@ -86,7 +81,6 @@
                 </button>
             </div>
 
-            <!-- Type, Status, & Search Controls -->
             <div class="flex flex-wrap items-center gap-2">
                 <select wire:model.live="filterType" aria-label="Filter by cash-flow type" class="field !min-h-[38px] !py-1.5 !px-3 text-xs w-auto">
                     <option value="all">All Types</option>
@@ -112,7 +106,6 @@
         </div>
     </div>
 
-    <!-- Category Table -->
     <div class="overflow-x-auto border hairline-border">
         <table class="ledger-table w-full text-xs text-left">
             <thead>
@@ -187,7 +180,6 @@
                         </td>
                         <td class="text-right">
                             <div class="inline-flex items-center gap-1.5 justify-end">
-                                <!-- Edit Button (for Global Categories) -->
                                 <button wire:click="openEditModal({{ $category->id }})" 
                                         class="btn-icon !w-7 !h-7"
                                         title="Edit Category"
@@ -195,7 +187,6 @@
                                     <x-icon name="edit" class="w-3.5 h-3.5" />
                                 </button>
 
-                                <!-- Status Toggle Button -->
                                 <button wire:click="toggleCategoryStatus({{ $category->id }})" 
                                         class="px-2.5 py-1 text-[11px] font-mono border hairline-border transition-colors {{ $category->is_active ? 'text-[var(--expense)] border-[var(--hairline)] hover:border-[var(--expense)]' : 'text-[var(--accent)] border-[var(--hairline)] hover:border-[var(--accent)]' }}"
                                         title="{{ $category->is_active ? 'Deactivate category (preserve historical records)' : 'Activate category for student use' }}"
@@ -203,7 +194,6 @@
                                     {{ $category->is_active ? 'Deactivate' : 'Activate' }}
                                 </button>
 
-                                <!-- Safe Delete Button -->
                                 <button wire:click="deleteCategory({{ $category->id }})" 
                                         wire:confirm="Attempt to delete category '{{ $category->name }}'? If it is referenced by existing transactions or budgets, deletion will be safely rejected."
                                         class="btn-icon !w-7 !h-7 text-[var(--expense)] hover:border-[var(--expense)]"
@@ -225,11 +215,9 @@
         </table>
     </div>
 
-    <!-- Create / Edit Category Modal -->
     @if ($showModal)
         <x-modal :show="true" :title="$editingId ? 'Edit Category' : 'Create Global Default Category'" titleId="admin-category-modal-title" maxWidth="md" onClose="$wire.closeModal()">
             <form wire:submit="saveCategory" class="space-y-5 text-xs">
-                <!-- Category Name -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-caps text-[var(--muted)]">Category Name</label>
                     <x-field type="text" 
@@ -239,7 +227,6 @@
                     @error('name') <span class="text-[var(--expense)] text-[11px] mt-1 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Category Type -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-caps text-[var(--muted)]">Cash-Flow Type</label>
                     <div class="grid grid-cols-2 gap-2.5">
@@ -261,7 +248,6 @@
                     @error('type') <span class="text-[var(--expense)] text-[11px] mt-1 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Icon Selector -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-caps text-[var(--muted)]">Icon Representation</label>
                     <div class="grid grid-cols-6 gap-2" role="group" aria-label="Icon representation">
@@ -278,7 +264,6 @@
                     @error('icon') <span class="text-[var(--expense)] text-[11px] mt-1 block font-medium">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Color Selector -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-caps text-[var(--muted)]">Category Color Swatch</label>
                     <div class="flex flex-wrap items-center gap-2.5" role="group" aria-label="Category color accent">
@@ -296,7 +281,6 @@
                 </div>
 
                 @if ($editingId)
-                    <!-- Active Status Toggle in Edit Modal -->
                     <div class="pt-2 border-t hairline-border">
                         <label class="flex items-center gap-2.5 cursor-pointer">
                             <input type="checkbox" wire:model="is_active" class="border hairline-border text-[var(--accent)] accent-[var(--accent)]" />

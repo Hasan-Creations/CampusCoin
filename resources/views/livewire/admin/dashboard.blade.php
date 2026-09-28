@@ -1,5 +1,4 @@
 <div class="space-y-6">
-    <!-- Feedback Alerts -->
     @if ($feedbackMessage)
         <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-[var(--accent)] text-xs flex items-center justify-between">
             <div class="flex items-center gap-2.5">
@@ -24,7 +23,6 @@
         </div>
     @endif
 
-    <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b hairline-border">
         <div>
             <h1 class="font-display text-2xl sm:text-3xl font-medium tracking-tight text-[var(--ink)] headline-rule">System Operations & Metric Telemetry</h1>
@@ -42,9 +40,7 @@
         </div>
     </div>
 
-    <!-- 4 High-Level Telemetry Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <!-- Students Metric -->
         <div class="p-5 space-y-3 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Total Students</span>
@@ -62,7 +58,6 @@
             </div>
         </div>
 
-        <!-- Platform Ledger Volume -->
         <div class="p-5 space-y-3 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Tracked Ledger Volume</span>
@@ -76,7 +71,6 @@
             </div>
         </div>
 
-        <!-- Ledger Transactions Count -->
         <div class="p-5 space-y-3 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Logged Transactions</span>
@@ -90,7 +84,6 @@
             </div>
         </div>
 
-        <!-- Category & Budget Coverage -->
         <div class="p-5 space-y-3 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">
                 <span>Category Governance</span>
@@ -105,9 +98,7 @@
         </div>
     </div>
 
-    <!-- Secondary Row: Most-Used Categories & Cohort Breakdown -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Most-Used Categories Table (SRS Explicit) -->
         <div class="lg:col-span-7 card-campus p-6 space-y-4">
             <div class="flex items-center justify-between pb-3 border-b hairline-border">
                 <div>
@@ -170,7 +161,6 @@
             @endif
         </div>
 
-        <!-- Student Cohorts & Allowance Baseline -->
         <div class="lg:col-span-5 card-campus p-6 space-y-4">
             <div class="pb-3 border-b hairline-border">
                 <h2 class="font-display text-base font-medium text-[var(--ink)]">Student Demographics & Commitments</h2>
@@ -219,7 +209,6 @@
         </div>
     </div>
 
-    <!-- Bottom Section: Recent Registered Student Accounts with Quick Action -->
     <div class="card-campus p-6 space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b hairline-border">
             <div>

@@ -4,9 +4,6 @@
     </x-slot:header>
 
     <div class="space-y-6">
-        {{-- ===================================================== --}}
-        {{-- HEADER BAR: TITLE, MONTH PICKER, SET BUDGET ACTION     --}}
-        {{-- ===================================================== --}}
         <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <span class="text-xs font-caps text-[var(--muted)]">
@@ -39,9 +36,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- FLASH MESSAGES                                         --}}
-        {{-- ===================================================== --}}
         @if ($feedbackMessage)
             <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-xs text-[var(--accent)] flex items-center justify-between">
                 <div class="flex items-center gap-2 font-medium">
@@ -66,9 +60,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- IN-APP ALERT BANNER FOR OVER-BUDGET / NEAR-LIMIT       --}}
-        {{-- ===================================================== --}}
         @if ($overBudgetCount > 0)
             <div class="p-4 border border-[var(--expense)] bg-[var(--paper)] text-[var(--ink)] flex items-start gap-3" role="alert" aria-live="assertive">
                 <x-icon name="shield-alert" class="w-5 h-5 text-[var(--expense)] flex-shrink-0 mt-0.5" />
@@ -95,9 +86,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- SUMMARY METRICS STRIP                                  --}}
-        {{-- ===================================================== --}}
         <div class="stat-strip">
             <div>
                 <div class="text-xs font-caps text-[var(--muted)]">Total Budgeted</div>
@@ -140,9 +128,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- BUDGET GOALS GRID                                      --}}
-        {{-- ===================================================== --}}
         @if ($decoratedBudgets->isEmpty())
             <div class="empty-state space-y-3">
                 <x-icon name="target" class="w-6 h-6 mx-auto text-[var(--muted)]" />
@@ -256,12 +241,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- CREATE / EDIT MODAL                                    --}}
-        {{-- ===================================================== --}}
-        {{-- ===================================================== --}}
-        {{-- CREATE / EDIT MODAL                                    --}}
-        {{-- ===================================================== --}}
         @if ($showModal)
             <x-modal :show="true"
                      :title="$editingId ? 'Edit Budget Goal' : 'Set Budget Goal'"
@@ -348,9 +327,6 @@
             </x-modal>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- DELETE CONFIRMATION MODAL                              --}}
-        {{-- ===================================================== --}}
         @if ($showDeleteModal)
             <x-modal :show="true"
                      title="Delete Budget Goal?"

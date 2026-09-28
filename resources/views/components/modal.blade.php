@@ -37,7 +37,6 @@
      @if($titleId) aria-labelledby="{{ $titleId }}" @endif
      @keydown.escape.window="close()"
      class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
-    <!-- Backdrop -->
     <div x-show="open"
          x-transition:enter="transition-opacity ease-linear duration-200"
          x-transition:enter-start="opacity-0"
@@ -48,7 +47,6 @@
          @click="close()"
          class="fixed inset-0 bg-black/60"></div>
 
-    <!-- Modal Panel (fade + 8px upward slide, 200ms ease per §7) -->
     <div x-show="open"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 translate-y-2"

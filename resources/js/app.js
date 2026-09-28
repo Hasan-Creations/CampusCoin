@@ -1,4 +1,3 @@
-// Campus Coin Accessibility & Theme Helpers
 window.CampusCoin = {
     toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');

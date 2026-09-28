@@ -4,9 +4,6 @@
     </x-slot:header>
 
     <div class="space-y-6">
-        {{-- ===================================================== --}}
-        {{-- HEADER BAR: TITLE & RE-EVALUATE ACTION                  --}}
-        {{-- ===================================================== --}}
         <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <span class="text-xs font-caps text-[var(--muted)]">
@@ -26,9 +23,6 @@
             </x-button>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- FLASH FEEDBACK ALERT                                   --}}
-        {{-- ===================================================== --}}
         @if ($feedbackMessage)
             <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-xs text-[var(--accent)] flex items-center justify-between">
                 <div class="flex items-center gap-2 font-medium">
@@ -39,9 +33,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- KPI STRIP: TOTAL POTENTIAL SAVINGS & METRICS           --}}
-        {{-- ===================================================== --}}
         <div class="stat-strip">
             <div>
                 <div class="text-xs font-caps text-[var(--muted)]">Identified Potential Savings</div>
@@ -72,9 +63,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- SEGMENTED TAB CONTROLS                                 --}}
-        {{-- ===================================================== --}}
         <div class="flex items-center justify-between border-b hairline-border pb-3">
             <div role="tablist" aria-label="Saving tip status filters" class="segmented-bar">
                 <button type="button"
@@ -118,9 +106,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- TIPS LISTING                                           --}}
-        {{-- ===================================================== --}}
         @if ($tips->isEmpty())
             <div class="empty-state space-y-3">
                 @if ($activeTab === 'pinned')

@@ -1,5 +1,5 @@
 @props([
-    'variant' => 'default', // default, income, expense, secondary
+    'variant' => 'default',
 ])
 
 @php

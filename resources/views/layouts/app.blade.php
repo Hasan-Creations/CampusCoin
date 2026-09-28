@@ -7,12 +7,10 @@
 
     <title>{{ $title ?? 'Dashboard' }} — Campus Coin</title>
 
-    <!-- Google Fonts per §2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Immediate Theme & Font-Size Boot Script (Prevents FOUC & Text Shifts) -->
     <script>
         (function() {
             try {
@@ -30,13 +28,11 @@
     @livewireStyles
 </head>
 <body class="h-full font-sans antialiased text-[var(--ink)] bg-[var(--paper)]">
-    <!-- Skip to Main Content Link for Keyboard & Screen Reader Users -->
     <a href="#main-content" class="skip-to-content">
         Skip to main content
     </a>
 
     <div class="min-h-full flex" x-data="{ mobileNavOpen: false }">
-        <!-- Sidebar for Desktop (Fixed 240px dark sidebar per §3) -->
         <aside class="sidebar-shell hidden md:sticky md:top-0 md:h-screen md:flex md:w-[240px] md:flex-col border-r hairline-border bg-[var(--ink)] text-[var(--paper)] shrink-0" aria-label="Student Sidebar Navigation">
             <div class="p-6 border-b border-[var(--hairline-on-ink)] flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
@@ -50,7 +46,6 @@
                 </a>
             </div>
 
-            <!-- Navigation Links -->
             <nav class="flex-1 p-3 space-y-1" aria-label="Desktop Main Navigation">
                 <a href="{{ route('dashboard') }}" 
                    class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-sans tracking-wide transition-colors {{ request()->routeIs('dashboard') ? 'bg-[#2E2B23] text-[var(--paper)] border-l-2 border-[var(--accent)] pl-3 font-medium' : 'text-[#A8A599] hover:text-[var(--paper)] hover:bg-[#2A2720]' }}">
@@ -88,8 +83,6 @@
                     <span>Saving Tips</span>
                 </a>
             </nav>
-
-            <!-- User Cohort Information & Session Footer -->
             <div class="p-4 border-t border-[var(--hairline-on-ink)] bg-[#1A1813]">
                 <div class="flex items-center justify-between mb-3">
                     <div class="min-w-0 pr-2">
@@ -112,7 +105,6 @@
             </div>
         </aside>
 
-        <!-- Mobile Navigation Drawer -->
         <div x-show="mobileNavOpen" 
              x-cloak
              id="mobile-navigation"
@@ -121,7 +113,6 @@
              aria-label="Mobile Navigation Menu"
              @keydown.escape.window="mobileNavOpen = false"
              class="fixed inset-0 z-50 md:hidden flex">
-            <!-- Backdrop -->
             <div x-show="mobileNavOpen"
                  x-transition:enter="transition-opacity ease-linear duration-200"
                  x-transition:enter-start="opacity-0"
@@ -132,7 +123,6 @@
                  @click="mobileNavOpen = false"
                  class="fixed inset-0 bg-black/60"></div>
 
-            <!-- Drawer Panel (dark ink background) -->
             <div x-show="mobileNavOpen"
                  x-transition:enter="transition ease-in-out duration-200 transform"
                  x-transition:enter-start="-translate-x-full"
@@ -217,9 +207,7 @@
             </div>
         </div>
 
-        <!-- Main Workspace Area -->
         <div class="flex-1 flex flex-col min-w-0">
-            <!-- Top App Bar -->
             <header class="border-b hairline-border bg-[var(--panel)] px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <button type="button" 
@@ -230,7 +218,6 @@
                             class="md:hidden btn-icon">
                         <x-icon name="sliders" class="w-4 h-4" />
                     </button>
-                    <!-- Breadcrumbs -->
                     <nav class="flex items-center gap-2 text-xs font-mono text-[var(--muted)]" aria-label="Breadcrumb">
                         <span class="text-[var(--ink)] font-medium">CampusCoin</span>
                         <span aria-hidden="true" class="opacity-40">/</span>
@@ -239,13 +226,11 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <!-- Allowance Baseline -->
                     <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 border hairline-border bg-[var(--paper)] text-xs font-mono" aria-label="Monthly allowance baseline">
                         <span class="text-[var(--muted)] font-caps text-[11px]">Allowance</span>
                         <span class="font-medium tabular-nums text-[var(--ink)]">${{ number_format(Auth::user()->monthly_allowance ?? 0, 2) }}</span>
                     </div>
 
-                    <!-- Theme Toggle -->
                     <button type="button" 
                             onclick="window.CampusCoin ? window.CampusCoin.toggleTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))"
                             aria-label="Toggle dark mode"
@@ -257,7 +242,6 @@
                 </div>
             </header>
 
-            <!-- Page Body: 1280px max-width per §3, generous padding -->
             <main id="main-content" tabindex="-1" class="flex-1 p-6 sm:p-8 lg:p-10 max-w-[1280px] w-full overflow-y-auto focus:outline-none">
                 {{ $slot }}
             </main>

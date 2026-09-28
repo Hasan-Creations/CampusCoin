@@ -13,13 +13,6 @@ use Throwable;
 
 class OpenAiCategorizationProvider implements CategorizationProviderInterface
 {
-    /**
-     * @param  HeuristicCategorizationProvider  $fallbackProvider  Deterministic fallback provider on API failure or missing credentials
-     * @param  string|null  $apiKey  External OpenAI API token
-     * @param  string  $model  Model identifier (default: gpt-4o-mini)
-     * @param  int  $timeoutSeconds  Strict network timeout in seconds (default: 3)
-     * @param  string  $baseUrl  API endpoint base URL
-     */
     public function __construct(
         protected HeuristicCategorizationProvider $fallbackProvider,
         protected ?string $apiKey = null,
@@ -33,8 +26,6 @@ class OpenAiCategorizationProvider implements CategorizationProviderInterface
     }
 
     /**
-     * Suggest a category via OpenAI with deterministic heuristic fallback on failure or missing key.
-     *
      * @param  Collection<int, Category>  $availableCategories
      */
     public function suggestCategory(string $description, Collection $availableCategories, ?User $user = null): ?CategorySuggestion
@@ -45,7 +36,6 @@ class OpenAiCategorizationProvider implements CategorizationProviderInterface
             return null;
         }
 
-        // Automatic fallback if API key is not configured
         if (blank($this->apiKey)) {
             return $this->fallbackProvider->suggestCategory($trimmed, $availableCategories, $user);
         }
@@ -91,7 +81,7 @@ class OpenAiCategorizationProvider implements CategorizationProviderInterface
                 return $this->fallbackProvider->suggestCategory($trimmed, $availableCategories, $user);
             }
 
-            // Strip any accidental markdown formatting around JSON
+            // The response may wrap JSON in Markdown fences.
             $cleanJson = preg_replace('/^```(?:json)?\s*|\s*```$/i', '', trim($rawContent));
             $parsed = json_decode($cleanJson, true);
 
@@ -104,7 +94,7 @@ class OpenAiCategorizationProvider implements CategorizationProviderInterface
             $suggestedId = (int) $parsed['category_id'];
             $targetCategory = $availableCategories->firstWhere('id', $suggestedId);
 
-            // Rejection of invalid/hallucinated categories
+            // The model may return a category unavailable to this user.
             if (! $targetCategory) {
                 Log::warning("OpenAI suggested non-existent or inaccessible category ID: {$suggestedId}");
 

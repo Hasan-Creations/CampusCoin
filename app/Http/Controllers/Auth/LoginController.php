@@ -38,9 +38,6 @@ class LoginController extends Controller
         return view('auth.admin-login');
     }
 
-    /**
-     * Process authentication for student / general login.
-     */
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -120,9 +117,6 @@ class LoginController extends Controller
         ]);
     }
 
-    /**
-     * Terminate authenticated session.
-     */
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();

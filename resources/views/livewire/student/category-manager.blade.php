@@ -4,9 +4,6 @@
     </x-slot:header>
 
     <div class="space-y-6">
-        {{-- ===================================================== --}}
-        {{-- HEADER BAR & ACTION                                    --}}
-        {{-- ===================================================== --}}
         <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <span class="text-xs font-caps text-[var(--muted)]">Classification System</span>
@@ -23,9 +20,6 @@
             </x-button>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- FEEDBACK & ERROR ALERTS                                --}}
-        {{-- ===================================================== --}}
         @if ($feedbackMessage)
             <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-xs text-[var(--accent)] flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -46,9 +40,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- FILTER TABS & SEARCH BAR                               --}}
-        {{-- ===================================================== --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {{-- Filter Tabs Segmented Bar --}}
             <div class="segmented-bar" role="group" aria-label="Category classification filter">
@@ -82,9 +73,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- CATEGORY GRID                                          --}}
-        {{-- ===================================================== --}}
         @if ($categories->isEmpty())
             <div class="empty-state space-y-3">
                 <x-icon name="tag" class="w-6 h-6 mx-auto text-[var(--muted)]" />
@@ -163,9 +151,6 @@
             </div>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- CREATE / EDIT MODAL                                    --}}
-        {{-- ===================================================== --}}
         @if ($showModal)
             <x-modal :show="true"
                      :title="$editingId ? 'Edit Personal Category' : 'Create Custom Category'"

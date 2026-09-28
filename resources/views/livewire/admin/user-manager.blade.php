@@ -1,5 +1,4 @@
 <div class="space-y-6">
-    <!-- Feedback Alerts -->
     @if ($feedbackMessage)
         <div role="status" aria-live="polite" class="p-4 border border-[var(--accent)] bg-[var(--paper)] text-[var(--accent)] text-xs flex items-center justify-between">
             <div class="flex items-center gap-2.5">
@@ -24,7 +23,6 @@
         </div>
     @endif
 
-    <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b hairline-border">
         <div>
             <div class="flex items-center gap-2">
@@ -41,7 +39,6 @@
         </div>
     </div>
 
-    <!-- Quick Stats Bar -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div class="p-5 space-y-2 bg-[var(--panel)]">
             <div class="text-xs font-caps text-[var(--muted)]">Total Registered Students</div>
@@ -59,10 +56,8 @@
         </div>
     </div>
 
-    <!-- Filters & Search Toolbar -->
     <div class="card-campus p-4 space-y-3">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <!-- Role Selector -->
             <div class="segmented-bar" role="group" aria-label="Account role filter">
                 <button wire:click="$set('filterRole', 'student')" 
                         aria-label="Filter students only"
@@ -81,7 +76,6 @@
                 </button>
             </div>
 
-            <!-- Controls: Status, Cohort, Sort, Search -->
             <div class="flex flex-wrap items-center gap-2">
                 <select wire:model.live="filterStatus" aria-label="Filter by account status" class="field !min-h-[38px] !py-1.5 !px-3 text-xs w-auto">
                     <option value="all">All Statuses</option>
@@ -116,7 +110,6 @@
         </div>
     </div>
 
-    <!-- Accounts Table -->
     <div class="overflow-x-auto border hairline-border">
         <table class="ledger-table w-full text-xs text-left">
             <thead>
@@ -168,7 +161,6 @@
                         </td>
                         <td class="text-right">
                             <div class="inline-flex items-center gap-1.5 justify-end">
-                                <!-- Inspect Button -->
                                 <button wire:click="inspectUser({{ $user->id }})" 
                                         class="btn-icon !w-7 !h-7"
                                         title="Inspect Account Details"
@@ -176,7 +168,6 @@
                                     <x-icon name="eye" class="w-3.5 h-3.5" />
                                 </button>
 
-                                <!-- Status Toggle Button -->
                                 @if (! $user->isAdmin())
                                     <button wire:click="toggleStatus({{ $user->id }})" 
                                             wire:confirm="{{ $user->isActive() ? 'Are you sure you want to deactivate ' . $user->name . '? Their active login sessions will be immediately terminated.' : 'Reactivate account for ' . $user->name . '?' }}"
@@ -201,7 +192,6 @@
         </table>
     </div>
 
-    <!-- Account Inspection Modal -->
     @if ($inspectedUser)
         <x-modal :show="true" maxWidth="lg" onClose="$wire.closeInspectionModal()" titleId="admin-inspect-user-title">
             <div class="flex items-center justify-between pb-4 border-b hairline-border">
@@ -222,7 +212,6 @@
             </div>
 
             <div class="space-y-5 text-xs py-4">
-                <!-- Profile & Status Grid -->
                 <div class="grid grid-cols-2 gap-4 pb-4 border-b hairline-border">
                     <div>
                         <div class="text-[10px] font-caps text-[var(--muted)]">Account Role</div>
@@ -248,7 +237,6 @@
                     </div>
                 </div>
 
-                <!-- Financial Baselines -->
                 <div class="space-y-3 pb-4 border-b hairline-border">
                     <div class="text-xs font-caps text-[var(--muted)]">Student Financial Baselines</div>
                     <div class="grid grid-cols-2 gap-3">
@@ -280,7 +268,6 @@
                     @endif
                 </div>
 
-                <!-- Ledger & Operational Activity -->
                 <div class="space-y-3">
                     <div class="text-xs font-caps text-[var(--muted)]">Ledger & Engagement Telemetry</div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">

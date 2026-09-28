@@ -13,7 +13,6 @@
             </div>
         </div>
 
-        <!-- 4 Admin KPIs per Section 33 -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="card-campus border hairline-border p-5 space-y-2">
                 <div class="flex items-center justify-between text-[11px] font-caps text-[var(--muted)]">
@@ -68,7 +67,6 @@
             </div>
         </div>
 
-        <!-- Student Accounts Table -->
         <div class="card-campus border hairline-border p-6 space-y-4">
             <div class="flex items-center justify-between">
                 <div>

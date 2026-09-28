@@ -1,5 +1,5 @@
 @props([
-    'variant' => 'primary', // primary (ink), accent (forest green), secondary (bronze), destructive (rust)
+    'variant' => 'primary', 
     'type' => 'button',
     'href' => null,
 ])

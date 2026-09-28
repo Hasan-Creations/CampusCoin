@@ -6,7 +6,8 @@
                 <span class="text-xs font-caps text-[var(--muted)]">
                     CAMPUS FINANCIAL INTELLIGENCE
                 </span>
-                <h1 class="font-display text-3xl sm:text-4xl font-medium tracking-tight text-[var(--ink)] leading-tight headline-rule">
+                <h1
+                    class="font-display text-3xl sm:text-4xl font-medium tracking-tight text-[var(--ink)] leading-tight headline-rule">
                     Smart Spending, <br>
                     Student Style.
                 </h1>
@@ -15,7 +16,6 @@
                 </p>
             </div>
 
-            <!-- Single Hairline-Divided Metric Strip (Zero Border Overuse per §5) -->
             <div class="grid grid-cols-3 gap-3">
                 <div class="p-4 bg-[var(--panel)]">
                     <div class="text-xs font-caps text-[var(--muted)]">Accuracy</div>
@@ -36,7 +36,6 @@
                 </div>
             </div>
 
-            <!-- Features Bullets -->
             <div class="space-y-2.5 text-xs text-[var(--muted)]">
                 <div class="flex items-center gap-2.5">
                     <x-icon name="check-circle-2" class="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
@@ -52,8 +51,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Login Card Column -->
         <div class="lg:col-span-5">
             <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
                 <div class="border-b hairline-border pb-4">
@@ -62,7 +59,8 @@
                 </div>
 
                 @if ($errors->any())
-                    <div role="alert" aria-live="assertive" class="p-3.5 border border-[var(--expense)] bg-[var(--paper)] text-xs text-[var(--expense)]">
+                    <div role="alert" aria-live="assertive"
+                        class="p-3.5 border border-[var(--expense)] bg-[var(--paper)] text-xs text-[var(--expense)]">
                         <ul class="list-disc pl-4 space-y-1">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -78,16 +76,9 @@
                         <label for="email" class="block text-xs font-caps text-[var(--muted)] mb-1">
                             Campus Email
                         </label>
-                        <x-field id="email" 
-                                 type="email" 
-                                 name="email" 
-                                 autocomplete="email"
-                                 value="{{ old('email') }}" 
-                                 required 
-                                 autofocus 
-                                 placeholder="alex.rivera@campus.edu"
-                                 class="text-xs font-mono"
-                                 :hasError="$errors->has('email')" />
+                        <x-field id="email" type="email" name="email" autocomplete="email"
+                            value="{{ old('email') }}" required autofocus placeholder="alex.rivera@campus.edu"
+                            class="text-xs font-mono" :hasError="$errors->has('email')" />
                     </div>
 
                     <div>
@@ -95,23 +86,19 @@
                             <label for="password" class="block text-xs font-caps text-[var(--muted)]">
                                 Password
                             </label>
-                            <a href="{{ route('password.request') }}" class="text-[11px] text-[var(--accent)] hover:underline">
+                            <a href="{{ route('password.request') }}"
+                                class="text-[11px] text-[var(--accent)] hover:underline">
                                 Forgot password?
                             </a>
                         </div>
-                        <x-field id="password" 
-                                 type="password" 
-                                 name="password" 
-                                 autocomplete="current-password"
-                                 required 
-                                 placeholder="••••••••••••"
-                                 class="text-xs"
-                                 :hasError="$errors->has('password')" />
+                        <x-field id="password" type="password" name="password" autocomplete="current-password" required
+                            placeholder="••••••••••••" class="text-xs" :hasError="$errors->has('password')" />
                     </div>
 
                     <div class="flex items-center justify-between text-xs pt-1">
                         <label class="flex items-center gap-2 cursor-pointer text-[var(--muted)]">
-                            <input type="checkbox" name="remember" class="border-[var(--hairline)] text-[var(--accent)] focus:ring-0">
+                            <input type="checkbox" name="remember"
+                                class="border-[var(--hairline)] text-[var(--accent)] focus:ring-0">
                             <span>Remember session</span>
                         </label>
                     </div>
@@ -123,18 +110,12 @@
                 </form>
 
                 <div class="pt-4 border-t hairline-border text-center text-xs text-[var(--muted)]">
-                    New student? 
+                    New student?
                     <a href="{{ route('register') }}" class="text-[var(--accent)] font-medium hover:underline">
                         Create an account
                     </a>
                 </div>
 
-                <!-- Test credentials reminder -->
-                <div class="p-3 bg-[var(--paper)] border hairline-border text-[11px] font-mono text-[var(--muted)] space-y-0.5">
-                    <div class="font-medium text-[var(--ink)]">Demo Credentials:</div>
-                    <div>User: <span class="text-[var(--accent)] font-medium">alex.rivera@campus.edu</span></div>
-                    <div>Pass: <span class="text-[var(--accent)] font-medium">StudentSecure123!</span></div>
-                </div>
             </div>
         </div>
     </div>

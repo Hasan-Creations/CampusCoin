@@ -8,14 +8,12 @@
 
     <title>{{ $title ?? 'Campus Coin' }} — Smart Spending, Student Style</title>
 
-    <!-- Google Fonts per §2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <!-- Immediate Theme & Font-Size Boot Script (Prevents FOUC & Text Shifts) -->
     <script>
         (function() {
             try {
@@ -34,13 +32,11 @@
 </head>
 
 <body class="h-full font-sans antialiased text-[var(--ink)] bg-[var(--paper)]">
-    <!-- Skip to Main Content Link for Keyboard & Screen Reader Users -->
     <a href="#main-content" class="skip-to-content">
         Skip to main content
     </a>
 
     <div class="min-h-full flex flex-col justify-between">
-        <!-- Top Minimal Header -->
         <header class="w-full border-b hairline-border bg-[var(--panel)] px-6 py-3.5">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
                 <a href="{{ url('/') }}" class="flex items-center gap-3" aria-label="Campus Coin Home">

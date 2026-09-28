@@ -22,10 +22,8 @@ class CategorySuggestion
         public string $explanation,
         public string $source
     ) {
-        // Clamp confidence to [0.0, 1.0]
         $this->confidence = max(0.0, min(1.0, $this->confidence));
 
-        // Ensure confidence level is valid
         if (! in_array($this->confidenceLevel, ['high', 'medium', 'low'], true)) {
             $this->confidenceLevel = match (true) {
                 $this->confidence >= 0.8 => 'high',
@@ -34,7 +32,6 @@ class CategorySuggestion
             };
         }
 
-        // Ensure source is valid
         if (! in_array($this->source, ['learned', 'rules', 'ai'], true)) {
             $this->source = 'rules';
         }

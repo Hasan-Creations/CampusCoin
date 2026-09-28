@@ -4,9 +4,6 @@
     </x-slot:header>
 
     <div class="space-y-8">
-        {{-- ===================================================== --}}
-        {{-- HERO BALANCE PANEL (§5: Shadow allowed on Hero)        --}}
-        {{-- ===================================================== --}}
         <div class="surface-hero p-8 sm:p-10 border hairline-border bg-[var(--panel)]">
             <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
                 <div class="space-y-4">
@@ -18,7 +15,6 @@
 
                     <div>
                         <div class="text-xs font-caps text-[var(--muted)] mb-1">Available Safe to Spend</div>
-                        {{-- Hero balance figure with count-up animation (§2, §7) --}}
                         <div x-data="{
                             current: 0,
                             target: {{ (float) $safeToSpend }},
@@ -68,9 +64,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- IN-APP BUDGET ALERT BANNER (REAL-TIME NOTIFICATION)    --}}
-        {{-- ===================================================== --}}
         @if ($overBudgets->isNotEmpty())
             <div role="alert" aria-live="assertive" class="p-4 border border-[var(--expense)] bg-[var(--paper)] text-[var(--ink)] flex items-start justify-between gap-3">
                 <div class="flex items-start gap-3">
@@ -124,11 +117,7 @@
             </section>
         @endif
 
-        {{-- ===================================================== --}}
-        {{-- STAT STRIP (§12: Hairline-divided stat row, NO nested card borders) --}}
-        {{-- ===================================================== --}}
         <div class="stat-strip">
-            {{-- Monthly Income --}}
             <div>
                 <div class="text-xs font-caps text-[var(--muted)]">This Month Income</div>
                 <div class="mt-2 text-2xl font-mono font-medium text-[var(--accent)] tabular-nums">
@@ -139,7 +128,6 @@
                 </div>
             </div>
 
-            {{-- Monthly Spent --}}
             <div>
                 <div class="text-xs font-caps text-[var(--muted)]">This Month Spent</div>
                 <div class="mt-2 text-2xl font-mono font-medium text-[var(--expense)] tabular-nums">
@@ -160,7 +148,6 @@
                 </div>
             </div>
 
-            {{-- Safe to Spend --}}
             <div>
                 <div class="text-xs font-caps text-[var(--muted)]">Budget Allocation</div>
                 <div class="mt-2 text-2xl font-mono font-medium text-[var(--ink)] tabular-nums">
@@ -171,7 +158,6 @@
                 </div>
             </div>
 
-            {{-- Savings Goal Progress --}}
             <div>
                 <div class="text-xs font-caps text-[var(--muted)]">Savings Goal ({{ $savingsProgress }}%)</div>
                 <div class="mt-2 text-2xl font-mono font-medium text-[var(--secondary)] tabular-nums">
@@ -183,9 +169,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- BUDGET GOALS & CONSUMPTION                             --}}
-        {{-- ===================================================== --}}
         <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
             <div class="section-header flex items-baseline justify-between">
                 <div>
@@ -249,9 +232,6 @@
             @endif
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- INTELLIGENT SAVING OPPORTUNITIES WIDGET               --}}
-        {{-- ===================================================== --}}
         <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
             <div class="section-header flex items-baseline justify-between">
                 <div>
@@ -351,9 +331,6 @@
             @endif
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- SIX-MONTH CASH FLOW TRENDS (SRS §4.4, §4.6)            --}}
-        {{-- ===================================================== --}}
         <div class="bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
             <div class="section-header flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3">
                 <div>
@@ -376,23 +353,19 @@
                 </div>
             </div>
 
-            {{-- Responsive Native SVG Chart with palette tokens (§8 flat fills, no gradients) --}}
             <div class="w-full overflow-x-auto">
                 <div class="min-w-[580px]">
                     <svg viewBox="0 0 660 190" class="w-full h-44 sm:h-52 select-none" aria-label="6-Month Cash Flow Bar Chart">
-                        {{-- Horizontal Grid Lines (§8: solid hairline weight, dashed only when meaningful) --}}
                         <line x1="55" y1="35" x2="640" y2="35" stroke="var(--hairline)" stroke-width="1" />
                         <line x1="55" y1="75" x2="640" y2="75" stroke="var(--hairline)" stroke-width="1" />
                         <line x1="55" y1="115" x2="640" y2="115" stroke="var(--hairline)" stroke-width="1" />
                         <line x1="55" y1="155" x2="640" y2="155" stroke="var(--hairline)" stroke-width="1" />
 
-                        {{-- Y-Axis Labels --}}
                         <text x="50" y="38" text-anchor="end" class="font-mono text-[9px] fill-[var(--muted)]">${{ number_format($sixMonthTrends['max_volume'], 0) }}</text>
                         <text x="50" y="78" text-anchor="end" class="font-mono text-[9px] fill-[var(--muted)]">${{ number_format($sixMonthTrends['max_volume'] * 0.66, 0) }}</text>
                         <text x="50" y="118" text-anchor="end" class="font-mono text-[9px] fill-[var(--muted)]">${{ number_format($sixMonthTrends['max_volume'] * 0.33, 0) }}</text>
                         <text x="50" y="158" text-anchor="end" class="font-mono text-[9px] fill-[var(--muted)]">$0</text>
 
-                        {{-- 6 Month Bars --}}
                         @php
                             $maxVol = max(1.0, (float) $sixMonthTrends['max_volume']);
                             $slotWidth = (640 - 60) / 6;
@@ -409,24 +382,20 @@
                                 $expY = 155 - $expH;
                             @endphp
 
-                            {{-- Month background column highlight on current --}}
                             @if ($m['is_current'])
                                 <rect x="{{ $cx - 36 }}" y="25" width="72" height="130" fill="var(--hairline)" opacity="0.25" />
                             @endif
 
-                            {{-- Income Bar (§8: Flat fill in accent) --}}
                             @if ($incH > 0)
                                 <rect x="{{ $cx - 18 }}" y="{{ $incY }}" width="15" height="{{ $incH }}"
                                       fill="var(--accent)" />
                             @endif
 
-                            {{-- Expense Bar (§8: Flat fill in expense) --}}
                             @if ($expH > 0)
                                 <rect x="{{ $cx + 3 }}" y="{{ $expY }}" width="15" height="{{ $expH }}"
                                       fill="var(--expense)" />
                             @endif
 
-                            {{-- Month Label --}}
                             <text x="{{ $cx }}" y="174" text-anchor="middle"
                                   class="font-mono text-[11px] {{ $m['is_current'] ? 'font-medium fill-[var(--accent)]' : 'fill-[var(--muted)]' }}">
                                 {{ $m['short_label'] }}
@@ -436,7 +405,6 @@
                 </div>
             </div>
 
-            {{-- 6-Month Detailed Strip (Hairline-divided, zero card nesting) --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-4">
                 @foreach ($sixMonthTrends['months'] as $m)
                     <div class="p-3 space-y-1 bg-[var(--paper)]">
@@ -452,11 +420,7 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- COMPARATIVE CATEGORY SPENDING + RECENT TRANSACTIONS   --}}
-        {{-- ===================================================== --}}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {{-- Category Spending (7-col) --}}
             <div class="lg:col-span-7 bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
                 <div class="section-header flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3">
                     <div>
@@ -466,7 +430,6 @@
                         <p class="text-xs text-[var(--muted)] mt-1">Comparative Analysis &bull; Distribution across active periods</p>
                     </div>
 
-                    {{-- Period Switcher --}}
                     <div role="group" aria-label="Comparative period filter" class="segmented-bar flex-shrink-0">
                         <button type="button"
                                 wire:click="setTimePeriod('this_month')"
@@ -519,7 +482,6 @@
                 @endif
             </div>
 
-            {{-- Recent Transactions (5-col) --}}
             <div class="lg:col-span-5 bg-[var(--panel)] border hairline-border p-6 sm:p-8 space-y-6">
                 <div class="section-header flex items-baseline justify-between">
                     <div>
@@ -557,9 +519,6 @@
             </div>
         </div>
 
-        {{-- ===================================================== --}}
-        {{-- ALL-TIME LEDGER FOOTER (Single hairline divided row)   --}}
-        {{-- ===================================================== --}}
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
             <div class="p-4 bg-[var(--panel)]">
                 <div class="text-xs font-caps text-[var(--muted)]">All-Time Inflow</div>
