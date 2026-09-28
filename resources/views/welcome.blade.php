@@ -641,6 +641,7 @@
                         @else
                             <x-button variant="accent" href="{{ route('register') }}" class="landing-btn">Setup Student Profile</x-button>
                             <x-button variant="primary" href="{{ route('login') }}" class="landing-btn">Student Login</x-button>
+                            <x-button variant="secondary" href="{{ route('admin.login') }}" class="landing-btn">Admin Login</x-button>
                         @endauth
                     </div>
                 </div>
