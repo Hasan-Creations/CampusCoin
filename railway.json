@@ -4,6 +4,10 @@
     "builder": "RAILPACK"
   },
   "deploy": {
-    "preDeployCommand": ["php artisan migrate --force"]
+    "preDeployCommand": [
+      "php artisan migrate --force",
+      "php artisan db:seed --class=AdminSeeder --force",
+      "php artisan db:seed --class=CategorySeeder --force"
+    ]
   }
 }
