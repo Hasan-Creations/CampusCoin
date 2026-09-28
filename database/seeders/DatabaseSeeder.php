@@ -17,27 +17,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Default Administrator
-        User::firstOrCreate(
-            ['email' => 'admin@campuscoin.edu'],
-            [
-                'name' => 'Campus Coin Admin',
-                'password' => bcrypt('AdminSecure123!'),
-                'role' => 'admin',
-                'status' => 'active',
-                'academic_year' => null,
-                'monthly_allowance' => 0.00,
-                'savings_goal' => 0.00,
-                'email_verified_at' => now(),
-            ]
-        );
+        $this->call(AdminSeeder::class);
 
         // Default Student User for evaluation & testing
         $student = User::firstOrCreate(
             ['email' => 'alex.rivera@campus.edu'],
             [
                 'name' => 'Alex Rivera',
-                'password' => bcrypt('StudentSecure123!'),
+                'password' => bcrypt('Student123'),
                 'role' => 'student',
                 'status' => 'active',
                 'academic_year' => 'Junior',

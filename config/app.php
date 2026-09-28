@@ -15,6 +15,12 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'admin' => [
+        'email' => env('ADMIN_EMAIL') ?: 'admin@campuscoin.edu',
+        'password' => env('ADMIN_PASSWORD'),
+        'name' => env('ADMIN_NAME') ?: 'Campus Coin Admin',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

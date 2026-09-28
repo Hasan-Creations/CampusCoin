@@ -119,7 +119,6 @@ class CategorySeeder extends Seeder
                 [
                     'name' => $category['name'],
                     'type' => $category['type'],
-                    'is_default' => true,
                     'user_id' => null,
                 ],
                 $category

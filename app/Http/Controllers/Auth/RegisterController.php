@@ -37,7 +37,6 @@ class RegisterController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'student',
             'status' => 'active',
             'academic_year' => $validated['academic_year'],
             'monthly_allowance' => $validated['monthly_allowance'],

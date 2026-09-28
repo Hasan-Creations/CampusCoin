@@ -52,6 +52,7 @@ cp .env.example .env
 php artisan key:generate
 
 # Create the schema and seed evaluator accounts and sample data
+# Set ADMIN_EMAIL, ADMIN_PASSWORD, and ADMIN_NAME in .env before seeding.
 php artisan migrate --seed
 
 # Build assets
@@ -66,8 +67,8 @@ php artisan serve
 ## Default User Credentials
 | Role | Email | Password | Details |
 | :--- | :--- | :--- | :--- |
-| **System Administrator** | `admin@campuscoin.edu` | `AdminSecure123!` | Full admin access |
-| **Student** | `alex.rivera@campus.edu` | `StudentSecure123!` | Junior cohort, $1,200/mo allowance |
+| **System Administrator** | `admin@campuscoin.edu` | Set via `ADMIN_PASSWORD` | Full admin access |
+| **Student** | `alex.rivera@campus.edu` | `Student123` | Junior cohort, $1,200/mo allowance |
 
 ---
 

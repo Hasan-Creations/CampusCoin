@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Schema;
     'name',
     'email',
     'password',
-    'role',
     'status',
     'academic_year',
     'monthly_allowance',
